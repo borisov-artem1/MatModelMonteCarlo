@@ -3,7 +3,7 @@
 
 class Wall {
 public:
-    double Radius;
+    double RadiusOutside;
     static int indexNumber;
     static double CoordinateZ;
     double Coordinate;
@@ -12,30 +12,22 @@ public:
 private:
 };
 
-double Wall::CoordinateZ = 0;
-int Wall::indexNumber = 0;
-
-Wall::Wall(double radius) {
-    Radius = radius;
-    indexNumber++;
-}
-
-Wall::~Wall() {
-    // деструктор Wall
-}
 
 class Dick : public Wall {
 public:
-    int index = indexNumber;
-    Dick(double radius); // объявляем конструктор
+    int index;
+    double RadiusInside;
+    Dick(double radius1, double radius2); // объявляем конструктор
     ~Dick(); // объявляем деструктор
 };
 
-Dick::Dick(double radius) : Wall(radius) {
-    // конструктор Dick вызывает конструктор Wall
-}
+class Сylinder : public Wall {
+public:
+    int index;
+    double Height;
+    double RadiusOutside;
+    Cylinder(double radius1, double height);
+    ~Cylinder();
+};
 
-Dick::~Dick() {
-    // деструктор Dick
-}
 #endif // WALL_H
