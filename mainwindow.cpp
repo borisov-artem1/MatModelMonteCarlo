@@ -13,11 +13,3 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-Dick::Dick(double radius1, double radius2) : Wall(radius1) {
-    RadiusInside = radius2;
-    index = indexNumber;
-}
-
-Dick::~Dick() {
-    // деструктор Dick
-}

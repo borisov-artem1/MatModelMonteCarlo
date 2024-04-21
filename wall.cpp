@@ -4,8 +4,7 @@
 double Wall::CoordinateZ = 0;
 int Wall::indexNumber = 0;
 
-Wall::Wall(double radius) {
-    RadiusOutside = radius;
+Wall::Wall() {
     indexNumber++;
 }
 
@@ -13,19 +12,21 @@ Wall::~Wall() {
     // деструктор Wall
 }
 
-Dick::Dick(double radius1, double radius2) : Wall(radius1) {
+Disk::Disk(double radius1, double radius2) : Wall() {
+    RadiusOutside = radius1;
     RadiusInside = radius2;
     index = indexNumber;
 }
 
-Dick::~Dick() {
+Disk::~Disk() {
     // деструктор Dick
 }
 
-Сylinder::Сylinder(double radius1, double height) : Wall(radius1) {
+Сylinder::Сylinder(double radius1, double height) : Wall() {
     RadiusOutside = radius1;
     index = indexNumber;
     Height = height;
+    CoordinateZ+=Height;
 }
 
 Сylinder::~Сylinder() {
