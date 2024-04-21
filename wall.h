@@ -8,7 +8,7 @@ class Wall {
 public:
     static int indexNumber;
     static double CoordinateZ;
-    Wall();
+    Wall(double RadiusOutside);
     ~Wall();
 };
 
