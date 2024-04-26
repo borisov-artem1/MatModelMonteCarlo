@@ -26,7 +26,7 @@ Disk::~Disk() {
     RadiusOutside = radius1;
     index = indexNumber;
     Height = height;
-    CoordinateZ+=Height;
+    CoordinateZ += Height;
 }
 
 Сylinder::~Сylinder() {}
@@ -36,31 +36,31 @@ void Create3DModel::contactingTheUser() {
     std::string userChoice;
     double radius1, radius2, height;
 
-    while (true) {
-        std::cout << "Выберите объект для создания ('cylinder', 'disk', 'base' для диска с нулевым радиусом, 'exit' для выхода): ";
-        std::cin >> userChoice;
+  // while (true) {
+  //     std::cout << "Выберите объект для создания ('cylinder', 'disk', 'base' для диска с нулевым радиусом, 'exit' для выхода): ";
+  //     std::cin >> userChoice;
 
-        if (userChoice == "exit") {
-            break;
-        }
+  //     if (userChoice == "exit") {
+  //         break;
+  //     }
 
-        std::cout << "Введите внешний радиус: ";
-        std::cin >> radius1;
+  //     std::cout << "Введите внешний радиус: ";
+  //     std::cin >> radius1;
 
-        if (userChoice == "cylinder") {
-            std::cout << "Введите высоту: ";
-            std::cin >> height;
-            Сylinder* cylinder = new Сylinder(radius1, height);
-            stack.push(cylinder);
-        } else if (userChoice == "disk" || userChoice == "base") {
-            radius2 = (userChoice == "disk") ? std::cin >> radius2, radius2 : 0;
-            Disk* disk = new Disk(radius1, radius2);
-            stack.push(disk);
-        } else {
-            std::cout << "Некорректный ввод. Попробуйте снова." << std::endl;
-            continue;
-        }
-    }
+  //     if (userChoice == "cylinder") {
+  //         std::cout << "Введите высоту: ";
+  //         std::cin >> height;
+  //         Сylinder* cylinder = new Сylinder(radius1, height);
+  //         stack.push(cylinder);
+  //     } else if (userChoice == "disk" || userChoice == "base") {
+  //         radius2 = (userChoice == "disk") ? std::cin >> radius2, radius2 : 0;
+  //         Disk* disk = new Disk(radius1, radius2);
+  //         stack.push(disk);
+  //     } else {
+  //         std::cout << "Некорректный ввод. Попробуйте снова." << std::endl;
+  //         continue;
+  //     }
+  // }
 
     // Демонстрация содержимого стека
     while (!stack.empty()) {
