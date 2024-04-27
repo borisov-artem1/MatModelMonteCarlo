@@ -64,23 +64,31 @@ Interface::Interface() {
     connect(create, &QPushButton::clicked, this, &Interface::readingValues);
 }
 
+//данная функция считывает данные со строчек ввода и
+//в зависимости от того какой "сurren index" выбирает куда записывать эти данные
+//и экземпляр какого класса добавлять
 void Interface::readingValues()
 {
     Stack<Wall> stack;
     int index = dropdown->currentIndex();
-    QString selected_text = dropdown->itemText(index);
-    if (selected_text == "Cylinder") {
-        bool ok1, ok2;
-        int val1 = m_first_display_up->text().toInt(&ok1);
-        int val2 = m_first_display_down->text().toInt(&ok2);
-        if (!ok1 || !ok2) {
-            qDebug() << "Ошибка ввода. Убедитесь что введены числовые значения.";
-        }
-        Сylinder * c1 = new Сylinder(val1, val2);
-        stack.push(c1);
-    } else {
-
+    bool ok1, ok2;
+    int val1 = m_first_display_up->text().toInt(&ok1);
+    int val2 = m_first_display_down->text().toInt(&ok2);
+    if (!ok1 || !ok2) {
+        qDebug() << "Ошибка ввода. Убедитесь что введены числовые значения.";
     }
+    QString selected_text = dropdown->itemText(index);
+    if (isBuildingCorrectly()) {
+        if (selected_text == "Cylinder") {
+            Сylinder * c1 = new Сylinder(val1, val2);
+            stack.push(c1);
+        } else {
+            Disk * d1 = new Disk(val1, val2);
+            stack.push(d1);
+        }
+    } else {
+        qDebug() << "Некоректно построена фигура, проверьте чего вам не хватает";
+        }
 }
 
 bool Interface::isBuildingCorrectly()

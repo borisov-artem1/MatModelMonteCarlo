@@ -40,7 +40,7 @@ class Stack {
 private:
   std::stack<T*> elements;
 public:
-  void push(const T& value){
+  void push( T* value){
       elements.push(value);
   }
 
