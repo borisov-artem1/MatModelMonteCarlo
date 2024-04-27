@@ -1,8 +1,11 @@
 #include "interface.h"
 #include <QGridLayout>
 #include "button.h"
+#include "wall.h"
+#include <QDebug>
 
 Interface::Interface() {
+
 
     m_first_display_up    = new QLineEdit;
     m_first_display_down  = new QLineEdit;
@@ -24,7 +27,6 @@ Interface::Interface() {
     main_layout->setSizeConstraint(QLayout::SetFixedSize);
 
 
-    QComboBox* dropdown = new QComboBox();
     Button* create = new Button("Create");
 
 
@@ -57,4 +59,36 @@ Interface::Interface() {
     m_second_label->setText("Radius:");
 
     setWindowTitle("Creating figures");
+
+    Create3DModel create3dModel;
+    connect(create, &QPushButton::clicked, this, &Interface::readingValues);
+}
+
+void Interface::readingValues()
+{
+    Stack<Wall> stack;
+    int index = dropdown->currentIndex();
+    QString selected_text = dropdown->itemText(index);
+    if (selected_text == "Cylinder") {
+        bool ok1, ok2;
+        int val1 = m_first_display_up->text().toInt(&ok1);
+        int val2 = m_first_display_down->text().toInt(&ok2);
+        if (!ok1 || !ok2) {
+            qDebug() << "Ошибка ввода. Убедитесь что введены числовые значения.";
+        }
+        Сylinder * c1 = new Сylinder(val1, val2);
+        stack.push(c1);
+    } else {
+
+    }
+}
+
+bool Interface::isBuildingCorrectly()
+{
+    return true;
+}
+
+void Interface::contactingTheUser()
+{
+
 }

@@ -3,6 +3,8 @@
 
 #include <stack>
 #include <iostream>
+#include <QObject>
+#include <QComboBox>
 
 class Wall {
 public:
@@ -36,7 +38,7 @@ public:
 template <typename T>
 class Stack {
 private:
-  std::stack<T> elements;
+  std::stack<T*> elements;
 public:
   void push(const T& value){
       elements.push(value);
@@ -53,12 +55,19 @@ public:
   bool empty() const {
       return elements.empty();
   }
+
+  ~Stack() {
+      while (!elements.empty()){
+          delete elements.top();
+          elements.pop();
+      }
+  }
 };
 
-class Create3DModel {
-public:
-    void contactingTheUser();
-    bool isBuildingCorrectly();
+class Create3DModel : public QObject {
+    Q_OBJECT
+
+
 };
 
 #endif // WALL_H
