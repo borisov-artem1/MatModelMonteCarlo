@@ -25,7 +25,7 @@ private:
 
 public slots:
     void contactingTheUser();
-    bool isBuildingCorrectly();
+    bool isBuildingCorrectly(int val1, int val2);
     void readingValues();
 };
 

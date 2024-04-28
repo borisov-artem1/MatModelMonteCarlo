@@ -4,6 +4,8 @@
 #include "wall.h"
 #include <QDebug>
 
+Stack<Wall> stack;
+
 Interface::Interface() {
 
 
@@ -69,7 +71,6 @@ Interface::Interface() {
 //и экземпляр какого класса добавлять
 void Interface::readingValues()
 {
-    Stack<Wall> stack;
     int index = dropdown->currentIndex();
     bool ok1, ok2;
     int val1 = m_first_display_up->text().toInt(&ok1);
@@ -78,7 +79,7 @@ void Interface::readingValues()
         qDebug() << "Ошибка ввода. Убедитесь что введены числовые значения.";
     }
     QString selected_text = dropdown->itemText(index);
-    if (isBuildingCorrectly()) {
+    if (isBuildingCorrectly(val1, val2)) {
         if (selected_text == "Cylinder") {
             Сylinder * c1 = new Сylinder(val1, val2);
             stack.push(c1);
@@ -91,7 +92,7 @@ void Interface::readingValues()
         }
 }
 
-bool Interface::isBuildingCorrectly()
+bool Interface::isBuildingCorrectly(int val1,int val2)
 {
     return true;
 }
