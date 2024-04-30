@@ -12,6 +12,7 @@ public:
     static double CoordinateZ;
     Wall(double RadiusOutside);
     ~Wall();
+    friend double GeneratorMonteCarlo();
 };
 
 
@@ -62,12 +63,6 @@ public:
           elements.pop();
       }
   }
-};
-
-class Create3DModel : public QObject {
-    Q_OBJECT
-
-
 };
 
 #endif // WALL_H

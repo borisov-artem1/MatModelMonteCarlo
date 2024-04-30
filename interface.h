@@ -1,5 +1,6 @@
 #ifndef INTERFACE_H
 #define INTERFACE_H
+
 #include <QWidget>
 #include <QLineEdit>
 #include <QLabel>
@@ -24,8 +25,7 @@ private:
     Button*    m_create;
 
 public slots:
-    void contactingTheUser();
-    bool isBuildingCorrectly(int val1, int val2);
+    bool isBuildingCorrectly(int val1, int val2, int index);
     void readingValues();
 };
 
