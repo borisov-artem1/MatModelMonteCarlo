@@ -6,6 +6,13 @@
 #include <QObject>
 #include <QComboBox>
 
+struct CylinderValues {
+    double height;
+    double fi;
+    double teta;
+    double gamma;
+};
+
 class Wall {
 public:
     static int indexNumber;
@@ -64,5 +71,11 @@ public:
       }
   }
 };
+
+double GeneratorMonteCarlo_Height();
+double GeneratorMonteCarlo_Fi();
+double GeneratorMonteCarlo_Teta();
+double GeneratorMonteCarlo_Gamma();
+CylinderValues GeneratorMonteCarlo_Cylinder();
 
 #endif // WALL_H

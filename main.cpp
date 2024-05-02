@@ -1,4 +1,4 @@
-
+#include <QDebug>
 #include "interface.h"
 #include "wall.h"
 #include <QApplication>

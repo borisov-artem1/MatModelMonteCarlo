@@ -34,42 +34,56 @@ Disk::~Disk() {
 
 Сylinder::~Сylinder() {}
 
-struct Angles {
-   double Teta;
-   double Gamma;
-};
-
-double GeneratorMonteCarlo(int choice, Wall object)
+//берет значения от нуля до высоты нашей модели и находит случайную
+//точку по координате z , и именно сечение по этой координате мы будем исследовать
+double GeneratorMonteCarlo_Height()
 {
     std::mt19937 generator; // Инициализация генератора
-    if (choice == 1) {
-        int z_finish = object.CoordinateZ;
-        generator.seed(std::random_device()()); // Использование случайного устройства для засевания генератора
-        std::uniform_int_distribution<int> distribution(0, z_finish); // Равномерное распределение от 1 до 100
-        int randomValue = distribution(generator); // Генерация случайного числа
-        return randomValue;
-    }
-    if (choice == 2) {
-        generator.seed(std::random_device()()); // Использование случайного устройства для засевания генератора
-        std::uniform_int_distribution<int> distribution(0, 180);
-        int randomValue = distribution(generator);
-        return randomValue;
-    }
+    int z_finish = Wall::CoordinateZ;
+    generator.seed(std::random_device()()); // Использование случайного устройства для засевания генератора
+    std::uniform_int_distribution<int> distribution(0, z_finish); // Равномерное распределение от 1 до 100
+    int randomValue = distribution(generator); // Генерация случайного числа
+    return randomValue;
 }
 
-Angles GeneratorMonteCarloRadian()
+//далее в сечении из предыдущей функции находим конкретную точку
+double GeneratorMonteCarlo_Fi()
 {
-    Angles angles;
-    std::vector<double> arr;  // пустой вектор строк
     std::mt19937 generator;
-    for (int i = 0; i < 2; i++){
-        generator.seed(std::random_device()());
-        std::uniform_int_distribution<int> distribution(0, 180); // Равномерное распределение от 1 до 100
-        arr.push_back(distribution(generator));
-    }
-    angles.Teta = arr[0];
-    angles.Gamma = arr[1];
-    return angles;
+    generator.seed(std::random_device()()); // Использование случайного устройства для засевания генератора
+    std::uniform_int_distribution<int> distribution(0, 360);
+    int randomValue = distribution(generator);
+    return randomValue;
+}
+
+//это один из 2 углов, который будет необходим для построения луча, по которому молекула будет вылетать
+double GeneratorMonteCarlo_Teta()
+{
+    std::mt19937 generator;
+    generator.seed(std::random_device()());
+    std::uniform_int_distribution<int> distribution(0, 180); // Равномерное распределение от 1 до 180
+    int fi = distribution(generator);
+    return fi;
+}
+
+//это 2 угол, который будет необходим для построения луча, по которому молекула будет вылетать
+double GeneratorMonteCarlo_Gamma()
+{
+    std::mt19937 generator;
+    generator.seed(std::random_device()());
+    std::uniform_int_distribution<int> distribution(0, 180); // Равномерное распределение от 1 до 180
+    int fi = distribution(generator);
+    return fi;
+}
+
+CylinderValues GeneratorMonteCarlo_Cylinder()
+{
+    CylinderValues cylinderValues;
+    cylinderValues.height = GeneratorMonteCarlo_Height();
+    cylinderValues.fi = GeneratorMonteCarlo_Fi();
+    cylinderValues.teta = GeneratorMonteCarlo_Teta();
+    cylinderValues.gamma = GeneratorMonteCarlo_Gamma();
+    return cylinderValues;
 }
 
 
