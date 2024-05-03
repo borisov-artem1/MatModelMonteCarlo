@@ -7,32 +7,39 @@
 #include <QComboBox>
 
 class Wall {
+
 public:
+    double radiusInside;
+    double radiusOutside;
+    double Height;
     static int indexNumber;
-    static double CoordinateZ;
-    Wall(double RadiusOutside);
+    static double coordinateZ;
+    const QString name = "Wall";
+    Wall();
     ~Wall();
 };
 
-
 class Disk : public Wall {
+
 public:
-    int index;
-    double RadiusOutside;
-    double RadiusInside;
-    double CoordinateOfTheBegining = CoordinateZ;
-    Disk(double radius1, double radius2); // объявляем конструктор
+    double radiusInside;
+    double radiusOutside;
+    Disk(double radiusOutside, double radiusInside); // объявляем конструктор
     ~Disk(); // объявляем деструктор
+    const QString name = "Disk";
 };
 
+
+
 class Сylinder : public Wall {
+
 public:
-    int index;
+
+    double radiusOutside;
     double Height;
-    double RadiusOutside;
-    double CoordinateOfTheBegining = CoordinateZ;
-    Сylinder(double radius1, double height);
+    Сylinder(double radiusOutside, double height);
     ~Сylinder();
+    const QString name = "Cylinder";
 };
 
 template <typename T>
@@ -44,7 +51,7 @@ public:
       elements.push(value);
   }
 
-  T top() const {
+  T* top() const {
       return elements.top();
   }
 

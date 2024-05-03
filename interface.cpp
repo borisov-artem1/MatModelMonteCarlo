@@ -3,14 +3,15 @@
 #include "button.h"
 #include "wall.h"
 #include <QDebug>
+#include "exception.h"
 
 Stack<Wall> stack;
 
 Interface::Interface() {
 
 
-    m_first_display_up    = new QLineEdit;
-    m_first_display_down  = new QLineEdit;
+    m_first_display_up   = new QLineEdit;
+    m_first_display_down = new QLineEdit;
 
     m_figure       = new QLabel;
     m_first_label  = new QLabel;
@@ -29,12 +30,12 @@ Interface::Interface() {
     main_layout->setSizeConstraint(QLayout::SetFixedSize);
 
 
-    Button* create = new Button("Create");
+    Button* create = new Button("Create", this);
 
 
     dropdown->addItem("Cylinder");
     dropdown->addItem("Disk");
-    dropdown->setEditable(true);
+    dropdown->setEditable(false);
 
 
     main_layout->addWidget(create,               3, 0, 1, 2);
@@ -56,6 +57,7 @@ Interface::Interface() {
             m_second_label->setText("Inner diameter:");
         }
     });
+    connect(create, &QPushButton::clicked, this, &Interface::readingValues);
     m_figure->setText("Choose your figure:");
     m_first_label->setText("Hight:");
     m_second_label->setText("Radius:");
@@ -63,41 +65,81 @@ Interface::Interface() {
     setWindowTitle("Creating figures");
 
     Create3DModel create3dModel;
-    connect(create, &QPushButton::clicked, this, &Interface::readingValues);
+    connect(create, SIGNAL(clicked), this, SLOT(Interface::readingValues));
 }
 
 //данная функция считывает данные со строчек ввода и
-//в зависимости от того какой "сurren index" выбирает куда записывать эти данные
+//в зависимости от того какой "сurrent index" выбирает куда записывать эти данные
 //и экземпляр какого класса добавлять
 void Interface::readingValues()
 {
+
     int index = dropdown->currentIndex();
     bool ok1, ok2;
-    int val1 = m_first_display_up->text().toInt(&ok1);
-    int val2 = m_first_display_down->text().toInt(&ok2);
+    double val1 = m_first_display_up->text().toDouble(&ok1);
+    double val2 = m_first_display_down->text().toDouble(&ok2);
     if (!ok1 || !ok2) {
-        qDebug() << "Ошибка ввода. Убедитесь что введены числовые значения.";
+        throw InvalidDisplayInput();
     }
     QString selected_text = dropdown->itemText(index);
-    if (isBuildingCorrectly(val1, val2)) {
+    //if (selected_text == "Cylinder") {
+    //    Сylinder* cylinder = new Сylinder(val1, val2);
+    //    if (isBuildingCorrectly(val1, val2, selected_text)) {
+    //        stack.push(cylinder);
+    //    } else {
+    //        throw IncorrectFigure();
+    //    }
+    //} else if (selected_text == "Disk") {
+    //    Disk* disk = new Disk(val1, val2);
+    //    if (isBuildingCorrectly(val1, val2, selected_text)) {
+    //        stack.push(disk);
+    //    } else {
+    //        throw IncorrectFigure();
+    //    }
+    //} else {
+    //    throw IncorrectFigure();
+    //}
+    if (isBuildingCorrectly(val1, val2, selected_text)) {
         if (selected_text == "Cylinder") {
-            Сylinder * c1 = new Сylinder(val1, val2);
-            stack.push(c1);
+            Сylinder* cylinder = new Сylinder(val1, val2);
+            stack.push(cylinder);
+            qDebug() << "Cylinder" << Qt::endl;
+        } else if (selected_text == "Disk") {
+            Disk* disk = new Disk(val1, val2);
+            stack.push(disk);
+            qDebug() << "Disk" << Qt::endl;
         } else {
-            Disk * d1 = new Disk(val1, val2);
-            stack.push(d1);
+            throw IncorrectFigure();
         }
     } else {
-        qDebug() << "Некоректно построена фигура, проверьте чего вам не хватает";
+        throw IncorrectFigure();
         }
 }
 
-bool Interface::isBuildingCorrectly(int val1,int val2)
-{
-    return true;
+bool Interface::isBuildingCorrectly(const double val1, const double val2, const QString selected_text) {
+    if (val1 < 0 || val2 < 0) {
+        return false;
+    }
+    QString name = stack.top()->name;
+    if (name == "Cylinder") {
+        if ((selected_text == "Cylinder" && val1 == stack.top()->radiusOutside) ||
+                (selected_text == "Disk" && val1 == stack.top()->radiusOutside) ||
+                (selected_text == "Disk" && val2 == stack.top()->radiusInside)) {
+            return true;
+        } else {
+            return false;
+        }
+    } else if (name == "Disk") {
+        if (selected_text == "Cylinder" && (val1 == stack.top()->radiusInside || val1 == stack.top()->radiusOutside)) {
+            return true;
+        } else {
+            return false;
+        }
+    } else {
+        return false;
+    }
 }
 
-void Interface::contactingTheUser()
-{
+void Interface::contactingTheUser() {
 
 }

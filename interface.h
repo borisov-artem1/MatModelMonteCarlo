@@ -23,9 +23,9 @@ private:
     QLabel*    m_second_label;
     Button*    m_create;
 
-public slots:
+private slots:
     void contactingTheUser();
-    bool isBuildingCorrectly(int val1, int val2);
+    bool isBuildingCorrectly(double val1, double val2, QString selected_text);
     void readingValues();
 };
 
