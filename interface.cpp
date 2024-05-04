@@ -64,8 +64,10 @@ Interface::Interface() {
 
     setWindowTitle("Creating figures");
 
-    Create3DModel create3dModel;
+
     connect(create, SIGNAL(clicked), this, SLOT(Interface::readingValues));
+    connect(create, &QPushButton::clicked, this, &Interface::readingValues);
+
 }
 
 //данная функция считывает данные со строчек ввода и
@@ -82,23 +84,7 @@ void Interface::readingValues()
         throw InvalidDisplayInput();
     }
     QString selected_text = dropdown->itemText(index);
-    //if (selected_text == "Cylinder") {
-    //    Сylinder* cylinder = new Сylinder(val1, val2);
-    //    if (isBuildingCorrectly(val1, val2, selected_text)) {
-    //        stack.push(cylinder);
-    //    } else {
-    //        throw IncorrectFigure();
-    //    }
-    //} else if (selected_text == "Disk") {
-    //    Disk* disk = new Disk(val1, val2);
-    //    if (isBuildingCorrectly(val1, val2, selected_text)) {
-    //        stack.push(disk);
-    //    } else {
-    //        throw IncorrectFigure();
-    //    }
-    //} else {
-    //    throw IncorrectFigure();
-    //}
+
     if (isBuildingCorrectly(val1, val2, selected_text)) {
         if (selected_text == "Cylinder") {
             Сylinder* cylinder = new Сylinder(val1, val2);
@@ -143,3 +129,5 @@ bool Interface::isBuildingCorrectly(const double val1, const double val2, const 
 void Interface::contactingTheUser() {
 
 }
+
+

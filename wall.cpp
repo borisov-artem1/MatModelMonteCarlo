@@ -2,6 +2,9 @@
 #include <string>
 #include <memory>
 #include "interface.h"
+#include <random>
+#include <vector>
+
 
 double Wall::coordinateZ = 0;
 int Wall::indexNumber = 0;
@@ -28,44 +31,56 @@ Disk::~Disk() {
 
 Сylinder::~Сylinder() {}
 
-//void Create3DModel::contactingTheUser() {
-//    Stack<Wall*> stack;
-//    std::string userChoice;
-//    double radius1, radius2, height;
+//берет значения от нуля до высоты нашей модели и находит случайную
+//точку по координате z , и именно сечение по этой координате мы будем исследовать
+double GeneratorMonteCarlo_Height()
+{
+    std::mt19937 generator; // Инициализация генератора
+    int z_finish = Wall::coordinateZ;
+    generator.seed(std::random_device()()); // Использование случайного устройства для засевания генератора
+    std::uniform_int_distribution<int> distribution(0, z_finish); // Равномерное распределение от 1 до 100
+    int randomValue = distribution(generator); // Генерация случайного числа
+    return randomValue;
+}
 
-//  // while (true) {
-//  //     std::cout << "Выберите объект для создания ('cylinder', 'disk', 'base' для диска с нулевым радиусом, 'exit' для выхода): ";
-//  //     std::cin >> userChoice;
+//далее в сечении из предыдущей функции находим конкретную точку
+double GeneratorMonteCarlo_Fi()
+{
+    std::mt19937 generator;
+    generator.seed(std::random_device()()); // Использование случайного устройства для засевания генератора
+    std::uniform_int_distribution<int> distribution(0, 360);
+    int randomValue = distribution(generator);
+    return randomValue;
+}
 
-//  //     if (userChoice == "exit") {
-//  //         break;
-//  //     }
+//это один из 2 углов, который будет необходим для построения луча, по которому молекула будет вылетать
+double GeneratorMonteCarlo_Teta()
+{
+    std::mt19937 generator;
+    generator.seed(std::random_device()());
+    std::uniform_int_distribution<int> distribution(0, 180); // Равномерное распределение от 1 до 180
+    int fi = distribution(generator);
+    return fi;
+}
 
-//  //     std::cout << "Введите внешний радиус: ";
-//  //     std::cin >> radius1;
+//это 2 угол, который будет необходим для построения луча, по которому молекула будет вылетать
+double GeneratorMonteCarlo_Gamma()
+{
+    std::mt19937 generator;
+    generator.seed(std::random_device()());
+    std::uniform_int_distribution<int> distribution(0, 180); // Равномерное распределение от 1 до 180
+    int fi = distribution(generator);
+    return fi;
+}
 
-//  //     if (userChoice == "cylinder") {
-//  //         std::cout << "Введите высоту: ";
-//  //         std::cin >> height;
-//  //         Сylinder* cylinder = new Сylinder(radius1, height);
-//  //         stack.push(cylinder);
-//  //     } else if (userChoice == "disk" || userChoice == "base") {
-//  //         radius2 = (userChoice == "disk") ? std::cin >> radius2, radius2 : 0;
-//  //         Disk* disk = new Disk(radius1, radius2);
-//  //         stack.push(disk);
-//  //     } else {
-//  //         std::cout << "Некорректный ввод. Попробуйте снова." << std::endl;
-//  //         continue;
-//  //     }
-//  // }
-
-//    // Демонстрация содержимого стека
-//    while (!stack.empty()) {
-//        Wall* item = stack.top();
-//        stack.pop();
-//        // Для реального использования тут должна быть логика, которая что-то делает с объектами
-//        delete item; // Удаляем объект после использования
-//    }
-//}
+CylinderValues GeneratorMonteCarlo_Cylinder()
+{
+    CylinderValues cylinderValues;
+    cylinderValues.height = GeneratorMonteCarlo_Height();
+    cylinderValues.fi = GeneratorMonteCarlo_Fi();
+    cylinderValues.teta = GeneratorMonteCarlo_Teta();
+    cylinderValues.gamma = GeneratorMonteCarlo_Gamma();
+    return cylinderValues;
+}
 
 

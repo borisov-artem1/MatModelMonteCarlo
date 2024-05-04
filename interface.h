@@ -1,5 +1,6 @@
 #ifndef INTERFACE_H
 #define INTERFACE_H
+
 #include <QWidget>
 #include <QLineEdit>
 #include <QLabel>
@@ -23,9 +24,12 @@ private:
     QLabel*    m_second_label;
     Button*    m_create;
 
+
 private slots:
     void contactingTheUser();
     bool isBuildingCorrectly(double val1, double val2, QString selected_text);
+
+public slots:
     void readingValues();
 };
 

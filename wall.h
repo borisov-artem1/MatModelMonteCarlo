@@ -6,6 +6,13 @@
 #include <QObject>
 #include <QComboBox>
 
+struct CylinderValues {
+    double height;
+    double fi;
+    double teta;
+    double gamma;
+};
+
 class Wall {
 
 public:
@@ -17,6 +24,7 @@ public:
     const QString name = "Wall";
     Wall();
     ~Wall();
+    friend double GeneratorMonteCarlo();
 };
 
 class Disk : public Wall {
@@ -71,10 +79,10 @@ public:
   }
 };
 
-class Create3DModel : public QObject {
-    Q_OBJECT
-
-
-};
+double GeneratorMonteCarlo_Height();
+double GeneratorMonteCarlo_Fi();
+double GeneratorMonteCarlo_Teta();
+double GeneratorMonteCarlo_Gamma();
+CylinderValues GeneratorMonteCarlo_Cylinder();
 
 #endif // WALL_H
