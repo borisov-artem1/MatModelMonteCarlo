@@ -5,6 +5,7 @@
 #include <QDebug>
 
 Stack<Wall> stack;
+QVector<Wall*> vector;
 
 Interface::Interface() {
 
@@ -81,9 +82,11 @@ void Interface::readingValues()
     if (isBuildingCorrectly(val1, val2, index)) {
         if (selected_text == "Cylinder") {
             Сylinder * c1 = new Сylinder(val1, val2);
+            vector.push_back(c1);
             stack.push(c1);
         } else {
             Disk * d1 = new Disk(val1, val2);
+            vector.push_back(d1);
             stack.push(d1);
         }
     } else {

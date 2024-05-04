@@ -1,12 +1,14 @@
 #ifndef WALL_H
 #define WALL_H
 
+#include <vector>
 #include <stack>
 #include <iostream>
 #include <QObject>
 #include <QComboBox>
 
-struct CylinderValues {
+struct RandomValues {
+    int index;
     double height;
     double fi;
     double teta;
@@ -72,10 +74,16 @@ public:
   }
 };
 
+
 double GeneratorMonteCarlo_Height();
 double GeneratorMonteCarlo_Fi();
 double GeneratorMonteCarlo_Teta();
 double GeneratorMonteCarlo_Gamma();
-CylinderValues GeneratorMonteCarlo_Cylinder();
+RandomValues GeneratorMonteCarlo_Cylinder();
+
+int GeneratorMonteCarlo_index();
+RandomValues GeneratorMonteCarlo_Cylinder();
+
+
 
 #endif // WALL_H

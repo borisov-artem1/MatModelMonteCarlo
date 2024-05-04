@@ -3,10 +3,10 @@
 #include <memory>
 #include "interface.h"
 #include <random>
-#include <vector>
 
 int Wall::indexNumber = 0;
 double Wall::CoordinateZ = 0;
+extern QVector<Wall*> vector;
 
 Wall::Wall(double radius) {
     indexNumber++;
@@ -76,9 +76,9 @@ double GeneratorMonteCarlo_Gamma()
     return fi;
 }
 
-CylinderValues GeneratorMonteCarlo_Cylinder()
+RandomValues GeneratorMonteCarlo_Cylinder()
 {
-    CylinderValues cylinderValues;
+    RandomValues cylinderValues;
     cylinderValues.height = GeneratorMonteCarlo_Height();
     cylinderValues.fi = GeneratorMonteCarlo_Fi();
     cylinderValues.teta = GeneratorMonteCarlo_Teta();
@@ -86,4 +86,12 @@ CylinderValues GeneratorMonteCarlo_Cylinder()
     return cylinderValues;
 }
 
+int GeneratorMonteCarlo_index()
+{
+    for (auto it = vector.begin(); it != vector.end())
+    {
+
+    }
+    return 0;
+}
 
