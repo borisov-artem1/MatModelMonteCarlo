@@ -16,6 +16,7 @@ SOURCES += \
 
 HEADERS += \
     button.h \
+    exception.h \
     interface.h \
     wall.h
 
