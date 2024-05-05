@@ -3,9 +3,10 @@
 #include <memory>
 #include "interface.h"
 #include <random>
-
+#include <iostream>
 
 extern QVector<Wall*> vector;
+QVector<int> indexVector;
 double Wall::coordinateZ = 0;
 int Wall::indexNumber = 0;
 
@@ -18,14 +19,15 @@ Wall::~Wall() {
 }
 
 Disk::Disk(double radiusOutside, double radiusInside): radiusInside(radiusInside), radiusOutside(radiusOutside) {
-    indexNumber++;
+    index=indexNumber;
 }
 
 Disk::~Disk() {
+    std::cout<<"poka";
 }
 
 Сylinder::Сylinder(double radiusOutside, double height): Height(height), radiusOutside(radiusOutside) {
-    indexNumber++;
+    index=indexNumber;
     coordinateZ += Height;
 }
 
@@ -83,12 +85,54 @@ RandomValues GeneratorMonteCarlo_Cylinder()
     return cylinderValues;
 }
 
-int GeneratorMonteCarlo_index()
+void LookDiskIndexes()
 {
-    for (auto it = vector.begin(); it != vector.end();++it)
-    {
+    for (Wall* wall : vector) {
+            Disk* disk = dynamic_cast<Disk*>(wall); // Попытка приведения типа
+            if (disk && disk->name == "Disk") {
+                indexVector.push_back(disk->index);
+            }
+        }
+}
 
+int GeneratorMonteCarlo_index()
+{    // Проверка на пустоту вектора
+    if (indexVector.empty()) {
+        throw std::runtime_error("Vector is empty");
     }
-    return 0;
+    LookDiskIndexes();
+
+    // Статические объекты для генерации случайных чисел
+    static std::mt19937 gen(time(nullptr)); // генератор случайных чисел, инициализированный системными часами
+    std::uniform_int_distribution<size_t> dist(0, indexVector.size() - 1); // распределение для индексов
+
+    // Выбор случайного индекса и возвращение элемента
+    return indexVector[dist(gen)];
+}
+
+double GeneratorMonteCarlo_Point(int index)
+{
+    int firstPoint = vector[index]->radiusInside;
+    int twicePoint = vector[index]->radiusOutside;
+    // Создаем генератор случайных чисел
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_real_distribution<> dist(firstPoint, twicePoint);
+
+    // Генерируем и возвращаем случайное число из заданного диапазона
+    return dist(gen);
+}
+
+RandomValues GeneratorMonteCarlo_Disk()
+{
+    RandomValues diskValues;
+    diskValues.index = GeneratorMonteCarlo_index();
+    diskValues.fi = GeneratorMonteCarlo_Fi();
+    diskValues.point = GeneratorMonteCarlo_Point(diskValues.index);
+}
+
+RandomValues PlaceForMolecul()
+{
+
 }
 

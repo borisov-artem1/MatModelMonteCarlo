@@ -13,6 +13,7 @@ struct RandomValues {
     double fi;
     double teta;
     double gamma;
+    double point;
 };
 
 class Wall {
@@ -25,7 +26,7 @@ public:
     static double coordinateZ;
     const QString name = "Wall";
     Wall();
-    ~Wall();
+    virtual ~Wall();
     friend double GeneratorMonteCarlo();
 };
 
@@ -35,8 +36,9 @@ public:
     double radiusInside;
     double radiusOutside;
     Disk(double radiusOutside, double radiusInside); // объявляем конструктор
-    ~Disk(); // объявляем деструктор
+    ~Disk();
     const QString name = "Disk";
+    int index;
 };
 
 
@@ -50,6 +52,7 @@ public:
     Сylinder(double radiusOutside, double height);
     ~Сylinder();
     const QString name = "Cylinder";
+    int index;
 };
 
 template <typename T>
@@ -89,7 +92,11 @@ double GeneratorMonteCarlo_Gamma();
 RandomValues GeneratorMonteCarlo_Cylinder();
 
 int GeneratorMonteCarlo_index();
-RandomValues GeneratorMonteCarlo_Cylinder();
+void LookDiskIndexes();
+double GeneratorMonteCarlo_Point(int index);
+RandomValues GeneratorMonteCarlo_Disk();
+
+RandomValues PlaceForMolecul();
 
 
 
