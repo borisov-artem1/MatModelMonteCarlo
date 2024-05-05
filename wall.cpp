@@ -4,6 +4,8 @@
 #include "interface.h"
 #include <random>
 #include <iostream>
+#include <cmath>
+#define PI 3,14
 
 extern QVector<Wall*> vector;
 QVector<int> indexVector;
@@ -129,10 +131,44 @@ RandomValues GeneratorMonteCarlo_Disk()
     diskValues.index = GeneratorMonteCarlo_index();
     diskValues.fi = GeneratorMonteCarlo_Fi();
     diskValues.point = GeneratorMonteCarlo_Point(diskValues.index);
+    return diskValues;
 }
 
-RandomValues PlaceForMolecul()
+double CylindersArea()
 {
+    double area = 0;
+    for (Wall* wall : vector) {
+            Сylinder* cylinder = dynamic_cast<Сylinder*>(wall); // Попытка приведения типа
+            if (cylinder && cylinder->name == "Сylinder") {
+                double height = cylinder->Height;
+                double radius = cylinder->radiusOutside;
+                area+=height*2*PI*radius;
+            }
+        }
+    return area;
+}
 
+double DiskArea()
+{
+    double area = 0;
+    for (Wall* wall : vector) {
+            Disk* disk = dynamic_cast<Disk*>(wall); // Попытка приведения типа
+            if (disk && disk->name == "Disk") {
+                double radiusInside = disk->radiusInside;
+                double radiusOutside = disk->radiusOutside;
+                area+=2*PI*(pow(radiusOutside,2)-pow(radiusInside,2));
+            }
+        }
+    return area;
+}
+
+Coeficients Distribution()
+{
+    Coeficients coeficitions;
+    double areaCylinders = CylindersArea();
+    double areaDisk = DiskArea();
+    coeficitions.CylinderCoef = areaCylinders/(areaCylinders+areaDisk);
+    coeficitions.DiskCoef = 1 - coeficitions.CylinderCoef;
+    return coeficitions;
 }
 

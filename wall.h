@@ -16,6 +16,11 @@ struct RandomValues {
     double point;
 };
 
+struct Coeficients {
+    int CylinderCoef;
+    int DiskCoef;
+};
+
 class Wall {
 
 public:
@@ -98,6 +103,9 @@ RandomValues GeneratorMonteCarlo_Disk();
 
 RandomValues PlaceForMolecul();
 
+double CylindersArea();
+double DiskArea();
+Coeficients Distribution();
 
 
 #endif // WALL_H
