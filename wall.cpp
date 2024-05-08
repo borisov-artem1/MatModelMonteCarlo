@@ -163,7 +163,7 @@ double Generator::DiskArea()
     return area;
 }
 
-Coeficients Distribution()
+Coeficients Generator::Distribution()
 {
     Coeficients coeficitions;
     double areaCylinders = generator.CylindersArea();
@@ -177,21 +177,21 @@ int Generator::Core(int countMoleculs, int iteration)
 {
     int exitMolecules = 0;
     Coeficients coeficionts;
-    coeficionts = Distribution();
-    coeficionts.DiskCoef = Distribution().DiskCoef;
-    coeficionts.CylinderCoef = Distribution().CylinderCoef;
+    coeficionts = generator.Distribution();
+    coeficionts.DiskCoef = generator.Distribution().DiskCoef;
+    coeficionts.CylinderCoef = generator.Distribution().CylinderCoef;
     for (int i = 0; i <= countMoleculs* coeficionts.DiskCoef;i++)
     {
-        FlightMolecule(false);
+        generator.FlightMolecule(false);
     }
     for (int i = 0; i <= countMoleculs*coeficionts.CylinderCoef; i++)
     {
-        FlightMolecule(true);
+        generator.FlightMolecule(true);
     }
     return exitMolecules;
 }
 
-void FlightMolecule(bool flag)
+void Generator::FlightMolecule(bool flag)
 {
     RandomValues initialСoordinates;
     if (flag) {
