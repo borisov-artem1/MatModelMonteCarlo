@@ -8,12 +8,12 @@
 #include <QComboBox>
 
 struct RandomValues {
-    int index;
-    double height;
+    int index = 0;
+    double height = 0;
     double fi;
     double teta;
     double gamma;
-    double point;
+    double point = 0;
 };
 
 struct Coeficients {
@@ -94,23 +94,27 @@ public:
   }
 };
 
+class Generator {
+  public:
+    double GeneratorMonteCarlo_Height();
+    double GeneratorMonteCarlo_Fi();
+    double GeneratorMonteCarlo_Teta();
+    double GeneratorMonteCarlo_Gamma();
+    RandomValues GeneratorMonteCarlo_Cylinder();
 
-double GeneratorMonteCarlo_Height();
-double GeneratorMonteCarlo_Fi();
-double GeneratorMonteCarlo_Teta();
-double GeneratorMonteCarlo_Gamma();
-RandomValues GeneratorMonteCarlo_Cylinder();
+    int GeneratorMonteCarlo_index();
+    void LookDiskIndexes();
+    double GeneratorMonteCarlo_Point(int index);
+    RandomValues GeneratorMonteCarlo_Disk();
 
-int GeneratorMonteCarlo_index();
-void LookDiskIndexes();
-double GeneratorMonteCarlo_Point(int index);
-RandomValues GeneratorMonteCarlo_Disk();
+    RandomValues PlaceForMolecul();
 
-RandomValues PlaceForMolecul();
+    double CylindersArea();
+    double DiskArea();
+    Coeficients Distribution();
 
-double CylindersArea();
-double DiskArea();
-Coeficients Distribution();
-
+    void FlightMolecule(bool Disk);
+    int Core(int countMoleculs, int iteration);
+};
 
 #endif // WALL_H

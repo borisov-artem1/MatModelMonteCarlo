@@ -11,6 +11,7 @@ extern QVector<Wall*> vector;
 QVector<int> indexVector;
 double Wall::coordinateZ = 0;
 int Wall::indexNumber = 0;
+Generator generator;
 
 Wall::Wall() {
     indexNumber++;
@@ -38,7 +39,7 @@ Disk::~Disk() {
 
 //берет значения от нуля до высоты нашей модели и находит случайную
 //точку по координате z , и именно сечение по этой координате мы будем исследовать
-double GeneratorMonteCarlo_Height()
+double Generator::GeneratorMonteCarlo_Height()
 {
     std::mt19937 generator; // Инициализация генератора
     int z_finish = Wall::coordinateZ;
@@ -49,7 +50,7 @@ double GeneratorMonteCarlo_Height()
 }
 
 //далее в сечении из предыдущей функции находим конкретную точку
-double GeneratorMonteCarlo_Fi()
+double Generator::GeneratorMonteCarlo_Fi()
 {
     std::mt19937 generator;
     generator.seed(std::random_device()()); // Использование случайного устройства для засевания генератора
@@ -59,7 +60,7 @@ double GeneratorMonteCarlo_Fi()
 }
 
 //это один из 2 углов, который будет необходим для построения луча, по которому молекула будет вылетать
-double GeneratorMonteCarlo_Teta()
+double Generator::GeneratorMonteCarlo_Teta()
 {
     std::mt19937 generator;
     generator.seed(std::random_device()());
@@ -69,7 +70,7 @@ double GeneratorMonteCarlo_Teta()
 }
 
 //это 2 угол, который будет необходим для построения луча, по которому молекула будет вылетать
-double GeneratorMonteCarlo_Gamma()
+double Generator::GeneratorMonteCarlo_Gamma()
 {
     std::mt19937 generator;
     generator.seed(std::random_device()());
@@ -78,7 +79,7 @@ double GeneratorMonteCarlo_Gamma()
     return fi;
 }
 
-RandomValues GeneratorMonteCarlo_Cylinder()
+RandomValues Generator::GeneratorMonteCarlo_Cylinder()
 {
     RandomValues cylinderValues;
     cylinderValues.height = GeneratorMonteCarlo_Height();
@@ -88,7 +89,7 @@ RandomValues GeneratorMonteCarlo_Cylinder()
     return cylinderValues;
 }
 
-void LookDiskIndexes()
+void Generator::LookDiskIndexes()
 {
     for (Wall* wall : vector) {
             Disk* disk = dynamic_cast<Disk*>(wall); // Попытка приведения типа
@@ -98,7 +99,7 @@ void LookDiskIndexes()
         }
 }
 
-int GeneratorMonteCarlo_index()
+int Generator::GeneratorMonteCarlo_index()
 {    // Проверка на пустоту вектора
     if (indexVector.empty()) {
         throw std::runtime_error("Vector is empty");
@@ -113,7 +114,7 @@ int GeneratorMonteCarlo_index()
     return indexVector[dist(gen)];
 }
 
-double GeneratorMonteCarlo_Point(int index)
+double Generator::GeneratorMonteCarlo_Point(int index)
 {
     int firstPoint = vector[index]->radiusInside;
     int twicePoint = vector[index]->radiusOutside;
@@ -126,7 +127,7 @@ double GeneratorMonteCarlo_Point(int index)
     return dist(gen);
 }
 
-RandomValues GeneratorMonteCarlo_Disk()
+RandomValues Generator::GeneratorMonteCarlo_Disk()
 {
     RandomValues diskValues;
     diskValues.index = GeneratorMonteCarlo_index();
@@ -135,7 +136,7 @@ RandomValues GeneratorMonteCarlo_Disk()
     return diskValues;
 }
 
-double CylindersArea()
+double Generator::CylindersArea()
 {
     double area = 0;
     for (Wall* wall : vector) {
@@ -149,7 +150,7 @@ double CylindersArea()
     return area;
 }
 
-double DiskArea()
+double Generator::DiskArea()
 {
     double area = 0;
     for (Wall* wall : vector) {
@@ -166,10 +167,38 @@ double DiskArea()
 Coeficients Distribution()
 {
     Coeficients coeficitions;
-    double areaCylinders = CylindersArea();
-    double areaDisk = DiskArea();
+    double areaCylinders = generator.CylindersArea();
+    double areaDisk = generator.DiskArea();
     coeficitions.CylinderCoef = areaCylinders/(areaCylinders+areaDisk);
     coeficitions.DiskCoef = 1 - coeficitions.CylinderCoef;
     return coeficitions;
 }
 
+int Generator::Core(int countMoleculs, int iteration)
+{
+    int exitMolecules = 0;
+    Coeficients coeficionts;
+    coeficionts = Distribution();
+    coeficionts.DiskCoef = Distribution().DiskCoef;
+    coeficionts.CylinderCoef = Distribution().CylinderCoef;
+    for (int i = 0; i <= countMoleculs* coeficionts.DiskCoef;i++)
+    {
+        FlightMolecule(false);
+    }
+    for (int i = 0; i <= countMoleculs*coeficionts.CylinderCoef; i++)
+    {
+        FlightMolecule(true);
+    }
+    return exitMolecules;
+}
+
+void FlightMolecule(bool flag)
+{
+    RandomValues initialСoordinates;
+    if (flag) {
+        initialСoordinates = generator.GeneratorMonteCarlo_Disk();
+    } else {
+        initialСoordinates = generator.GeneratorMonteCarlo_Cylinder();
+    }
+    // на основании имеющихся строим луч в трехмерном пространстве
+}
