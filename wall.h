@@ -1,16 +1,24 @@
 #ifndef WALL_H
 #define WALL_H
 
+#include <vector>
 #include <stack>
 #include <iostream>
 #include <QObject>
 #include <QComboBox>
 
-struct CylinderValues {
+struct RandomValues {
+    int index;
     double height;
     double fi;
     double teta;
     double gamma;
+    double point;
+};
+
+struct Coeficients {
+    int CylinderCoef;
+    int DiskCoef;
 };
 
 class Wall: public QObject {
@@ -24,7 +32,7 @@ public:
     static double coordinateZ;
     const QString name = "Wall";
     Wall();
-    ~Wall();
+    virtual ~Wall();
     friend double GeneratorMonteCarlo();
 };
 
@@ -35,7 +43,8 @@ public:
     double radiusOutside;
     Disk(double radiusOutside, double radiusInside); // объявляем конструктор
     ~Disk(); // объявляем деструктор
-    const QString name;
+    const QString name = "Disk";
+    int index;
 };
 
 
@@ -48,7 +57,8 @@ public:
     double Height;
     Сylinder(double radiusOutside, double height);
     ~Сylinder();
-    const QString name;
+    const QString name = "Cylinder";
+    int index;
 };
 
 template <typename T>
@@ -84,10 +94,23 @@ public:
   }
 };
 
+
 double GeneratorMonteCarlo_Height();
 double GeneratorMonteCarlo_Fi();
 double GeneratorMonteCarlo_Teta();
 double GeneratorMonteCarlo_Gamma();
-CylinderValues GeneratorMonteCarlo_Cylinder();
+RandomValues GeneratorMonteCarlo_Cylinder();
+
+int GeneratorMonteCarlo_index();
+void LookDiskIndexes();
+double GeneratorMonteCarlo_Point(int index);
+RandomValues GeneratorMonteCarlo_Disk();
+
+RandomValues PlaceForMolecul();
+
+double CylindersArea();
+double DiskArea();
+Coeficients Distribution();
+
 
 #endif // WALL_H

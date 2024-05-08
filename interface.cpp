@@ -6,6 +6,7 @@
 #include "exception.h"
 
 Stack<Wall> stack;
+QVector<Wall*> vector;
 
 
 Interface::Interface() {
@@ -91,17 +92,17 @@ void Interface::readingValues()
         if (selected_text == "Cylinder") {
             Сylinder* cylinder = new Сylinder(val2, val1);
             stack.push(cylinder);
+            vector.push_back(cylinder);
             qDebug() << "Cylinder" << Qt::endl;
         } else if (selected_text == "Disk") {
             Disk* disk = new Disk(val1, val2);
             stack.push(disk);
+            vector.push_back(disk);
             qDebug() << "Disk" << Qt::endl;
         } else {
             throw IncorrectFigure();
         }
-    } else {
-        throw IncorrectFigure();
-        }
+    }
 }
 
 bool Interface::isBuildingCorrectly(const double val1, const double val2, const QString selected_text) {
