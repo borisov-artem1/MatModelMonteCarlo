@@ -17,14 +17,14 @@ Wall::~Wall() {
     // деструктор Wall
 }
 
-Disk::Disk(double radiusOutside, double radiusInside): radiusInside(radiusInside), radiusOutside(radiusOutside) {
+Disk::Disk(double radiusOutside, double radiusInside): radiusInside(radiusInside), radiusOutside(radiusOutside), name("Disk") {
     indexNumber++;
 }
 
 Disk::~Disk() {
 }
 
-Сylinder::Сylinder(double radiusOutside, double height): Height(height), radiusOutside(radiusOutside) {
+Сylinder::Сylinder(double radiusOutside, double height): Height(height), radiusOutside(radiusOutside), name("Cylinder") {
     indexNumber++;
     coordinateZ += Height;
 }

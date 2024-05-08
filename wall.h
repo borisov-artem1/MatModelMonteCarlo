@@ -13,8 +13,9 @@ struct CylinderValues {
     double gamma;
 };
 
-class Wall {
+class Wall: public QObject {
 
+    Q_OBJECT
 public:
     double radiusInside;
     double radiusOutside;
@@ -34,7 +35,7 @@ public:
     double radiusOutside;
     Disk(double radiusOutside, double radiusInside); // объявляем конструктор
     ~Disk(); // объявляем деструктор
-    const QString name = "Disk";
+    const QString name;
 };
 
 
@@ -47,7 +48,7 @@ public:
     double Height;
     Сylinder(double radiusOutside, double height);
     ~Сylinder();
-    const QString name = "Cylinder";
+    const QString name;
 };
 
 template <typename T>
@@ -55,8 +56,12 @@ class Stack {
 private:
   std::stack<T*> elements;
 public:
-  void push( T* value){
+  void push(T* value){
       elements.push(value);
+  }
+
+  std::size_t Size() {
+      return elements.size();
   }
 
   T* top() const {

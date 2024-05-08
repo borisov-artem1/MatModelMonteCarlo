@@ -13,6 +13,7 @@ class Interface: public QWidget {
 public:
     Interface();
     QComboBox* dropdown = new QComboBox();
+    bool isBuildingCorrectly(double val1, double val2, QString selected_text);
 
 private:
 
@@ -27,10 +28,8 @@ private:
 
 private slots:
     void contactingTheUser();
-    bool isBuildingCorrectly(double val1, double val2, QString selected_text);
-
-public slots:
     void readingValues();
+
 };
 
 

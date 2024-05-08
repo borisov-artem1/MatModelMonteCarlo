@@ -7,6 +7,7 @@
 
 Stack<Wall> stack;
 
+
 Interface::Interface() {
 
 
@@ -66,7 +67,7 @@ Interface::Interface() {
 
 
     connect(create, SIGNAL(clicked), this, SLOT(Interface::readingValues));
-    connect(create, &QPushButton::clicked, this, &Interface::readingValues);
+
 
 }
 
@@ -75,7 +76,8 @@ Interface::Interface() {
 //и экземпляр какого класса добавлять
 void Interface::readingValues()
 {
-
+    Сylinder* cylinder = new Сylinder(12, 12);
+    stack.push(cylinder);
     int index = dropdown->currentIndex();
     bool ok1, ok2;
     double val1 = m_first_display_up->text().toDouble(&ok1);
@@ -87,7 +89,7 @@ void Interface::readingValues()
 
     if (isBuildingCorrectly(val1, val2, selected_text)) {
         if (selected_text == "Cylinder") {
-            Сylinder* cylinder = new Сylinder(val1, val2);
+            Сylinder* cylinder = new Сylinder(val2, val1);
             stack.push(cylinder);
             qDebug() << "Cylinder" << Qt::endl;
         } else if (selected_text == "Disk") {
@@ -106,9 +108,15 @@ bool Interface::isBuildingCorrectly(const double val1, const double val2, const 
     if (val1 < 0 || val2 < 0) {
         return false;
     }
+    if (selected_text == "Disk" && val1 < val2) {
+        return false;
+    }
+    if (stack.Size() == 0) {
+        return true;
+    }
     QString name = stack.top()->name;
     if (name == "Cylinder") {
-        if ((selected_text == "Cylinder" && val1 == stack.top()->radiusOutside) ||
+        if ((selected_text == "Cylinder" && val2 == stack.top()->radiusOutside) ||
                 (selected_text == "Disk" && val1 == stack.top()->radiusOutside) ||
                 (selected_text == "Disk" && val2 == stack.top()->radiusInside)) {
             return true;
@@ -116,7 +124,7 @@ bool Interface::isBuildingCorrectly(const double val1, const double val2, const 
             return false;
         }
     } else if (name == "Disk") {
-        if (selected_text == "Cylinder" && (val1 == stack.top()->radiusInside || val1 == stack.top()->radiusOutside)) {
+        if (selected_text == "Cylinder" && (val2 == stack.top()->radiusInside || val2 == stack.top()->radiusOutside)) {
             return true;
         } else {
             return false;
