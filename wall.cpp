@@ -21,8 +21,9 @@ Wall::~Wall() {
     // деструктор Wall
 }
 
-Disk::Disk(double radiusOutside, double radiusInside): radiusInside(radiusInside), radiusOutside(radiusOutside), name("Disk") {
+Disk::Disk(double radiusOutside, double radiusInside): radiusInside(radiusInside), radiusOutside(radiusOutside) {
     indexNumber++;
+    name = "Disk";
 }
 
 Disk::~Disk() {
@@ -32,6 +33,7 @@ Disk::~Disk() {
 
 Сylinder::Сylinder(double radiusOutside, double height): radiusOutside(radiusOutside), Height(height) {
     index = indexNumber;
+    name = "Cylinder";
     coordinateZ += Height;
 }
 
@@ -158,7 +160,7 @@ double Generator::DiskArea()
             if (disk && disk->name == "Disk") {
                 double radiusInside = disk->radiusInside;
                 double radiusOutside = disk->radiusOutside;
-                area+=2*PI*(pow(radiusOutside,2)-pow(radiusInside,2));
+                area += 2 * PI * (pow(radiusOutside, 2) - pow(radiusInside, 2));
             }
         }
     return area;
@@ -201,4 +203,5 @@ void Generator::FlightMolecule(bool flag)
         initialСoordinates = generator.GeneratorMonteCarlo_Cylinder();
     }
     // на основании имеющихся строим луч в трехмерном пространстве
+
 }
