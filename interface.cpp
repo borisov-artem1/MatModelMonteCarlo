@@ -3,10 +3,12 @@
 #include "button.h"
 #include "wall.h"
 #include <QDebug>
+#include <QMessageBox>
 #include "exception.h"
 
-Stack<Wall> stack;
+std::stack<Wall*> stack;
 QVector<Wall*> vector;
+
 
 
 Interface::Interface() {
@@ -70,21 +72,27 @@ Interface::Interface() {
 
 }
 
+//ErrorWindow::ErrorWindow(QWidget* parent): QDialog(parent) {}
+
+
 //данная функция считывает данные со строчек ввода и
 //в зависимости от того какой "сurrent index" выбирает куда записывать эти данные
 //и экземпляр какого класса добавлять
 void Interface::readingValues()
 {
+    QWidget windowError;
+    windowError.move(300, 300);
     int index = dropdown->currentIndex();
     bool ok1, ok2;
     double val1 = m_first_display_up->text().toDouble(&ok1);
     double val2 = m_first_display_down->text().toDouble(&ok2);
     if (!ok1 || !ok2) {
-        throw InvalidDisplayInput();
+        QMessageBox::critical(&windowError, "Error", "Empty line edit");
+        return;
     }
     QString selected_text = dropdown->itemText(index);
 
-    if (isBuildingCorrectly(val1, val2, selected_text)) {
+    if (isBuildingCorrectly(val1, val2, selected_text, windowError)) {
         if (selected_text == "Cylinder") {
             Сylinder* cylinder = new Сylinder(val2, val1);
             stack.push(cylinder);
@@ -96,37 +104,52 @@ void Interface::readingValues()
             vector.push_back(disk);
             qDebug() << "Disk" << Qt::endl;
         } else {
-            throw IncorrectFigure();
+            QMessageBox::critical(&windowError, "Error", selected_text + "is incorrect figure");
         }
     }
 }
 
-bool Interface::isBuildingCorrectly(const double val1, const double val2, const QString selected_text) {
+bool Interface::isBuildingCorrectly(const double val1, const double val2, const QString selected_text, QWidget &windowError) {
+    //QWidget windowError;
     if (val1 < 0 || val2 < 0) {
+        QMessageBox::critical(&windowError, "Error", "Input value is negative");
         return false;
     }
     if (selected_text == "Disk" && val1 < val2) {
+        QMessageBox::critical(&windowError, "Error", "Invalid input value");
         return false;
     }
-    if (stack.Size() == 0) {
+    if (stack.size() == 0) {
         return true;
     }
+
+/*
+    Wall* top = stack.top();
+    qDebug() << top->name << " " << top->Height << " " << top->radiusOutside;
+    double rad_out = stack.top()->radiusOutside;
+    double rad_in = stack.top()->radiusInside;
+    double heigt = stack.top()->Height;
+    qDebug() << rad_out << " " << rad_in << " " << heigt << Qt::endl;
+*/
     QString name = stack.top()->name;
     if (name == "Cylinder") {
-        if ((selected_text == "Cylinder" && val2 == stack.top()->radiusOutside) ||
-                (selected_text == "Disk" && val1 == stack.top()->radiusOutside) ||
-                (selected_text == "Disk" && val2 == stack.top()->radiusInside)) {
-            return true;
+        if ((selected_text == "Cylinder" && val1 == (stack.top()->radiusOutside)) ||
+            (selected_text == "Disk" && val1 == (stack.top()->radiusOutside)) ||
+            (selected_text == "Disk" && val2 == (stack.top()->radiusInside))) {
+               return true;
         } else {
-            return false;
+               QMessageBox::critical(&windowError, "Error", "Invalid figure or parametr");
+               return false;
         }
     } else if (name == "Disk") {
         if (selected_text == "Cylinder" && (val1 == stack.top()->radiusInside || val1 == stack.top()->radiusOutside)) {
             return true;
         } else {
+            QMessageBox::critical(&windowError, "Error", "Invalid figure or parametr");
             return false;
         }
     } else {
+        QMessageBox::critical(&windowError, "Error", "Invalid figure");
         return false;
     }
 }

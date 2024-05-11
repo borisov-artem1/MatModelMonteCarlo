@@ -5,6 +5,8 @@
 #include <QLineEdit>
 #include <QLabel>
 #include <QComboBox>
+#include <QMainWindow>
+#include <QDialog>
 #include "button.h"
 
 class Interface: public QWidget {
@@ -13,7 +15,7 @@ class Interface: public QWidget {
 public:
     Interface();
     QComboBox* dropdown = new QComboBox();
-    bool isBuildingCorrectly(double val1, double val2, QString selected_text);
+    bool isBuildingCorrectly(double val1, double val2, QString selected_text, QWidget& windowError);
 
 private:
 
@@ -31,6 +33,14 @@ private slots:
     void readingValues();
 
 };
+
+class ErrorWindow: public QDialog {
+public:
+    ErrorWindow(QWidget* parent);
+};
+
+
+
 
 
 

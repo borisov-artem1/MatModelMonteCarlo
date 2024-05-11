@@ -30,7 +30,7 @@ public:
     double Height;
     static int indexNumber;
     static double coordinateZ;
-    const QString name = "Wall";
+    QString name = "Wall";
     Wall();
     virtual ~Wall();
     friend double GeneratorMonteCarlo();
@@ -43,7 +43,7 @@ public:
     double radiusOutside;
     Disk(double radiusOutside, double radiusInside); // объявляем конструктор
     ~Disk(); // объявляем деструктор
-    const QString name = "Disk";
+    //const QString name = "Disk";
     int index;
 };
 
@@ -57,7 +57,7 @@ public:
     double Height;
     Сylinder(double radiusOutside, double height);
     ~Сylinder();
-    const QString name = "Cylinder";
+    //const QString name = "Cylinder";
     int index;
 };
 
@@ -66,6 +66,7 @@ class Stack {
 private:
   std::stack<T*> elements;
 public:
+  Stack();
   void push(T* value){
       elements.push(value);
   }
