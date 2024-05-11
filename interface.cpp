@@ -11,14 +11,12 @@ QVector<Wall*> vector;
 
 Interface::Interface() {
 
-
     m_first_display_up   = new QLineEdit;
     m_first_display_down = new QLineEdit;
 
     m_figure       = new QLabel;
     m_first_label  = new QLabel;
     m_second_label = new QLabel;
-
 
     m_first_display_up->setMaxLength(15);
     m_first_display_down->setMaxLength(15);
@@ -77,8 +75,6 @@ Interface::Interface() {
 //и экземпляр какого класса добавлять
 void Interface::readingValues()
 {
-    Сylinder* cylinder = new Сylinder(12, 12);
-    stack.push(cylinder);
     int index = dropdown->currentIndex();
     bool ok1, ok2;
     double val1 = m_first_display_up->text().toDouble(&ok1);
@@ -125,7 +121,7 @@ bool Interface::isBuildingCorrectly(const double val1, const double val2, const 
             return false;
         }
     } else if (name == "Disk") {
-        if (selected_text == "Cylinder" && (val2 == stack.top()->radiusInside || val2 == stack.top()->radiusOutside)) {
+        if (selected_text == "Cylinder" && (val1 == stack.top()->radiusInside || val1 == stack.top()->radiusOutside)) {
             return true;
         } else {
             return false;
