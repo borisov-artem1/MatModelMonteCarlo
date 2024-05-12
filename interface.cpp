@@ -109,7 +109,7 @@ void Interface::readingValues()
     }
 }
 
-bool Interface::isBuildingCorrectly(const double val1, const double val2, const QString selected_text, QWidget &windowError) {
+bool Interface::isBuildingCorrectly(double val1, double val2, const QString selected_text, QWidget &windowError) {
     //QWidget windowError;
     if (val1 < 0 || val2 < 0) {
         QMessageBox::critical(&windowError, "Error", "Input value is negative");
@@ -123,26 +123,24 @@ bool Interface::isBuildingCorrectly(const double val1, const double val2, const 
         return true;
     }
 
-/*
-    Wall* top = stack.top();
-    qDebug() << top->name << " " << top->Height << " " << top->radiusOutside;
-    double rad_out = stack.top()->radiusOutside;
-    double rad_in = stack.top()->radiusInside;
-    double heigt = stack.top()->Height;
-    qDebug() << rad_out << " " << rad_in << " " << heigt << Qt::endl;
-*/
     QString name = stack.top()->name;
+    Wall* topWall = stack.top();
     if (name == "Cylinder") {
-        if ((selected_text == "Cylinder" && val1 == (stack.top()->radiusOutside)) ||
-            (selected_text == "Disk" && val1 == (stack.top()->radiusOutside)) ||
-            (selected_text == "Disk" && val2 == (stack.top()->radiusInside))) {
+        Сylinder* cylinder = dynamic_cast<Сylinder*>(topWall);
+        bool a1 = selected_text == "Cylinder";
+        bool a2 = val2 == cylinder->radiusOutsideCylinder;
+        if (a1 && a2) {
+            return true;
+        } else if ((selected_text == "Disk" && val1 == cylinder->radiusOutsideCylinder) ||
+            (selected_text == "Disk" && val2 == cylinder->radiusOutsideCylinder)) {
                return true;
         } else {
                QMessageBox::critical(&windowError, "Error", "Invalid figure or parametr");
                return false;
         }
     } else if (name == "Disk") {
-        if (selected_text == "Cylinder" && (val1 == stack.top()->radiusInside || val1 == stack.top()->radiusOutside)) {
+        Disk* disk = dynamic_cast<Disk*>(topWall);
+        if (selected_text == "Cylinder" && (val1 == disk->radiusInsideDisk || val1 == disk->radiusOutsideDisk)) {
             return true;
         } else {
             QMessageBox::critical(&windowError, "Error", "Invalid figure or parametr");

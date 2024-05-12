@@ -21,7 +21,7 @@ Wall::~Wall() {
     // деструктор Wall
 }
 
-Disk::Disk(double radiusOutside, double radiusInside): radiusInside(radiusInside), radiusOutside(radiusOutside) {
+Disk::Disk(double radiusOutside, double radiusInside): radiusInsideDisk(radiusInside), radiusOutsideDisk(radiusOutside) {
     indexNumber++;
     name = "Disk";
 }
@@ -31,7 +31,7 @@ Disk::~Disk() {
 }
 
 
-Сylinder::Сylinder(double radiusOutside, double height): radiusOutside(radiusOutside), Height(height) {
+Сylinder::Сylinder(double radiusOutside, double height): radiusOutsideCylinder(radiusOutside), Height(height) {
     index = indexNumber;
     name = "Cylinder";
     coordinateZ += Height;
@@ -118,8 +118,10 @@ int Generator::GeneratorMonteCarlo_index()
 
 double Generator::GeneratorMonteCarlo_Point(int index)
 {
-    int firstPoint = vector[index]->radiusInside;
-    int twicePoint = vector[index]->radiusOutside;
+    Wall* topWall = vector[index];
+    Disk* disk = dynamic_cast<Disk*>(topWall);
+    int firstPoint = disk->radiusInsideDisk;
+    int twicePoint = disk->radiusOutsideDisk;
     // Создаем генератор случайных чисел
     std::random_device rd;
     std::mt19937 gen(rd());
@@ -145,7 +147,7 @@ double Generator::CylindersArea()
             Сylinder* cylinder = dynamic_cast<Сylinder*>(wall); // Попытка приведения типа
             if (cylinder && cylinder->name == "Сylinder") {
                 double height = cylinder->Height;
-                double radius = cylinder->radiusOutside;
+                double radius = cylinder->radiusOutsideCylinder;
                 area+=height*2*PI*radius;
             }
         }
@@ -158,8 +160,8 @@ double Generator::DiskArea()
     for (Wall* wall : vector) {
             Disk* disk = dynamic_cast<Disk*>(wall); // Попытка приведения типа
             if (disk && disk->name == "Disk") {
-                double radiusInside = disk->radiusInside;
-                double radiusOutside = disk->radiusOutside;
+                double radiusInside = disk->radiusInsideDisk;
+                double radiusOutside = disk->radiusOutsideDisk;
                 area += 2 * PI * (pow(radiusOutside, 2) - pow(radiusInside, 2));
             }
         }

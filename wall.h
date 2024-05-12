@@ -25,9 +25,6 @@ class Wall: public QObject {
 
     Q_OBJECT
 public:
-    double radiusInside;
-    double radiusOutside;
-    double Height;
     static int indexNumber;
     static double coordinateZ;
     QString name = "Wall";
@@ -39,8 +36,8 @@ public:
 class Disk : public Wall {
 
 public:
-    double radiusInside;
-    double radiusOutside;
+    double radiusInsideDisk;
+    double radiusOutsideDisk;
     Disk(double radiusOutside, double radiusInside); // объявляем конструктор
     ~Disk(); // объявляем деструктор
     //const QString name = "Disk";
@@ -53,7 +50,7 @@ class Сylinder : public Wall {
 
 public:
 
-    double radiusOutside;
+    double radiusOutsideCylinder;
     double Height;
     Сylinder(double radiusOutside, double height);
     ~Сylinder();
