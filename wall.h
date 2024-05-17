@@ -117,9 +117,9 @@ class Generator {
     double DiskArea();
     Coeficients Distribution();
 
-    Coordinates FlightMolecule(Coordinates coordinates);
-    Coordinates FlyghtMoleculeCylinder(Coordinates coordinates);
-    Coordinates FlyghtMoleculeDisk(Coordinates coordinates);
+    Coordinates FlightMolecule(RandomValues coordinates);
+    Coordinates FlyghtMoleculeCylinder(RandomValues coordinates, int i);
+    Coordinates FlyghtMoleculeDisk(RandomValues coordinates, int i);
     int Core(int countMoleculs, int iteration);
 
     bool isMoleculeExit(Coordinates coordinates);

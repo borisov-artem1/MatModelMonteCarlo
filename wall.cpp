@@ -182,17 +182,18 @@ int Generator::Core(int countMoleculs, int iteration)
 {
     int exitMolecules = 0;
     Coeficients coeficionts;
-    Coeficients NewCoordinates;
+    Coordinates NewCoordinates;
+    RandomValues randomValues;
     coeficionts = generator.Distribution();
     coeficionts.DiskCoef = generator.Distribution().DiskCoef;
     coeficionts.CylinderCoef = generator.Distribution().CylinderCoef;
     for (int i = 0; i <= countMoleculs* coeficionts.CylinderCoef;i++)
     {
-        coeficionts = generator.GeneratorMonteCarlo_Cylinder();//написать перегрузку для функции
+        randomValues = generator.GeneratorMonteCarlo_Cylinder();//написать перегрузку для функции
         int j = 0;
         while (j < iteration)
         {
-            NewCoordinates = FlightMolecule(coeficionts);//то же самое
+            NewCoordinates = FlightMolecule(randomValues);//то же самое
             if (isMoleculeExit(NewCoordinates)){
                 exitMolecules++;
                 break;
@@ -203,13 +204,13 @@ int Generator::Core(int countMoleculs, int iteration)
     }
     for (int i = 0; i <= countMoleculs*coeficionts.DiskCoef; i++)
     {
-        coeficionts = generator.GeneratorMonteCarlo_Disk();//написать перегрузку для функции
+        randomValues = generator.GeneratorMonteCarlo_Disk();//написать перегрузку для функции
         int j = 0;
         while (j < iteration)
         {
-            NewCoordinates = FlightMolecule(coeficionts);//то же самое
+            NewCoordinates = FlightMolecule(randomValues);//то же самое
             if (isMoleculeExit(NewCoordinates)){
-                exitMolecules++;
+               exitMolecules++;
                 break;
             } else {
                 j++;
@@ -220,18 +221,18 @@ int Generator::Core(int countMoleculs, int iteration)
     return exitMolecules;
 }//поменять потом функцию, тут как бы идёт добавление, а нужно сделать функцию, в которую передавать указатели на разные функции.
 
-Coordinates Generator::FlightMolecule(Coordinates)
+Coordinates Generator::FlightMolecule(RandomValues coordinates)
 {   Coordinates NewCoordinates;
-    for (int i = 0; i < vector.size(); i++){
+    for (int i = 0; i < vector.size(); i++){//
         if (vector[i]->name == "Disk") {
-            NewCoordinates = FlyghtMoleculeDisk(NewCoordinates);
+            NewCoordinates = FlyghtMoleculeDisk(coordinates, i);
             if (NewCoordinates.x == 444.444) {
                 continue;
             } else {
                 return NewCoordinates;
             }
         } else {
-            NewCoordinates = FlyghtMoleculeCylinder(NewCoordinates);
+            NewCoordinates = FlyghtMoleculeCylinder(coordinates, i);
             if (NewCoordinates.x == 444.444) {
                 continue;
             } else {
