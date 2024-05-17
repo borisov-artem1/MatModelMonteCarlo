@@ -21,6 +21,12 @@ struct Coeficients {
     int DiskCoef;
 };
 
+struct Coordinates {
+    double x;
+    double y;
+    double z;
+};
+
 class Wall: public QObject {
 
     Q_OBJECT
@@ -111,8 +117,12 @@ class Generator {
     double DiskArea();
     Coeficients Distribution();
 
-    void FlightMolecule(bool Disk);
+    Coordinates FlightMolecule(Coordinates coordinates);
+    Coordinates FlyghtMoleculeCylinder(Coordinates coordinates);
+    Coordinates FlyghtMoleculeDisk(Coordinates coordinates);
     int Core(int countMoleculs, int iteration);
+
+    bool isMoleculeExit(Coordinates coordinates);
 };
 
 #endif // WALL_H

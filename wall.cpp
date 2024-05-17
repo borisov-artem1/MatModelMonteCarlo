@@ -182,27 +182,62 @@ int Generator::Core(int countMoleculs, int iteration)
 {
     int exitMolecules = 0;
     Coeficients coeficionts;
+    Coeficients NewCoordinates;
     coeficionts = generator.Distribution();
     coeficionts.DiskCoef = generator.Distribution().DiskCoef;
     coeficionts.CylinderCoef = generator.Distribution().CylinderCoef;
-    for (int i = 0; i <= countMoleculs* coeficionts.DiskCoef;i++)
+    for (int i = 0; i <= countMoleculs* coeficionts.CylinderCoef;i++)
     {
-        generator.FlightMolecule(false);
+        coeficionts = generator.GeneratorMonteCarlo_Cylinder();//написать перегрузку для функции
+        int j = 0;
+        while (j < iteration)
+        {
+            NewCoordinates = FlightMolecule(coeficionts);//то же самое
+            if (isMoleculeExit(NewCoordinates)){
+                exitMolecules++;
+                break;
+            } else {
+                j++;
+            }
+        }
     }
-    for (int i = 0; i <= countMoleculs*coeficionts.CylinderCoef; i++)
+    for (int i = 0; i <= countMoleculs*coeficionts.DiskCoef; i++)
     {
-        generator.FlightMolecule(true);
+        coeficionts = generator.GeneratorMonteCarlo_Disk();//написать перегрузку для функции
+        int j = 0;
+        while (j < iteration)
+        {
+            NewCoordinates = FlightMolecule(coeficionts);//то же самое
+            if (isMoleculeExit(NewCoordinates)){
+                exitMolecules++;
+                break;
+            } else {
+                j++;
+            }
+        }
+
     }
     return exitMolecules;
-}
+}//поменять потом функцию, тут как бы идёт добавление, а нужно сделать функцию, в которую передавать указатели на разные функции.
 
-void Generator::FlightMolecule(bool flag)
-{
-    RandomValues initialСoordinates;
-    if (flag) {
-        initialСoordinates = generator.GeneratorMonteCarlo_Disk();
-    } else {
-        initialСoordinates = generator.GeneratorMonteCarlo_Cylinder();
+Coordinates Generator::FlightMolecule(Coordinates)
+{   Coordinates NewCoordinates;
+    for (int i = 0; i < vector.size(); i++){
+        if (vector[i]->name == "Disk") {
+            NewCoordinates = FlyghtMoleculeDisk(NewCoordinates);
+            if (NewCoordinates.x == 444.444) {
+                continue;
+            } else {
+                return NewCoordinates;
+            }
+        } else {
+            NewCoordinates = FlyghtMoleculeCylinder(NewCoordinates);
+            if (NewCoordinates.x == 444.444) {
+                continue;
+            } else {
+                return NewCoordinates;
+            }
+        }
     }
     // на основании имеющихся строим луч в трехмерном пространстве
 
