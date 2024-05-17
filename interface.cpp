@@ -82,6 +82,10 @@ Interface::Interface() {
 //и экземпляр какого класса добавлять
 void Interface::readingValues()
 {
+    Сylinder* cylinder = new Сylinder(12, 12);
+    stack.push(cylinder);
+    Сylinder* c = new Сylinder(12, 12);
+    stack.push(c);
     QWidget windowError;
     windowError.move(300, 300);
     int index = dropdown->currentIndex();
@@ -125,14 +129,11 @@ bool Interface::isBuildingCorrectly(const double val1, const double val2, const 
         return true;
     }
 
-/*
-    Wall* top = stack.top();
-    qDebug() << top->name << " " << top->Height << " " << top->radiusOutside;
     double rad_out = stack.top()->radiusOutside;
     double rad_in = stack.top()->radiusInside;
     double heigt = stack.top()->Height;
     qDebug() << rad_out << " " << rad_in << " " << heigt << Qt::endl;
-*/
+
     QString name = stack.top()->name;
     if (name == "Cylinder") {
         if ((selected_text == "Cylinder" && val1 == (stack.top()->radiusOutside)) ||

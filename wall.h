@@ -16,6 +16,17 @@ struct RandomValues {
     double point = 0;
 };
 
+struct pointOfIntersection {
+    double x;
+    double y;
+    double z;
+};
+
+struct findingCylinder {
+    int index;
+    double diff;
+};
+
 struct Coeficients {
     int CylinderCoef;
     int DiskCoef;
@@ -113,8 +124,12 @@ class Generator {
     double CylindersArea();
     double DiskArea();
     Coeficients Distribution();
+    findingCylinder FindCylinderIndex(double height);
 
-    void FlightMolecule(bool Disk);
+    std::vector<pointOfIntersection> IntersectionSearch(Wall* wall);
+
+    bool FlightMolecule_Cylinder(pointOfIntersection& point1, pointOfIntersection& point2);
+    bool FlightMolecule_Disk();
     int Core(int countMoleculs, int iteration);
 };
 
