@@ -8,7 +8,7 @@
 
 std::stack<Wall*> stack;
 QVector<Wall*> vector;
-
+Generator generator;
 
 
 Interface::Interface() {
@@ -102,11 +102,13 @@ void Interface::readingValues()
             Disk* disk = new Disk(val1, val2);
             stack.push(disk);
             vector.push_back(disk);
+
             qDebug() << "Disk" << Qt::endl;
         } else {
             QMessageBox::critical(&windowError, "Error", selected_text + "is incorrect figure");
         }
     }
+    generator.CreatingPortal();
 }
 
 bool Interface::isBuildingCorrectly(double val1, double val2, const QString selected_text, QWidget &windowError) {
@@ -154,6 +156,22 @@ bool Interface::isBuildingCorrectly(double val1, double val2, const QString sele
 
 void Interface::contactingTheUser() {
 
+}
+
+bool Generator::CreatingPortal()
+{
+    if (vector[1]->name == "Cylinder")
+    {
+        Сylinder* cylinder = dynamic_cast<Сylinder *>(vector[1]);
+        Disk* disk = new Disk(cylinder->radiusOutsideCylinder, 0);
+        vector.push_front(disk);
+    }
+    if (vector.back()->name == "Cylinder")
+    {
+        Сylinder* cylinder = dynamic_cast<Сylinder *>(vector.back());
+        Disk* disk = new Disk(cylinder->radiusOutsideCylinder, 0);
+        vector.push_back(disk);
+    }
 }
 
 

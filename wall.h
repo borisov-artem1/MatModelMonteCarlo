@@ -48,6 +48,7 @@ public:
     ~Disk(); // объявляем деструктор
     //const QString name = "Disk";
     int index;
+    bool portal;
 };
 
 
@@ -123,6 +124,7 @@ class Generator {
     int Core(int countMoleculs, int iteration);
 
     bool isMoleculeExit(Coordinates coordinates);
+    bool CreatingPortal();
 };
 
 #endif // WALL_H
