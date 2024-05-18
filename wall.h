@@ -49,6 +49,7 @@ public:
     //const QString name = "Disk";
     int index;
     bool portal;
+    bool down;
 };
 
 
@@ -124,7 +125,8 @@ class Generator {
     int Core(int countMoleculs, int iteration);
 
     bool isMoleculeExit(Coordinates coordinates);
-    bool CreatingPortal();
+    void CreatingPortal();
+    bool DownOrUp(int count);
 };
 
 #endif // WALL_H

@@ -241,5 +241,9 @@ Coordinates Generator::FlightMolecule(RandomValues coordinates)
         }
     }
     // на основании имеющихся строим луч в трехмерном пространстве
+}
+
+bool Generator::isMoleculeExit(Coordinates coordinates)
+{
 
 }
