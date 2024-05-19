@@ -199,16 +199,16 @@ void Generator::DownOrUp(int count)
     if (count == 0){
         Disk* disk = dynamic_cast<Disk *>(vector[count]);
         if (disk != nullptr) {
-            disk->down = false;
+            disk->location = false;
         }
     }
     Сylinder* previousCylinder = dynamic_cast<Сylinder *>(vector[count-1]);
     Disk* disk = dynamic_cast<Disk*>(vector[count]);
     if (previousCylinder != nullptr) {
         if (disk->radiusInsideDisk == previousCylinder->radiusOutsideCylinder){
-            disk->down = false;
+            disk->location = false;
         } else {
-            disk->down = true;
+            disk->location = true;
         }
     }
 }

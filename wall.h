@@ -68,7 +68,6 @@ public:
     int index;
     bool portal;
     bool location; // true если сверху, false если снизу, мои изменения
-    bool down;
 };
 
 
@@ -157,7 +156,7 @@ class Generator {
 
     bool isMoleculeExit(Coordinates coordinates);
     void CreatingPortal();
-    bool DownOrUp(int count);
+    void DownOrUp(int count);
 };
 
 #endif // WALL_H
