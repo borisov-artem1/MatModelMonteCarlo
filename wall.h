@@ -67,7 +67,8 @@ public:
     //const QString name = "Disk";
     int index;
     bool portal;
-    bool location; // true если сверху, false если снизу
+    bool location; // true если сверху, false если снизу, мои изменения
+    bool down;
 };
 
 
@@ -148,9 +149,15 @@ class Generator {
     Coordinates FlightMoleculeCylinder(Coordinates coordinates, int i);
     Coordinates FlightMoleculeDisk(Coordinates coordinates, int i);
 
+    //Coordinates FlightMolecule(RandomValues coordinates);
+    //Coordinates FlyghtMoleculeCylinder(RandomValues coordinates, int i);
+    //Coordinates FlyghtMoleculeDisk(RandomValues coordinates, int i);
+
     int Core(int countMoleculs, int iteration);
 
     bool isMoleculeExit(Coordinates coordinates);
+    void CreatingPortal();
+    bool DownOrUp(int count);
 };
 
 #endif // WALL_H

@@ -8,7 +8,7 @@
 
 std::stack<Wall*> stack;
 QVector<Wall*> vector;
-
+Generator generator;
 
 
 Interface::Interface() {
@@ -88,6 +88,7 @@ void Interface::readingValues()
     windowError.move(300, 300);
     int index = dropdown->currentIndex();
     bool ok1, ok2;
+    int count = -1;
     double val1 = m_first_display_up->text().toDouble(&ok1);
     double val2 = m_first_display_down->text().toDouble(&ok2);
     if (!ok1 || !ok2) {
@@ -103,9 +104,11 @@ void Interface::readingValues()
             Сylinder* cylinder = new Сylinder(val2, val1);
             stack.push(cylinder);
             vector.push_back(cylinder);
+            count++;
             qDebug() << "Cylinder" << Qt::endl;
         } else if (selected_text == "Disk") {
             Disk* disk = new Disk(val1, val2);
+            // здесь мои изменения
             if (vector.size() == 0) {
                 disk->location = true;
             } else {
@@ -118,11 +121,14 @@ void Interface::readingValues()
             }
             stack.push(disk);
             vector.push_back(disk);
+            count++;
+            generator.DownOrUp(count);
             qDebug() << "Disk" << Qt::endl;
         } else {
             QMessageBox::critical(&windowError, "Error", selected_text + "is incorrect figure");
         }
     }
+    generator.CreatingPortal();
 }
 
 bool Interface::isBuildingCorrectly(double val1, double val2, const QString selected_text, QWidget &windowError) {
@@ -171,5 +177,41 @@ bool Interface::isBuildingCorrectly(double val1, double val2, const QString sele
 void Interface::contactingTheUser() {
 
 }
+
+void Generator::CreatingPortal()
+{
+    if (vector[1]->name == "Cylinder")
+    {
+        Сylinder* cylinder = dynamic_cast<Сylinder *>(vector[1]);
+        Disk* disk = new Disk(cylinder->radiusOutsideCylinder, 0);
+        vector.push_front(disk);
+    }
+    if (vector.back()->name == "Cylinder")
+    {
+        Сylinder* cylinder = dynamic_cast<Сylinder *>(vector.back());
+        Disk* disk = new Disk(cylinder->radiusOutsideCylinder, 0);
+        vector.push_back(disk);
+    }
+}
+
+void Generator::DownOrUp(int count)
+{
+    if (count == 0){
+        Disk* disk = dynamic_cast<Disk *>(vector[count]);
+        if (disk != nullptr) {
+            disk->down = false;
+        }
+    }
+    Сylinder* previousCylinder = dynamic_cast<Сylinder *>(vector[count-1]);
+    Disk* disk = dynamic_cast<Disk*>(vector[count]);
+    if (previousCylinder != nullptr) {
+        if (disk->radiusInsideDisk == previousCylinder->radiusOutsideCylinder){
+            disk->down = false;
+        } else {
+            disk->down = true;
+        }
+    }
+}
+
 
 

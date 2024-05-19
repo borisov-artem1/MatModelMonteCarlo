@@ -248,7 +248,8 @@ int Generator::Core(int countMoleculs, int iteration)
             }
         }
     }
-    for (int i = 0; i <= countMoleculs * coeficionts.DiskCoef; ++i) {
+
+    for (int i = 0; i <= countMoleculs * coeficionts.DiskCoef; ++i) {// мои изменения!!!!!!!!!!!!
         rand = generator.GeneratorMonteCarlo_Disk(); //написать перегрузку для функции
         NewCoordinates = rand;
         int j = 0;
@@ -377,7 +378,7 @@ Coordinates Generator::FlightMolecule(Coordinates& NewCoordinates) {
                 return NewCoordinates;
             }
         } else {
-            NewCoordinates = FlightMoleculeCylinder(NewCoordinates);
+            NewCoordinates = FlightMoleculeCylinder(NewCoordinates, i);
             if (NewCoordinates.flag == NOT_FOUND) {
                 continue;
             } else {
@@ -479,6 +480,10 @@ bool Generator::FlightMolecule_Disk() {
     double p2 = sin((initialСoordinates.teta * PI) / 180) * sin((initialСoordinates.gamma * PI) / 180);
     double p3 = cos((initialСoordinates.teta * PI) / 180);
     // на основании имеющихся строим луч в трехмерном пространстве
+}
+
+bool Generator::isMoleculeExit(Coordinates coordinates)
+{
 
 }
 */
