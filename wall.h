@@ -7,13 +7,15 @@
 #include <QObject>
 #include <QComboBox>
 
+class Generator;
+
 struct RandomValues {
     int index = 0;
-    double height = 0;
+    double height = 0.;
     double fi;
     double teta;
     double gamma;
-    double point = 0;
+    double point = 0.;
 };
 
 struct pointOfIntersection {
@@ -32,13 +34,21 @@ struct Coeficients {
     int DiskCoef;
 };
 
+struct Coordinates {
+    Coordinates& operator=(const RandomValues& other);
+    int flag = 0;
+    double p1 = 0.;
+    double p2 = 0.;
+    double p3 = 0.;
+    double x;
+    double y;
+    double z;
+};
+
 class Wall: public QObject {
 
     Q_OBJECT
 public:
-    double radiusInside;
-    double radiusOutside;
-    double Height;
     static int indexNumber;
     static double coordinateZ;
     QString name = "Wall";
@@ -50,12 +60,14 @@ public:
 class Disk : public Wall {
 
 public:
-    double radiusInside;
-    double radiusOutside;
+    double radiusInsideDisk;
+    double radiusOutsideDisk;
     Disk(double radiusOutside, double radiusInside); // объявляем конструктор
     ~Disk(); // объявляем деструктор
     //const QString name = "Disk";
     int index;
+    bool portal;
+    bool location; // true если сверху, false если снизу
 };
 
 
@@ -64,7 +76,7 @@ class Сylinder : public Wall {
 
 public:
 
-    double radiusOutside;
+    double radiusOutsideCylinder;
     double Height;
     Сylinder(double radiusOutside, double height);
     ~Сylinder();
@@ -126,11 +138,19 @@ class Generator {
     Coeficients Distribution();
     findingCylinder FindCylinderIndex(double height);
 
+
     std::vector<pointOfIntersection> IntersectionSearch(Wall* wall);
 
     bool FlightMolecule_Cylinder(pointOfIntersection& point1, pointOfIntersection& point2);
     bool FlightMolecule_Disk();
+
+    Coordinates FlightMolecule(Coordinates& coordinates);
+    Coordinates FlightMoleculeCylinder(Coordinates coordinates, int i);
+    Coordinates FlightMoleculeDisk(Coordinates coordinates, int i);
+
     int Core(int countMoleculs, int iteration);
+
+    bool isMoleculeExit(Coordinates coordinates);
 };
 
 #endif // WALL_H

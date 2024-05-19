@@ -13,14 +13,12 @@ QVector<Wall*> vector;
 
 Interface::Interface() {
 
-
     m_first_display_up   = new QLineEdit;
     m_first_display_down = new QLineEdit;
 
     m_figure       = new QLabel;
     m_first_label  = new QLabel;
     m_second_label = new QLabel;
-
 
     m_first_display_up->setMaxLength(15);
     m_first_display_down->setMaxLength(15);
@@ -97,7 +95,9 @@ void Interface::readingValues()
         return;
     }
     QString selected_text = dropdown->itemText(index);
-
+/*
+при нажатии клавиши далее происходит добавление дисков-порталов
+в начало и конец модели там где это необходимо*/
     if (isBuildingCorrectly(val1, val2, selected_text, windowError)) {
         if (selected_text == "Cylinder") {
             Сylinder* cylinder = new Сylinder(val2, val1);
@@ -106,6 +106,16 @@ void Interface::readingValues()
             qDebug() << "Cylinder" << Qt::endl;
         } else if (selected_text == "Disk") {
             Disk* disk = new Disk(val1, val2);
+            if (vector.size() == 0) {
+                disk->location = true;
+            } else {
+                Сylinder* cylinder = dynamic_cast<Сylinder*>(vector[vector.size() - 1]);
+                if (cylinder->radiusOutsideCylinder == disk->radiusOutsideDisk) {
+                    disk->location = false;
+                } else {
+                    disk->location = true;
+                }
+            }
             stack.push(disk);
             vector.push_back(disk);
             qDebug() << "Disk" << Qt::endl;
@@ -115,7 +125,7 @@ void Interface::readingValues()
     }
 }
 
-bool Interface::isBuildingCorrectly(const double val1, const double val2, const QString selected_text, QWidget &windowError) {
+bool Interface::isBuildingCorrectly(double val1, double val2, const QString selected_text, QWidget &windowError) {
     //QWidget windowError;
     if (val1 < 0 || val2 < 0) {
         QMessageBox::critical(&windowError, "Error", "Input value is negative");
@@ -129,23 +139,24 @@ bool Interface::isBuildingCorrectly(const double val1, const double val2, const 
         return true;
     }
 
-    double rad_out = stack.top()->radiusOutside;
-    double rad_in = stack.top()->radiusInside;
-    double heigt = stack.top()->Height;
-    qDebug() << rad_out << " " << rad_in << " " << heigt << Qt::endl;
-
     QString name = stack.top()->name;
+    Wall* topWall = stack.top();
     if (name == "Cylinder") {
-        if ((selected_text == "Cylinder" && val1 == (stack.top()->radiusOutside)) ||
-            (selected_text == "Disk" && val1 == (stack.top()->radiusOutside)) ||
-            (selected_text == "Disk" && val2 == (stack.top()->radiusInside))) {
+        Сylinder* cylinder = dynamic_cast<Сylinder*>(topWall);
+        bool a1 = selected_text == "Cylinder";
+        bool a2 = val2 == cylinder->radiusOutsideCylinder;
+        if (a1 && a2) {
+            return true;
+        } else if ((selected_text == "Disk" && val1 == cylinder->radiusOutsideCylinder) ||
+            (selected_text == "Disk" && val2 == cylinder->radiusOutsideCylinder)) {
                return true;
         } else {
                QMessageBox::critical(&windowError, "Error", "Invalid figure or parametr");
                return false;
         }
     } else if (name == "Disk") {
-        if (selected_text == "Cylinder" && (val1 == stack.top()->radiusInside || val1 == stack.top()->radiusOutside)) {
+        Disk* disk = dynamic_cast<Disk*>(topWall);
+        if (selected_text == "Cylinder" && (val1 == disk->radiusInsideDisk || val1 == disk->radiusOutsideDisk)) {
             return true;
         } else {
             QMessageBox::critical(&windowError, "Error", "Invalid figure or parametr");
