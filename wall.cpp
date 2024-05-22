@@ -12,7 +12,7 @@ extern QVector<Wall*> vector;
 QVector<int> indexVector;
 double Wall::coordinateZ = 0;
 int Wall::indexNumber = 0;
-Generator generator;
+static Generator generator;
 
 Wall::Wall() {
     indexNumber++;
@@ -239,7 +239,7 @@ int Generator::Core(int countMoleculs, int iteration)
         NewCoordinates = rand;
         int j = 0;
         while (j < iteration) {
-            FlightMoleculeCylinder(NewCoordinates); //то же самое
+            FlightMoleculeCylinder(NewCoordinates, i); //то же самое
             if (isMoleculeExit(NewCoordinates)) {
                 exitMolecules++;
                 break;

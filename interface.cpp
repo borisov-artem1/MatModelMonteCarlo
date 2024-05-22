@@ -8,7 +8,7 @@
 
 std::stack<Wall*> stack;
 QVector<Wall*> vector;
-Generator generator;
+static Generator generator;
 
 
 Interface::Interface() {
@@ -33,6 +33,7 @@ Interface::Interface() {
 
 
     Button* create = new Button("Create", this);
+    Button* calculate = new Button("Calculate", this);
 
 
     dropdown->addItem("Cylinder");
@@ -47,6 +48,7 @@ Interface::Interface() {
     main_layout->addWidget(m_second_label,       2, 0, 1, 1);
     main_layout->addWidget(m_first_display_up,   1, 1, 1, 1);
     main_layout->addWidget(m_first_display_down, 2, 1, 1, 1);
+    main_layout->addWidget(calculate,            4, 0, 1, 2);
 
 
     connect(dropdown, QOverload<int>::of(&QComboBox::currentIndexChanged), [=](int index) {
@@ -63,17 +65,118 @@ Interface::Interface() {
     m_figure->setText("Choose your figure:");
     m_first_label->setText("Hight:");
     m_second_label->setText("Radius:");
-
     setWindowTitle("Creating figures");
 
 
-    connect(create, SIGNAL(clicked), this, SLOT(Interface::readingValues));
+    connect(calculate, &QPushButton::clicked, this, &Interface::preCalculate);
 
 
 }
 
-//ErrorWindow::ErrorWindow(QWidget* parent): QDialog(parent) {}
 
+void Interface::preCalculate() {
+    QWidget* window = new QWidget;
+
+    window->setWindowTitle("Calculas");
+
+    l_amount_of_iteration = new QLabel;
+    l_amount_of_molecules = new QLabel;
+
+
+    e_amount_of_iteration = new QLineEdit;
+    e_amount_of_molecules = new QLineEdit;
+
+
+    b_back = new Button("Cancel", this);
+    b_next = new Button("Next", this);
+
+    e_amount_of_iteration->setMaxLength(15);
+    e_amount_of_molecules->setMaxLength(15);
+
+    QFont font = e_amount_of_iteration->font();
+    font.setPointSize(font.pointSize() + 8);
+    e_amount_of_iteration->setFont(font);
+    e_amount_of_molecules->setFont(font);
+
+    QGridLayout* new_window_layout = new QGridLayout;
+    window->setLayout(new_window_layout);
+    new_window_layout->setSizeConstraint(QLayout::SetFixedSize);
+
+    new_window_layout->addWidget(l_amount_of_iteration, 0, 0, 1, 1);
+    new_window_layout->addWidget(l_amount_of_molecules, 1, 0, 1, 1);
+    new_window_layout->addWidget(e_amount_of_iteration, 0, 1, Qt::AlignRight | Qt::AlignBottom);
+    new_window_layout->addWidget(e_amount_of_molecules, 1, 1, Qt::AlignRight | Qt::AlignBottom);
+    new_window_layout->addWidget(b_back,                5, 0, 1, 1);
+    new_window_layout->addWidget(b_next,                5, 1, Qt::AlignRight | Qt::AlignBottom);
+
+
+    l_amount_of_iteration->setFixedSize(200, 30);
+    l_amount_of_molecules->setFixedSize(200, 30);
+    e_amount_of_iteration->setFixedSize(100, 30);
+    e_amount_of_molecules->setFixedSize(100, 30);
+    b_back->setFixedSize(100, 20);
+    b_next->setFixedSize(100, 20);
+
+    l_amount_of_iteration->setText("Set amount of iteration:");
+    l_amount_of_molecules->setText("Set amount of molecules:");
+
+
+    window->show();
+    connect(b_back, &QPushButton::clicked, window, &QPushButton::close);
+    connect(b_next, &QPushButton::clicked, this, &Interface::CalculateOfPrecentageMolecules);
+}
+// окно которое вылезает после нажатия кнопки Next
+void Interface::createFinalWindow(double exitMolecules, double amount_mol) {
+    QWidget* window = new QWidget;
+    QGridLayout* layout = new QGridLayout;
+    double percentageOfEjectedMol = (exitMolecules / amount_mol) * 100;
+    l_percentage_of_ejected_molecules = new QLabel;
+    e_percentage_of_ejected_molecules = new QLineEdit;
+    b_ok = new Button("OK", this);
+
+    window->setLayout(layout);
+    layout->setSizeConstraint(QLayout::SetFixedSize);
+    e_percentage_of_ejected_molecules->setReadOnly(true);
+    e_percentage_of_ejected_molecules->setMaxLength(15);
+
+    QFont font = e_percentage_of_ejected_molecules->font();
+    font.setPointSize(font.pointSize() + 8);
+    e_percentage_of_ejected_molecules->setFont(font);
+
+    layout->addWidget(l_percentage_of_ejected_molecules, 0, 0, 1, 1);
+    layout->addWidget(e_percentage_of_ejected_molecules, 0, 1, 1, 1);
+    layout->addWidget(b_ok, 1, 0, 1, 1);
+
+    e_percentage_of_ejected_molecules->setText(QString::number(percentageOfEjectedMol));
+
+    connect(b_ok, &QPushButton::clicked, window, &QPushButton::close);
+    window->show();
+}
+
+// при нажатии кнопки next вызывается эта функция
+void Interface::CalculateOfPrecentageMolecules() {
+    bool f_cond;
+    bool s_cond;
+    double exitMolecules;
+    double d_amount_mol;
+    QWidget errorWindow;
+    int amount_iter = e_amount_of_iteration->text().toInt(&f_cond);
+    int amount_mol = e_amount_of_molecules->text().toInt(&s_cond);
+    // проверка на входные значения с полей
+    if (!f_cond || !s_cond) {
+        QMessageBox::critical(&errorWindow, "Error", "Some values is invalid");
+        return;
+    }
+    if (stack.empty()) {
+        QMessageBox::critical(&errorWindow, "Error", "Stack is empty");
+        return;
+    }
+    // процент молекул должен быть double поэтому приводим к double
+    exitMolecules = static_cast<double>(generator.Core(amount_mol, amount_iter));
+    d_amount_mol = static_cast<double>(amount_mol);
+    // вызываем окно, в котором выводится процент вылетевших молекул
+    createFinalWindow(exitMolecules, d_amount_mol);
+}
 
 //данная функция считывает данные со строчек ввода и
 //в зависимости от того какой "сurrent index" выбирает куда записывать эти данные
@@ -132,7 +235,6 @@ void Interface::readingValues()
 }
 
 bool Interface::isBuildingCorrectly(double val1, double val2, const QString selected_text, QWidget &windowError) {
-    //QWidget windowError;
     if (val1 < 0 || val2 < 0) {
         QMessageBox::critical(&windowError, "Error", "Input value is negative");
         return false;
