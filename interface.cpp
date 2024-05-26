@@ -181,8 +181,7 @@ void Interface::CalculateOfPrecentageMolecules() {
 //данная функция считывает данные со строчек ввода и
 //в зависимости от того какой "сurrent index" выбирает куда записывать эти данные
 //и экземпляр какого класса добавлять
-void Interface::readingValues()
-{
+void Interface::readingValues() {
     Сylinder* cylinder = new Сylinder(12, 12);
     stack.push(cylinder);
     Сylinder* c = new Сylinder(12, 12);
@@ -231,10 +230,6 @@ void Interface::readingValues()
             QMessageBox::critical(&windowError, "Error", selected_text + "is incorrect figure");
         }
     }
-<<<<<<< HEAD
-    generator.CreatingPortal();// в этой функции его быть не должно
-=======
->>>>>>> 74970a67d7dbbebe5f4806a0d872862d9c8057a4
 }
 
 bool Interface::isBuildingCorrectly(double val1, double val2, const QString selected_text, QWidget &windowError) {
@@ -283,25 +278,28 @@ void Interface::contactingTheUser() {
 
 }
 
-<<<<<<< HEAD
+
 void Generator::CreatingPortal()
 {
-    if (vector[0]->name == "Cylinder")
-    {
+    if (vector[0]->name == "Cylinder") {
         Сylinder* cylinder = dynamic_cast<Сylinder*>(vector[0]);
         Disk* disk = new Disk(cylinder->radiusOutsideCylinder, 0);
+        disk->portal = true;
         vector.push_front(disk);
     }
-    if (vector.back()->name == "Cylinder")
-    {
+    if (vector.back()->name == "Cylinder") {
         Сylinder* cylinder = dynamic_cast<Сylinder*>(vector.back());
         Disk* disk = new Disk(cylinder->radiusOutsideCylinder, 0);
+        disk->portal = true;
         vector.push_back(disk);
+    } else if (vector.back()->name == "Disk") {
+        Disk* disk = dynamic_cast<Disk*>(vector.back());
+        Disk* new_disk = new Disk(disk->radiusInsideDisk, 0);
+        new_disk->portal = true;
+        vector.push_back(new_disk);
     }
 }
-=======
 
->>>>>>> 74970a67d7dbbebe5f4806a0d872862d9c8057a4
 
 void Generator::DownOrUp(int count)
 {

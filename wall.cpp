@@ -219,10 +219,12 @@ Coordinates& Coordinates::operator=(const RandomValues& other) {
         this->x = x0;
         this->y = y0;
         this->z = z0;
+        this->index = coord.index;
     } else {
         this->x = other.point * cos(other.fi);
         this->y = other.point * sin(other.fi);
         this->z = vector[other.index - 1]->coordinateZ;
+        this->index = other.index;
     }
     return *this;
 }
@@ -244,7 +246,7 @@ int Generator::Core(int countMoleculs, int iteration)
         NewCoordinates = rand;
         int j = 0;
         int count = 1;
-        while (j < iteration) {
+        while (j < iteration) { // Нужно сделать генератор направляющих векторов в цикле
             while (NewCoordinates.flag != FOUND) {
                 for (int k = (generator.FindCylinderIndex(rand.height)).index; k < k + count; ++k) {
                     if (vector[k]->name == "Disk") {
@@ -296,7 +298,7 @@ int Generator::Core(int countMoleculs, int iteration)
                 }
 
             }
-            if (isMoleculeExit(NewCoordinates)) {
+            if (isMoleculeExit(vectorOfPoints)) {
                 exitMolecules++;
                 break;
             } else {
@@ -323,7 +325,7 @@ int Generator::Core(int countMoleculs, int iteration)
         int j = 0;
         Disk* disk = dynamic_cast<Disk*>(vector[rand.index]);
         if (disk->location) {
-            while (j < iteration) {
+            while (j < iteration) { // здесь не рандомиться направляющий вектор, а должен
 
                 for (int k = rand.index; k < vector.size(); ++k) {
                     if (vector[k]->name == "Disk" && vector[k] != vector[rand.index]) {
@@ -392,8 +394,15 @@ int Generator::Core(int countMoleculs, int iteration)
 
 
 bool Generator::isMoleculeExit(std::vector<Coordinates>& points) {
-
-    return true;
+    for (std::size_t i = 0; i < points.size(); ++i) {
+        if (vector[points[i].index]->name == "Disk") {
+            Disk* disk = dynamic_cast<Disk*>(vector[points[i].index]);
+            if (disk->portal) {
+                return true;
+            }
+        }
+    }
+    return false;
 }
 
 Coordinates Generator::FlightMoleculeDisk(Coordinates coordinates, int i) {

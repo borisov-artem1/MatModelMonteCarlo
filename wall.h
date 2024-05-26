@@ -43,6 +43,7 @@ struct Coordinates {
     double x;
     double y;
     double z;
+    int index;
 };
 
 class Wall: public QObject {
