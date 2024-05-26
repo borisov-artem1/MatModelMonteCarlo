@@ -231,7 +231,10 @@ void Interface::readingValues()
             QMessageBox::critical(&windowError, "Error", selected_text + "is incorrect figure");
         }
     }
+<<<<<<< HEAD
     generator.CreatingPortal();// в этой функции его быть не должно
+=======
+>>>>>>> 74970a67d7dbbebe5f4806a0d872862d9c8057a4
 }
 
 bool Interface::isBuildingCorrectly(double val1, double val2, const QString selected_text, QWidget &windowError) {
@@ -280,6 +283,7 @@ void Interface::contactingTheUser() {
 
 }
 
+<<<<<<< HEAD
 void Generator::CreatingPortal()
 {
     if (vector[0]->name == "Cylinder")
@@ -295,6 +299,9 @@ void Generator::CreatingPortal()
         vector.push_back(disk);
     }
 }
+=======
+
+>>>>>>> 74970a67d7dbbebe5f4806a0d872862d9c8057a4
 
 void Generator::DownOrUp(int count)
 {
