@@ -282,9 +282,9 @@ void Interface::contactingTheUser() {
 
 void Generator::CreatingPortal()
 {
-    if (vector[1]->name == "Cylinder")
+    if (vector[0]->name == "Cylinder")
     {
-        Сylinder* cylinder = dynamic_cast<Сylinder *>(vector[1]);
+        Сylinder* cylinder = dynamic_cast<Сylinder *>(vector[0]);
         Disk* disk = new Disk(cylinder->radiusOutsideCylinder, 0);
         vector.push_front(disk);
     }
