@@ -96,6 +96,15 @@ RandomValues Generator::GeneratorMonteCarlo_Cylinder()
     return cylinderValues;
 }
 
+Coordinates Generator::GeneratorMonteCarlo_GVector(Coordinates& coordinates) {
+    double teta = GeneratorMonteCarlo_Teta();
+    double gamma = GeneratorMonteCarlo_Gamma();
+    coordinates.p1 = sin((teta * PI) / 180) * cos((gamma * PI) / 180);
+    coordinates.p2 = sin((teta * PI) / 180) * sin((gamma * PI) / 180);
+    coordinates.p3 = cos((teta * PI) / 180);
+    return coordinates;
+}
+
 void Generator::LookDiskIndexes()
 {
     for (Wall* wall : vector) {
@@ -227,6 +236,51 @@ Coordinates& Coordinates::operator=(const RandomValues& other) {
         this->index = other.index;
     }
     return *this;
+}
+
+void Generator::IntersectionSearch(Coordinates& NewCoordinates, std::vector<Coordinates>& vectorOfPoints, const RandomValues& rand, int k) {
+    if (vector[k]->name == "Disk" && vector[k] != vector[rand.index]) {
+        NewCoordinates = FlightMoleculeDisk(NewCoordinates, k);
+        if (NewCoordinates.flag == FOUND) {
+            generator.GeneratorMonteCarlo_GVector(NewCoordinates);
+            vectorOfPoints.push_back(NewCoordinates);
+        }
+    } else if (vector[k]->name == "Cylinder" &&
+               vector[k] != vector[(generator.FindCylinderIndex(rand.height)).index]){
+        NewCoordinates = FlightMoleculeCylinder(NewCoordinates, k);
+        if (NewCoordinates.flag == FOUND) {
+            generator.GeneratorMonteCarlo_GVector(NewCoordinates);
+            vectorOfPoints.push_back(NewCoordinates);
+        }
+    }
+}
+
+void Generator::IterationForCylinder(int iteration) {
+    RandomValues rand = generator.GeneratorMonteCarlo_Cylinder();
+    Coordinates NewCoordinates = {};
+    std::vector<Coordinates> vectorOfPoints(iteration);
+    NewCoordinates = rand;
+    int j = 0;
+    int count = 1;
+    while (j < iteration) {
+        while (NewCoordinates.flag != FOUND) {
+            for (int k = (generator.FindCylinderIndex(rand.height)).index; k < k + count; ++k) {
+                generator.IntersectionSearch(NewCoordinates, vectorOfPoints, rand, k);
+                if (NewCoordinates.flag == FOUND) {
+                    break;
+                }
+            }
+            if (NewCoordinates.flag != FOUND) {
+                for (int k = (generator.FindCylinderIndex(rand.height)).index; k > k - count; --k) {
+                    generator.IntersectionSearch(NewCoordinates, vectorOfPoints, rand, k);
+                    if (NewCoordinates.flag == FOUND) {
+                        break;
+                    }
+                }
+                ++count;
+            }
+        }
+    }
 }
 
 int Generator::Core(int countMoleculs, int iteration)
@@ -477,118 +531,4 @@ Coordinates Generator::FlightMolecule(Coordinates& NewCoordinates) {
     } 
 }
 
-/*
-std::vector<pointOfIntersection> Generator::IntersectionSearch(Wall* wall) {
 
-}
-
-*/
-
-/*bool Generator::FlightMolecule_Cylinder(pointOfIntersection& pointBegin, pointOfIntersection& pointEnd) {
-
-    RandomValues initialСoordinates;
-    pointOfIntersection tmp_point;
-    initialСoordinates = generator.GeneratorMonteCarlo_Cylinder();
-    findingCylinder coord = FindCylinderIndex(initialСoordinates.height);
-    Сylinder* cylinder = dynamic_cast<Сylinder*>(vector[coord.index]);
-    double p1 = sin((initialСoordinates.teta * PI) / 180) * cos((initialСoordinates.gamma * PI) / 180);
-    double p2 = sin((initialСoordinates.teta * PI) / 180) * sin((initialСoordinates.gamma * PI) / 180);
-    double p3 = cos((initialСoordinates.teta * PI) / 180);
-    double x0 = cylinder->radiusOutsideCylinder * cos((initialСoordinates.fi * PI) / 180);
-    double y0 = cylinder->radiusOutsideCylinder * sin((initialСoordinates.fi * PI) / 180);
-    double z0 = initialСoordinates.height;
-    double A = pow(p1, 2) + pow(p2, 2);
-    double B = x0 * p1 + y0 * p2;
-    double C = pow(x0, 2) + pow(y0, 2) - pow(cylinder->radiusOutsideCylinder, 2);
-    double Dis = pow(B, 2) - 4 * A * C;
-    double t1 = 0.;
-    double t2 = 0.;
-    if (Dis > 0) {
-        t1 = (-B + pow(Dis, 0.5)) / (2 * A);
-        t2 = (-B - pow(Dis, 0.5)) / (2 * A);
-        pointBegin.x = x0 + p1 * t1;
-        pointBegin.y = y0 + p2 * t1;
-        pointBegin.z = z0 + p3 * t1;
-        pointEnd.x = x0 + p1 * t2;
-        pointEnd.y = y0 + p2 * t2;
-        pointEnd.z = z0 + p3 * t2;
-        if (pointBegin.x != x0 && pointBegin.y != y0 && pointBegin.z != z0) {
-            tmp_point = pointBegin;
-            pointBegin = pointEnd;
-            pointEnd = tmp_point;
-        }
-        if (pointEnd.z > vector[coord.index]->coordinateZ ||
-            pointEnd.z < (cylinder->coordinateZ - cylinder->Height)) { // если это так, то необходимо найти другую фигуру, с которой пересечется луч
-            bool breakCondition = false;
-            for (int i = 0; i < vector.size(); ++i) {
-                if (vector[i]->name == "Cylinder" && vector[i] != cylinder) { // это неправильно потому что мы ищем на
-                        C = pow(x0, 2) + pow(y0, 2) - pow(cylinder->radiusOutsideCylinder, 2);  // бесконечных цилиндрах
-                        Dis = pow(B, 2) - 4 * A * C;
-                        t1 = (-B + pow(Dis, 0.5)) / (2 * A);
-                        t2 = (-B - pow(Dis, 0.5)) / (2 * A);
-                        if (z0 + p3 * t1 > z0 + p3 * t2) { // тоже ошибка
-                            pointEnd.x = x0 + p1 * t1;
-                            pointEnd.y = y0 + p2 * t1;
-                            pointEnd.z = z0 + p3 * t1;
-                            breakCondition = true;
-                            break;
-                        } else {
-                            pointEnd.x = x0 + p1 * t2;
-                            pointEnd.y = y0 + p2 * t2;
-                            pointEnd.z = z0 + p3 * t2;
-                            breakCondition = true;
-                            break;
-                        }
-                } else if (vector[i]->name == "Disk") {
-                    Disk* disk = dynamic_cast<Disk*>(vector[i]);
-                    if (sqrt(pow(x0, 2) + pow(y0, 2)) > disk->radiusInsideDisk &&
-                        sqrt(pow(x0, 2) + pow(y0, 2)) < disk->radiusOutsideDisk) {
-                        t1 = (vector[i - 1]->coordinateZ - z0) / p3;
-                        pointEnd.x = x0 + p1 * t1;
-                        pointEnd.y = y0 + p2 * t1;
-                        pointEnd.z = z0 + p3 * t1;
-                        breakCondition = true;
-                        break;
-                    }
-                }
-            }
-            if (breakCondition) {
-                return true;
-            }
-        }
-    } else if (Dis == 0) {
-        throw std::exception();
-    }
-    return true;
-}
-
-bool Generator::FlightMolecule_Disk() {
-    RandomValues initialСoordinates;
-    initialСoordinates = generator.GeneratorMonteCarlo_Disk();
-    double p1 = sin((initialСoordinates.teta * PI) / 180) * cos((initialСoordinates.gamma * PI) / 180);
-    double p2 = sin((initialСoordinates.teta * PI) / 180) * sin((initialСoordinates.gamma * PI) / 180);
-    double p3 = cos((initialСoordinates.teta * PI) / 180);
-    // на основании имеющихся строим луч в трехмерном пространстве
-}
-
-bool Generator::isMoleculeExit(Coordinates coordinates)
-{
-
-}
-*/
-
-void Generator::CreatingPortal()
-{
-    if (vector[0]->name == "Cylinder")
-    {
-        Сylinder* cylinder = dynamic_cast<Сylinder *>(vector[0]);
-        Disk* disk = new Disk(cylinder->radiusOutsideCylinder, 0);
-        vector.push_front(disk);
-    }
-    if (vector.back()->name == "Cylinder")
-    {
-        Сylinder* cylinder = dynamic_cast<Сylinder *>(vector.back());
-        Disk* disk = new Disk(cylinder->radiusOutsideCylinder, 0);
-        vector.push_back(disk);
-    }
-}

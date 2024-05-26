@@ -9,6 +9,12 @@
 
 class Generator;
 
+struct guidingVector {
+    double p1;
+    double p2;
+    double p3;
+};
+
 struct RandomValues {
     int index = 0;
     double height = 0.;
@@ -126,6 +132,7 @@ class Generator {
     double GeneratorMonteCarlo_Teta();
     double GeneratorMonteCarlo_Gamma();
     RandomValues GeneratorMonteCarlo_Cylinder();
+    Coordinates GeneratorMonteCarlo_GVector(Coordinates& coordinates);
 
     int GeneratorMonteCarlo_index();
     void LookDiskIndexes();
@@ -140,7 +147,7 @@ class Generator {
     findingCylinder FindCylinderIndex(double height);
 
 
-    std::vector<pointOfIntersection> IntersectionSearch(Wall* wall);
+    void IntersectionSearch(Coordinates& NewCoordinates, std::vector<Coordinates>& vectorOfPoints, const RandomValues& rand, int k);
 
     bool FlightMolecule_Cylinder(pointOfIntersection& point1, pointOfIntersection& point2);
     bool FlightMolecule_Disk();
@@ -149,6 +156,7 @@ class Generator {
     Coordinates FlightMoleculeCylinder(Coordinates coordinates, int i);
     Coordinates FlightMoleculeDisk(Coordinates coordinates, int i);
 
+    void IterationForCylinder(int iteration);
     //Coordinates FlightMolecule(RandomValues coordinates);
     //Coordinates FlyghtMoleculeCylinder(RandomValues coordinates, int i);
     //Coordinates FlyghtMoleculeDisk(RandomValues coordinates, int i);
