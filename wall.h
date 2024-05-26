@@ -66,7 +66,7 @@ public:
     ~Disk(); // объявляем деструктор
     //const QString name = "Disk";
     int index;
-    bool portal;
+    bool portal;// true если да, false если нет
     bool location; // true если сверху, false если снизу, мои изменения
 };
 
@@ -154,7 +154,7 @@ class Generator {
 
     int Core(int countMoleculs, int iteration);
 
-    bool isMoleculeExit(Coordinates coordinates);
+    bool isMoleculeExit(std::vector<Coordinates>& points);
     void CreatingPortal();
     void DownOrUp(int count);
 };

@@ -236,6 +236,7 @@ int Generator::Core(int countMoleculs, int iteration)
     coeficionts = generator.Distribution();
     coeficionts.DiskCoef = generator.Distribution().DiskCoef;
     coeficionts.CylinderCoef = generator.Distribution().CylinderCoef;
+    std::vector<Coordinates> vectorOfPoints(iteration);
 
     for (int i = 0; i < countMoleculs * coeficionts.CylinderCoef; ++i) {
         rand = generator.GeneratorMonteCarlo_Cylinder(); //написать перегрузку для функции
@@ -251,6 +252,7 @@ int Generator::Core(int countMoleculs, int iteration)
                             //NewCoordinates.flag = 0;
                             continue;
                         } else {
+                            vectorOfPoints.push_back(NewCoordinates);
                             break;
                         }
                     } else if (vector[k]->name == "Cylinder" &&
@@ -260,6 +262,7 @@ int Generator::Core(int countMoleculs, int iteration)
                             //NewCoordinates.flag = 0;
                             continue;
                         } else {
+                            vectorOfPoints.push_back(NewCoordinates);
                             break;
                         }
                     }
@@ -273,6 +276,7 @@ int Generator::Core(int countMoleculs, int iteration)
                                 //NewCoordinates.flag = 0;
                                 continue;
                             } else {
+                                vectorOfPoints.push_back(NewCoordinates);
                                 break;
                             }
                         } else if (vector[k]->name == "Cylinder" &&
@@ -282,6 +286,7 @@ int Generator::Core(int countMoleculs, int iteration)
                                 //NewCoordinates.flag = 0;
                                 continue;
                             } else {
+                                vectorOfPoints.push_back(NewCoordinates);
                                 break;
                             }
                         }
@@ -385,7 +390,8 @@ int Generator::Core(int countMoleculs, int iteration)
 
 
 
-bool Generator::isMoleculeExit(Coordinates coordinates) {
+bool Generator::isMoleculeExit(std::vector<Coordinates>& points) {
+
     return true;
 }
 

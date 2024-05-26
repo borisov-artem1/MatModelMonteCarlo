@@ -231,7 +231,7 @@ void Interface::readingValues()
             QMessageBox::critical(&windowError, "Error", selected_text + "is incorrect figure");
         }
     }
-    generator.CreatingPortal();
+    generator.CreatingPortal();// в этой функции его быть не должно
 }
 
 bool Interface::isBuildingCorrectly(double val1, double val2, const QString selected_text, QWidget &windowError) {
@@ -284,13 +284,13 @@ void Generator::CreatingPortal()
 {
     if (vector[0]->name == "Cylinder")
     {
-        Сylinder* cylinder = dynamic_cast<Сylinder *>(vector[0]);
+        Сylinder* cylinder = dynamic_cast<Сylinder*>(vector[0]);
         Disk* disk = new Disk(cylinder->radiusOutsideCylinder, 0);
         vector.push_front(disk);
     }
     if (vector.back()->name == "Cylinder")
     {
-        Сylinder* cylinder = dynamic_cast<Сylinder *>(vector.back());
+        Сylinder* cylinder = dynamic_cast<Сylinder*>(vector.back());
         Disk* disk = new Disk(cylinder->radiusOutsideCylinder, 0);
         vector.push_back(disk);
     }
@@ -298,7 +298,7 @@ void Generator::CreatingPortal()
 
 void Generator::DownOrUp(int count)
 {
-    if (count == 0){
+    if (count == 0) {
         Disk* disk = dynamic_cast<Disk *>(vector[count]);
         if (disk != nullptr) {
             disk->location = false;
