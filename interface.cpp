@@ -231,7 +231,6 @@ void Interface::readingValues()
             QMessageBox::critical(&windowError, "Error", selected_text + "is incorrect figure");
         }
     }
-    generator.CreatingPortal();
 }
 
 bool Interface::isBuildingCorrectly(double val1, double val2, const QString selected_text, QWidget &windowError) {
@@ -280,21 +279,7 @@ void Interface::contactingTheUser() {
 
 }
 
-void Generator::CreatingPortal()
-{
-    if (vector[0]->name == "Cylinder")
-    {
-        Сylinder* cylinder = dynamic_cast<Сylinder *>(vector[0]);
-        Disk* disk = new Disk(cylinder->radiusOutsideCylinder, 0);
-        vector.push_front(disk);
-    }
-    if (vector.back()->name == "Cylinder")
-    {
-        Сylinder* cylinder = dynamic_cast<Сylinder *>(vector.back());
-        Disk* disk = new Disk(cylinder->radiusOutsideCylinder, 0);
-        vector.push_back(disk);
-    }
-}
+
 
 void Generator::DownOrUp(int count)
 {

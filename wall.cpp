@@ -229,6 +229,7 @@ Coordinates& Coordinates::operator=(const RandomValues& other) {
 
 int Generator::Core(int countMoleculs, int iteration)
 {
+    generator.CreatingPortal();
     RandomValues rand;
     int exitMolecules = 0;
     Coeficients coeficionts = {};
@@ -561,3 +562,18 @@ bool Generator::isMoleculeExit(Coordinates coordinates)
 }
 */
 
+void Generator::CreatingPortal()
+{
+    if (vector[0]->name == "Cylinder")
+    {
+        Сylinder* cylinder = dynamic_cast<Сylinder *>(vector[0]);
+        Disk* disk = new Disk(cylinder->radiusOutsideCylinder, 0);
+        vector.push_front(disk);
+    }
+    if (vector.back()->name == "Cylinder")
+    {
+        Сylinder* cylinder = dynamic_cast<Сylinder *>(vector.back());
+        Disk* disk = new Disk(cylinder->radiusOutsideCylinder, 0);
+        vector.push_back(disk);
+    }
+}
