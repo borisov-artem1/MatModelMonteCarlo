@@ -158,6 +158,7 @@ class Generator {
     bool isMoleculeExit(std::vector<Coordinates>& points);
     void CreatingPortal();
     void DownOrUp(int count);
+
 };
 
 #endif // WALL_H
