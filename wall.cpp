@@ -212,7 +212,8 @@ findingCylinder Generator::FindCylinderIndex(double height) {
     return coord;
 }
 
-Coordinates& Coordinates::operator=(const RandomValues& other) {
+Coordinates& Coordinates::operator=(const RandomValues& other)
+{
     findingCylinder coord = generator.FindCylinderIndex(other.height);
     double p1 = sin((other.teta * PI) / 180) * cos((other.gamma * PI) / 180);
     double p2 = sin((other.teta * PI) / 180) * sin((other.gamma * PI) / 180);
@@ -238,7 +239,8 @@ Coordinates& Coordinates::operator=(const RandomValues& other) {
     return *this;
 }
 
-void Generator::IntersectionSearch(Coordinates& NewCoordinates, std::vector<Coordinates>& vectorOfPoints, const RandomValues& rand, int k) {
+void Generator::IntersectionSearch(Coordinates& NewCoordinates, std::vector<Coordinates>& vectorOfPoints, const RandomValues& rand, int k)
+{
     if (vector[k]->name == "Disk" && vector[k] != vector[rand.index]) {
         NewCoordinates = FlightMoleculeDisk(NewCoordinates, k);
         if (NewCoordinates.flag == FOUND) {
@@ -255,7 +257,8 @@ void Generator::IntersectionSearch(Coordinates& NewCoordinates, std::vector<Coor
     }
 }
 
-void Generator::IterationForCylinder(int iteration) {
+void Generator::IterationForCylinder(int iteration)
+{
     RandomValues rand = generator.GeneratorMonteCarlo_Cylinder();
     Coordinates NewCoordinates = {};
     std::vector<Coordinates> vectorOfPoints(iteration);
@@ -283,12 +286,12 @@ void Generator::IterationForCylinder(int iteration) {
     }
 }
 
-void Generator::IterationForDisk(int iteration){
+void Generator::IterationForDisk(int iteration)
+{
     RandomValues rand = generator.GeneratorMonteCarlo_Disk();
     Coordinates NewCoordinates = {};
     std::vector<Coordinates> vectorOfPoints(iteration);
     int j = 0;
-    int count = 1;
     while (j < iteration) {
         while (NewCoordinates.flag != FOUND) {
             Disk* disk = dynamic_cast<Disk*>(vector[generator.GeneratorMonteCarlo_Disk().index]);
@@ -383,76 +386,11 @@ int Generator::Core(int countMoleculs, int iteration)
         }
     }
 
-    for (int i = 0; i < countMoleculs * coeficionts.DiskCoef; ++i) {
-        rand = generator.GeneratorMonteCarlo_Disk();
-        NewCoordinates = rand;
-        int j = 0;
-        Disk* disk = dynamic_cast<Disk*>(vector[rand.index]);
-        while(j < iteration) {
-            while (NewCoordinates.flag != FOUND) {
-
-            }
-        }
-    }
-
     for (int i = 0; i < countMoleculs * coeficionts.DiskCoef; ++i) {// мои изменения!!!!!!!!!!!!
-        rand = generator.GeneratorMonteCarlo_Disk(); //написать перегрузку для функции
-        NewCoordinates = rand;
-        int j = 0;
-        Disk* disk = dynamic_cast<Disk*>(vector[rand.index]);
-        if (disk->location) {
-            while (j < iteration) { // здесь не рандомиться направляющий вектор, а должен
-
-                for (int k = rand.index; k < vector.size(); ++k) {
-                    if (vector[k]->name == "Disk" && vector[k] != vector[rand.index]) {
-                        NewCoordinates = FlightMoleculeDisk(NewCoordinates, k);
-                        if (NewCoordinates.flag == NOT_FOUND) {
-                            //NewCoordinates.flag = 0;
-                            continue;
-                        } else {
-                            break;
-                        }
-                    } else if (vector[k]->name == "Cylinder"){
-                        NewCoordinates = FlightMoleculeCylinder(NewCoordinates, k);
-                        if (NewCoordinates.flag == NOT_FOUND) {
-                            //NewCoordinates.flag = 0;
-                            continue;
-                        } else {
-                            break;
-                        }
-                    }
-                }
-                if (0/*isMoleculeExit(NewCoordinates)*/) {
-                    ++exitMolecules;
-                    break;
-                } else {
-                    ++j;
-                }
-            }
-        } else {
-            while (j < iteration) {
-                for (int k = rand.index; k > 0; --k) {
-                    if (vector[k]->name == "Disk" && vector[k] != vector[rand.index]) {
-                        NewCoordinates = FlightMoleculeDisk(NewCoordinates, k);
-                        if (NewCoordinates.flag == NOT_FOUND) {
-                            continue;
-                        } else {
-                            break;
-                        }
-                    } else if (vector[k]->name == "Cylinder") {
-                        NewCoordinates = FlightMoleculeCylinder(NewCoordinates, k);
-                        if (NewCoordinates.flag == NOT_FOUND) {
-                            continue;
-                        } else {
-                            break;
-                        }
-                    }
-                }
-            }
-        }
     }
+
     return exitMolecules;
-}//поменять потом функцию, тут как бы идёт добавление, а нужно сделать функцию, в которую передавать указатели на разные функции.
+}
 
 
 
