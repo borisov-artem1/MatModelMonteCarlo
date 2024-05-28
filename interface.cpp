@@ -220,7 +220,6 @@ void Interface::readingValues() {
             stack.push(disk);
             vector.push_back(disk);
             count++;
-            generator.DownOrUp(count);
             qDebug() << "Disk" << Qt::endl;
         } else {
             QMessageBox::critical(&windowError, "Error", selected_text + "is incorrect figure");
@@ -295,26 +294,5 @@ void Generator::CreatingPortal()
         vector.push_back(new_disk);
     }
 }
-
-
-void Generator::DownOrUp(int count)
-{
-    if (count == 0) {
-        Disk* disk = dynamic_cast<Disk *>(vector[count]);
-        if (disk != nullptr) {
-            disk->location = false;
-        }
-    }
-    Сylinder* previousCylinder = dynamic_cast<Сylinder *>(vector[count-1]);
-    Disk* disk = dynamic_cast<Disk*>(vector[count]);
-    if (previousCylinder != nullptr) {
-        if (disk->radiusInsideDisk == previousCylinder->radiusOutsideCylinder){
-            disk->location = false;
-        } else {
-            disk->location = true;
-        }
-    }
-}
-
 
 
