@@ -37,7 +37,6 @@ private:
     Button* b_ok;
 
 private slots:
-    void contactingTheUser();
     void readingValues();
     void CalculateOfPrecentageMolecules();
     void preCalculate();
