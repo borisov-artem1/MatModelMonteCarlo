@@ -147,7 +147,7 @@ class Generator {
     findingCylinder FindCylinderIndex(double height);
 
 
-    void IntersectionSearch(Coordinates& NewCoordinates, std::vector<Coordinates>& vectorOfPoints, const RandomValues& rand, int k);
+    void IntersectionSearch(Coordinates& NewCoordinates, int k);
 
     bool FlightMolecule_Cylinder(pointOfIntersection& point1, pointOfIntersection& point2);
     bool FlightMolecule_Disk();
@@ -156,12 +156,11 @@ class Generator {
     Coordinates FlightMoleculeCylinder(Coordinates coordinates, int i);
     Coordinates FlightMoleculeDisk(Coordinates coordinates, int i);
 
-    void IterationForCylinder(int iteration);
-    void IterationForDisk(int iteration);
+    int IterationForCylinder(Coordinates coordinates);
+    int IterationForDisk(Coordinates coordinates);
 
     int Core(int countMoleculs, int iteration);
 
-    bool isMoleculeExit(std::vector<Coordinates>& points);
     void CreatingPortal();
     void DownOrUp(int count);
 
