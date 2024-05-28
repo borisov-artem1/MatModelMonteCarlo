@@ -8,7 +8,8 @@
 #define PI 3.14
 enum {
     FOUND = 1,
-    NOT_FOUND = 0
+    NOT_FOUND = 0,
+    EXIT = -1
 };
 
 extern QVector<Wall*> vector;
@@ -241,7 +242,7 @@ Coordinates& Coordinates::operator=(const RandomValues& other)
 
 void Generator::IntersectionSearch(Coordinates& NewCoordinates, int k)
 {
-    if (vector[k]->name == "Disk" && vector[k] != vector[rand.index]) {
+    if (vector[k]->name == "Disk" && vector[k] != vector[NewCoordinates.index]) {
         NewCoordinates = FlightMoleculeDisk(NewCoordinates, k);
         if (NewCoordinates.flag == FOUND) {
             generator.GeneratorMonteCarlo_GVector(NewCoordinates);
@@ -255,12 +256,8 @@ void Generator::IntersectionSearch(Coordinates& NewCoordinates, int k)
     }
 }
 
-void Generator::IterationForCylinder(int iteration)
+int Generator::IterationForCylinder(Coordinates NewCoordinates)
 {
-    RandomValues rand = generator.GeneratorMonteCarlo_Cylinder();
-    Coordinates NewCoordinates = {};
-    std::vector<Coordinates> vectorOfPoints(iteration);
-    NewCoordinates = rand;
     int j = 0;
     int count = 1;
     while (j < iteration) {
@@ -286,13 +283,13 @@ void Generator::IterationForCylinder(int iteration)
 
 int Generator::IterationForDisk(Coordinates NewCoordinates)
 {
-        Disk* disk = dynamic_cast<Disk*>(vector[generator.GeneratorMonteCarlo_Disk().index]);
+        Disk* disk = dynamic_cast<Disk*>(vector[NewCoordinates.index]);
         if (disk->location==true) {
-            for (int k = generator.GeneratorMonteCarlo_Disk().index; k >= 0; k--){
+            for (int k = NewCoordinates.index; k >= 0; k--){
                 generator.IntersectionSearch(NewCoordinates, k-1);
             }
         } else {
-            for (int k = generator.GeneratorMonteCarlo_Disk().index; k < vector.size(); k++) {
+            for (int k = NewCoordinates.index; k < vector.size(); k++) {
                 generator.IntersectionSearch(NewCoordinates, k+1);
             }
     }
@@ -384,18 +381,17 @@ int Generator::Core(int countMoleculs, int iteration)
         int j = 0;
         while (j < iteration-1)
         {
-          Disk* disk = dynamic_cast<Disk*>(vector[index]);
-          if (disk->name == "Disk") {
-               NewCoordinates = IterationForDisk(NewCoordinates);
-               if (flag == IS_EXIT) {break;}
+          Disk* disk = dynamic_cast<Disk*>(vector[index]);//тут надо как исправить, ведь если мы не можем преобразовать, то значит по этому
+          if (disk->name == "Disk") { // индексу попали не на диск,а на цилиндр
+               index = IterationForDisk(NewCoordinates);
+               if (NewCoordinates.flag == EXIT) {break;}
                j++;
           } else {
-               NewCoordinates = IterationCylinder(NewCoordinates);
-               if (flag == IS_EXIT) {break;}
+               index = IterationForCylinder(NewCoordinates);
+               if (NewCoordinates.flag == EXIT) {break;}
                j++;
            }
     }
-
     return exitMolecules;
 }
 
