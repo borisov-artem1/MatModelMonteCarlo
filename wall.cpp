@@ -287,11 +287,13 @@ int Generator::IterationForDisk(Coordinates NewCoordinates)
         if (disk->location==true) {
             for (int k = NewCoordinates.index; k >= 0; k--){
                 generator.IntersectionSearch(NewCoordinates, k-1);
+                //если в возвращаемой структуре флаг == FOUND , значит возвращаем индекс
             }
         } else {
             for (int k = NewCoordinates.index; k < vector.size(); k++) {
                 generator.IntersectionSearch(NewCoordinates, k+1);
-            }
+                //тут тоже самое
+            }//цилиндр по аналогии сделаешь потом
     }
 }
 
