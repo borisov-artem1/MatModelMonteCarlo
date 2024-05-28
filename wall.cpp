@@ -266,19 +266,23 @@ void Generator::IntersectionSearch(Coordinates& NewCoordinates, int k)
     }
 }
 
+<<<<<<< HEAD
+void Generator::IterationForCylinder(Coordinates& NewCoordinates) {
+=======
+>>>>>>> e8866d8a40b340d0d5395c348c671875949769ad
 
 void Generator::IterationForCylinder(Coordinates& NewCoordinates, RandomValues rand)
 {
     int count = 1;
     while (NewCoordinates.flag != FOUND) {
-        for (int k = (generator.FindCylinderIndex(rand.height)).index + count; k < k + 1; ++k) {
+        for (int k = NewCoordinates.index + count; k < k + 1; ++k) {
             generator.IntersectionSearch(NewCoordinates, k);
             if (NewCoordinates.flag == FOUND) {
                 break;
             }
         }
         if (NewCoordinates.flag != FOUND) {
-            for (int k = (generator.FindCylinderIndex(rand.height)).index - count; k > k + 1; --k) {
+            for (int k = NewCoordinates.index - count; k > k + 1; --k) {
                 generator.IntersectionSearch(NewCoordinates, k);
                 if (NewCoordinates.flag == FOUND) {
                     break;
@@ -308,6 +312,25 @@ void Generator::IterationForDisk(Coordinates& NewCoordinates)
     }
 }
 
+<<<<<<< HEAD
+void Generator::Iteration(Coordinates& NewCoordinates, int iteration) {
+
+    int j = 0;
+    while (j < iteration - 1) {
+        if (vector[NewCoordinates.index]->name == "Disk") {
+             IterationForDisk(NewCoordinates);
+             if (NewCoordinates.flag == EXIT) {break;}
+             j++;
+        } else {
+             IterationForCylinder(NewCoordinates);
+             if (NewCoordinates.flag == EXIT) {break;}
+             j++;
+        }
+    }
+
+}
+=======
+>>>>>>> e8866d8a40b340d0d5395c348c671875949769ad
 
 
 int Generator::Core(int countMoleculs, int iteration)
@@ -323,14 +346,22 @@ int Generator::Core(int countMoleculs, int iteration)
     for (int i = 0; i < countMoleculs * coeficionts.CylinderCoef; ++i) {
         rand = generator.GeneratorMonteCarlo_Cylinder();
         NewCoordinates = rand;
+<<<<<<< HEAD
+        IterationForCylinder(NewCoordinates);
+        generator.Iteration(NewCoordinates, iteration);
+=======
         IterationForCylinder(NewCoordinates, rand);
         int j = 0;
         while (j < iteration - 1) {}
+>>>>>>> e8866d8a40b340d0d5395c348c671875949769ad
     }
     for (int i = 0; i < countMoleculs * coeficionts.DiskCoef; ++i) {
         rand = generator.GeneratorMonteCarlo_Disk();
         NewCoordinates = rand;
         IterationForDisk(NewCoordinates);
+<<<<<<< HEAD
+        generator.Iteration(NewCoordinates, iteration);
+=======
         int j = 0;
         while (j < iteration - 1)
         {
@@ -343,11 +374,15 @@ int Generator::Core(int countMoleculs, int iteration)
                if (NewCoordinates.flag == EXIT) {break;}
                j++;
            }
+>>>>>>> e8866d8a40b340d0d5395c348c671875949769ad
     }
     }
     return exitMolecules;
 }
+<<<<<<< HEAD
+=======
 
+>>>>>>> e8866d8a40b340d0d5395c348c671875949769ad
 
 Coordinates Generator::FlightMoleculeDisk(Coordinates coordinates, int i) {
     Disk* disk = dynamic_cast<Disk*>(vector[i]);
