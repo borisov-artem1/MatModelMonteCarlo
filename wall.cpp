@@ -242,13 +242,14 @@ Coordinates& Coordinates::operator=(const RandomValues& other)
 
 void Generator::IntersectionSearch(Coordinates& NewCoordinates, int k)
 {
-    if (vector[k]->name == "Disk" && vector[k] != vector[NewCoordinates.index]) {
+    if (vector[k]->name == "Disk") {
         NewCoordinates = FlightMoleculeDisk(NewCoordinates, k);
         if (NewCoordinates.flag == FOUND) {
             generator.GeneratorMonteCarlo_GVector(NewCoordinates);
+            // я думаю тут сделать чтоб оно возвращало структуру , и если флаг FOUND то выходим из ф-и и возращаем структуру
+            //или сделать все по ссылке как ты и хотел,
         }
-    } else if (vector[k]->name == "Cylinder" &&
-               vector[k] != vector[(generator.FindCylinderIndex(rand.height)).index]){
+    } else if (vector[k]->name == "Cylinder"){
         NewCoordinates = FlightMoleculeCylinder(NewCoordinates, k);
         if (NewCoordinates.flag == FOUND) {
             generator.GeneratorMonteCarlo_GVector(NewCoordinates);
@@ -256,7 +257,7 @@ void Generator::IntersectionSearch(Coordinates& NewCoordinates, int k)
     }
 }
 
-int Generator::IterationForCylinder(Coordinates NewCoordinates)
+void Generator::IterationForCylinder(Coordinates NewCoordinates)
 {
     int j = 0;
     int count = 1;
@@ -281,7 +282,7 @@ int Generator::IterationForCylinder(Coordinates NewCoordinates)
     }
 }
 
-int Generator::IterationForDisk(Coordinates NewCoordinates)
+void Generator::IterationForDisk(Coordinates NewCoordinates)
 {
         Disk* disk = dynamic_cast<Disk*>(vector[NewCoordinates.index]);
         if (disk->location==true) {
@@ -379,17 +380,17 @@ int Generator::Core(int countMoleculs, int iteration)
     for (int i = 0; i < countMoleculs * coeficionts.DiskCoef; ++i) {
         rand = generator.GeneratorMonteCarlo_Disk();
         NewCoordinates = rand;
-        index = IterationForDisk(NewCoordinates);
+        IterationForDisk(NewCoordinates);
         int j = 0;
         while (j < iteration-1)
         {
           Disk* disk = dynamic_cast<Disk*>(vector[index]);//тут надо как исправить, ведь если мы не можем преобразовать, то значит по этому
           if (disk->name == "Disk") { // индексу попали не на диск,а на цилиндр
-               index = IterationForDisk(NewCoordinates);
+               IterationForDisk(NewCoordinates);
                if (NewCoordinates.flag == EXIT) {break;}
                j++;
           } else {
-               index = IterationForCylinder(NewCoordinates);
+               IterationForCylinder(NewCoordinates);
                if (NewCoordinates.flag == EXIT) {break;}
                j++;
            }

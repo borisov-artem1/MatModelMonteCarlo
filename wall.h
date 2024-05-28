@@ -156,8 +156,8 @@ class Generator {
     Coordinates FlightMoleculeCylinder(Coordinates coordinates, int i);
     Coordinates FlightMoleculeDisk(Coordinates coordinates, int i);
 
-    int IterationForCylinder(Coordinates coordinates);
-    int IterationForDisk(Coordinates coordinates);
+    void IterationForCylinder(Coordinates coordinates);
+    void IterationForDisk(Coordinates coordinates);
 
     int Core(int countMoleculs, int iteration);
 
