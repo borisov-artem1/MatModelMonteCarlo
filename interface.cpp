@@ -182,10 +182,6 @@ void Interface::CalculateOfPrecentageMolecules() {
 //в зависимости от того какой "сurrent index" выбирает куда записывать эти данные
 //и экземпляр какого класса добавлять
 void Interface::readingValues() {
-    Сylinder* cylinder = new Сylinder(12, 12);
-    stack.push(cylinder);
-    Сylinder* c = new Сylinder(12, 12);
-    stack.push(c);
     QWidget windowError;
     windowError.move(300, 300);
     int index = dropdown->currentIndex();

@@ -301,36 +301,32 @@ void Generator::IterationForDisk(Coordinates& NewCoordinates)
             } else {
         for (int k = NewCoordinates.index; k < vector.size(); k++) {
             generator.IntersectionSearch(NewCoordinates, k + 1);
-            if (NewCoordinates.flag == EXIT || NewCoordinates.flag == FOUND) {
-                return;
+            if (NewCoordinates.flag == EXIT || NewCoordinates.flag == FOUND) {return;}
+                }
             }
         }
     }
 }
 
+
+
 int Generator::Core(int countMoleculs, int iteration)
 {
     generator.CreatingPortal();
     RandomValues rand;
-    //int exitMolecules = 0;
     Coeficients coeficionts = {};
     Coordinates NewCoordinates = {};
     coeficionts = generator.Distribution();
     coeficionts.DiskCoef = generator.Distribution().DiskCoef;
     coeficionts.CylinderCoef = generator.Distribution().CylinderCoef;
 
-
-
     for (int i = 0; i < countMoleculs * coeficionts.CylinderCoef; ++i) {
         rand = generator.GeneratorMonteCarlo_Cylinder();
         NewCoordinates = rand;
         IterationForCylinder(NewCoordinates, rand);
         int j = 0;
-        while (j < iteration - 1) {
-
-        }
+        while (j < iteration - 1) {}
     }
-
     for (int i = 0; i < countMoleculs * coeficionts.DiskCoef; ++i) {
         rand = generator.GeneratorMonteCarlo_Disk();
         NewCoordinates = rand;
@@ -338,29 +334,31 @@ int Generator::Core(int countMoleculs, int iteration)
         int j = 0;
         while (j < iteration - 1)
         {
-          Disk* disk = dynamic_cast<Disk*>(vector[NewCoordinates.index]);//тут надо как исправить, ведь если мы не можем преобразовать, то значит по этому
-          if (disk->name == "Disk") { // индексу попали не на диск,а на цилиндр
+          if (vector[NewCoordinates.index]->name == "Disk") {
                IterationForDisk(NewCoordinates);
                if (NewCoordinates.flag == EXIT) {break;}
                j++;
           } else {
-               IterationForCylinder(NewCoordinates, rand); // надо будет разобраться с этим
+               IterationForCylinder(NewCoordinates, rand);
                if (NewCoordinates.flag == EXIT) {break;}
                j++;
            }
     }
+    }
     return exitMolecules;
 }
-}
+
 
 Coordinates Generator::FlightMoleculeDisk(Coordinates coordinates, int i) {
     Disk* disk = dynamic_cast<Disk*>(vector[i]);
-    if (sqrt(pow(coordinates.x, 2) + pow(coordinates.y, 2)) > disk->radiusInsideDisk &&
-        sqrt(pow(coordinates.x, 2) + pow(coordinates.x, 2)) < disk->radiusOutsideDisk) {
-        double t1 = (vector[disk->index - 1]->coordinateZ - coordinates.z) / coordinates.p3;
-        coordinates.x = coordinates.x + coordinates.p1 * t1;
-        coordinates.y = coordinates.y + coordinates.p2 * t1;
-        coordinates.z = coordinates.z + coordinates.p3 * t1;
+    double t = (disk->coordinateZ - coordinates.z) / coordinates.p3;
+    double x_0 = coordinates.x + coordinates.p1*t;
+    double y_0 = coordinates.y + coordinates.p1*t;
+    if (sqrt(pow(x_0, 2) + pow(y_0, 2)) > disk->radiusInsideDisk &&
+        sqrt(pow(x_0, 2) + pow(y_0, 2)) < disk->radiusOutsideDisk) {
+        coordinates.x = x_0;
+        coordinates.y = y_0;
+        coordinates.z = disk->coordinateZ;
     } else {
         coordinates.flag = NOT_FOUND;
     }
