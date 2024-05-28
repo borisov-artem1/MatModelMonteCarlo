@@ -7,10 +7,13 @@
 #include <cmath>
 #define PI 3.14
 enum {
-    FOUND = 1,
+    EXIT = -1,
     NOT_FOUND = 0,
-    EXIT = -1
+    FOUND = 1,
+
 };
+
+static int exitMolecules;
 
 extern QVector<Wall*> vector;
 QVector<int> indexVector;
@@ -240,11 +243,17 @@ Coordinates& Coordinates::operator=(const RandomValues& other)
     return *this;
 }
 
+
 void Generator::IntersectionSearch(Coordinates& NewCoordinates, int k)
 {
     if (vector[k]->name == "Disk") {
         NewCoordinates = FlightMoleculeDisk(NewCoordinates, k);
         if (NewCoordinates.flag == FOUND) {
+            Disk* disk = dynamic_cast<Disk*>(vector[NewCoordinates.index]);
+            if (disk->portal) {
+                ++exitMolecules;
+                return;
+            }
             generator.GeneratorMonteCarlo_GVector(NewCoordinates);
             // я думаю тут сделать чтоб оно возвращало структуру , и если флаг FOUND то выходим из ф-и и возращаем структуру
             //или сделать все по ссылке как ты и хотел,
@@ -257,44 +266,45 @@ void Generator::IntersectionSearch(Coordinates& NewCoordinates, int k)
     }
 }
 
-void Generator::IterationForCylinder(Coordinates NewCoordinates)
+
+void Generator::IterationForCylinder(Coordinates& NewCoordinates, RandomValues rand)
 {
-    int j = 0;
     int count = 1;
-    while (j < iteration) {
-        while (NewCoordinates.flag != FOUND) {
-            for (int k = (generator.FindCylinderIndex(rand.height)).index; k < k + count; ++k) {
-                generator.IntersectionSearch(NewCoordinates, vectorOfPoints, rand, k);
+    while (NewCoordinates.flag != FOUND) {
+        for (int k = (generator.FindCylinderIndex(rand.height)).index + count; k < k + 1; ++k) {
+            generator.IntersectionSearch(NewCoordinates, k);
+            if (NewCoordinates.flag == FOUND) {
+                break;
+            }
+        }
+        if (NewCoordinates.flag != FOUND) {
+            for (int k = (generator.FindCylinderIndex(rand.height)).index - count; k > k + 1; --k) {
+                generator.IntersectionSearch(NewCoordinates, k);
                 if (NewCoordinates.flag == FOUND) {
                     break;
                 }
             }
-            if (NewCoordinates.flag != FOUND) {
-                for (int k = (generator.FindCylinderIndex(rand.height)).index; k > k - count; --k) {
-                    generator.IntersectionSearch(NewCoordinates, vectorOfPoints, rand, k);
-                    if (NewCoordinates.flag == FOUND) {
-                        break;
-                    }
-                }
-                ++count;
-            }
+            ++count;
         }
     }
 }
 
-void Generator::IterationForDisk(Coordinates NewCoordinates)
+
+void Generator::IterationForDisk(Coordinates& NewCoordinates)
 {
-        Disk* disk = dynamic_cast<Disk*>(vector[NewCoordinates.index]);
-        if (disk->location==true) {
-            for (int k = NewCoordinates.index; k >= 0; k--){
-                generator.IntersectionSearch(NewCoordinates, k-1);
-                //если в возвращаемой структуре флаг == FOUND , значит возвращаем индекс
+    Disk* disk = dynamic_cast<Disk*>(vector[NewCoordinates.index]);
+    if (disk->location == true) {
+        for (int k = NewCoordinates.index; k >= 0; k--) {
+            generator.IntersectionSearch(NewCoordinates, k - 1);
+            if (NewCoordinates.flag == EXIT || NewCoordinates.flag == FOUND) {
+                return;
+            } else {
+        for (int k = NewCoordinates.index; k < vector.size(); k++) {
+            generator.IntersectionSearch(NewCoordinates, k + 1);
+            if (NewCoordinates.flag == EXIT || NewCoordinates.flag == FOUND) {
+                return;
             }
-        } else {
-            for (int k = NewCoordinates.index; k < vector.size(); k++) {
-                generator.IntersectionSearch(NewCoordinates, k+1);
-                //тут тоже самое
-            }//цилиндр по аналогии сделаешь потом
+        }
     }
 }
 
@@ -302,100 +312,45 @@ int Generator::Core(int countMoleculs, int iteration)
 {
     generator.CreatingPortal();
     RandomValues rand;
-    int exitMolecules = 0;
+    //int exitMolecules = 0;
     Coeficients coeficionts = {};
     Coordinates NewCoordinates = {};
     coeficionts = generator.Distribution();
     coeficionts.DiskCoef = generator.Distribution().DiskCoef;
     coeficionts.CylinderCoef = generator.Distribution().CylinderCoef;
-    std::vector<Coordinates> vectorOfPoints(iteration);
+
+
 
     for (int i = 0; i < countMoleculs * coeficionts.CylinderCoef; ++i) {
-        rand = generator.GeneratorMonteCarlo_Cylinder(); //написать перегрузку для функции
+        rand = generator.GeneratorMonteCarlo_Cylinder();
         NewCoordinates = rand;
+        IterationForCylinder(NewCoordinates, rand);
         int j = 0;
-        int count = 1;
-        while (j < iteration) { // Нужно сделать генератор направляющих векторов в цикле
-            while (NewCoordinates.flag != FOUND) {
-                for (int k = (generator.FindCylinderIndex(rand.height)).index; k < k + count; ++k) {
-                    if (vector[k]->name == "Disk") {
-                        NewCoordinates = FlightMoleculeDisk(NewCoordinates, k);
-                        if (NewCoordinates.flag == NOT_FOUND) {
-                            //NewCoordinates.flag = 0;
-                            continue;
-                        } else {
-                            vectorOfPoints.push_back(NewCoordinates);
-                            break;
-                        }
-                    } else if (vector[k]->name == "Cylinder" &&
-                               vector[k] != vector[(generator.FindCylinderIndex(rand.height)).index]){
-                        NewCoordinates = FlightMoleculeCylinder(NewCoordinates, k);
-                        if (NewCoordinates.flag == NOT_FOUND) {
-                            //NewCoordinates.flag = 0;
-                            continue;
-                        } else {
-                            vectorOfPoints.push_back(NewCoordinates);
-                            break;
-                        }
-                    }
-                }
+        while (j < iteration - 1) {
 
-                if (NewCoordinates.flag != FOUND) {
-                    for (int k = (generator.FindCylinderIndex(rand.height)).index; k > k - count; --k) {
-                        if (vector[k]->name == "Disk") {
-                            NewCoordinates = FlightMoleculeDisk(NewCoordinates, k);
-                            if (NewCoordinates.flag == NOT_FOUND) {
-                                //NewCoordinates.flag = 0;
-                                continue;
-                            } else {
-                                vectorOfPoints.push_back(NewCoordinates);
-                                break;
-                            }
-                        } else if (vector[k]->name == "Cylinder" &&
-                                   vector[k] != vector[(generator.FindCylinderIndex(rand.height)).index]) {
-                            NewCoordinates = FlightMoleculeCylinder(NewCoordinates, k);
-                            if (NewCoordinates.flag == NOT_FOUND) {
-                                //NewCoordinates.flag = 0;
-                                continue;
-                            } else {
-                                vectorOfPoints.push_back(NewCoordinates);
-                                break;
-                            }
-                        }
-                    }
-                    ++count;
-                }
-
-            }
-            if (isMoleculeExit(vectorOfPoints)) {
-                exitMolecules++;
-                break;
-            } else {
-                j++;
-            }
         }
     }
 
-    int index = 0;
     for (int i = 0; i < countMoleculs * coeficionts.DiskCoef; ++i) {
         rand = generator.GeneratorMonteCarlo_Disk();
         NewCoordinates = rand;
         IterationForDisk(NewCoordinates);
         int j = 0;
-        while (j < iteration-1)
+        while (j < iteration - 1)
         {
-          Disk* disk = dynamic_cast<Disk*>(vector[index]);//тут надо как исправить, ведь если мы не можем преобразовать, то значит по этому
+          Disk* disk = dynamic_cast<Disk*>(vector[NewCoordinates.index]);//тут надо как исправить, ведь если мы не можем преобразовать, то значит по этому
           if (disk->name == "Disk") { // индексу попали не на диск,а на цилиндр
                IterationForDisk(NewCoordinates);
                if (NewCoordinates.flag == EXIT) {break;}
                j++;
           } else {
-               IterationForCylinder(NewCoordinates);
+               IterationForCylinder(NewCoordinates, rand); // надо будет разобраться с этим
                if (NewCoordinates.flag == EXIT) {break;}
                j++;
            }
     }
     return exitMolecules;
+}
 }
 
 Coordinates Generator::FlightMoleculeDisk(Coordinates coordinates, int i) {
@@ -412,7 +367,7 @@ Coordinates Generator::FlightMoleculeDisk(Coordinates coordinates, int i) {
     return coordinates;
 }
 
-Coordinates Generator::FlightMoleculeCylinder(Coordinates coordinates, int i) { // ИСПРАВИТЬ СРОЧНО!!!!!!!
+Coordinates Generator::FlightMoleculeCylinder(Coordinates coordinates, int i) { // ИСПРАВИТЬ СРОЧНО!!!!!!! НЕТ ПРОВЕРКИ НА ГРАНИЧНЫЕ УСЛОВИЯ
     findingCylinder coord = FindCylinderIndex(coordinates.z);
     pointOfIntersection pointBegin;
     pointOfIntersection pointEnd;
@@ -449,24 +404,3 @@ Coordinates Generator::FlightMoleculeCylinder(Coordinates coordinates, int i) { 
         throw std::exception();
     }
 }
-
-Coordinates Generator::FlightMolecule(Coordinates& NewCoordinates) {
-    for (int i = 0; i < vector.size(); i++) {
-        if (vector[i]->name == "Disk") {
-            NewCoordinates = FlightMoleculeDisk(NewCoordinates, i);
-            if (NewCoordinates.flag == NOT_FOUND) {
-                continue;
-            } else {
-                return NewCoordinates;
-            }
-        } else {
-            NewCoordinates = FlightMoleculeCylinder(NewCoordinates, i);
-            if (NewCoordinates.flag == NOT_FOUND) {
-                continue;
-            } else {
-                return NewCoordinates;
-            }
-        }
-    } 
-}
-

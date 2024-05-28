@@ -147,7 +147,11 @@ class Generator {
     findingCylinder FindCylinderIndex(double height);
 
 
+
+    //void IntersectionSearch(Coordinates& NewCoordinates, int& exitMolecules, const RandomValues& rand, int k);
+
     void IntersectionSearch(Coordinates& NewCoordinates, int k);
+
 
     bool FlightMolecule_Cylinder(pointOfIntersection& point1, pointOfIntersection& point2);
     bool FlightMolecule_Disk();
@@ -156,8 +160,8 @@ class Generator {
     Coordinates FlightMoleculeCylinder(Coordinates coordinates, int i);
     Coordinates FlightMoleculeDisk(Coordinates coordinates, int i);
 
-    void IterationForCylinder(Coordinates coordinates);
-    void IterationForDisk(Coordinates coordinates);
+    void IterationForCylinder(Coordinates& coordinates, RandomValues rand);
+    void IterationForDisk(Coordinates& coordinates);
 
     int Core(int countMoleculs, int iteration);
 
