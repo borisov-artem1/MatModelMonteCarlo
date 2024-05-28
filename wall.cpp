@@ -238,19 +238,24 @@ Coordinates& Coordinates::operator=(const RandomValues& other) {
     return *this;
 }
 
-void Generator::IntersectionSearch(Coordinates& NewCoordinates, std::vector<Coordinates>& vectorOfPoints, const RandomValues& rand, int k) {
+void Generator::IntersectionSearch(Coordinates& NewCoordinates,
+                                   int& exitMolecules, const RandomValues& rand, int k) {
+
     if (vector[k]->name == "Disk" && vector[k] != vector[rand.index]) {
         NewCoordinates = FlightMoleculeDisk(NewCoordinates, k);
         if (NewCoordinates.flag == FOUND) {
+            Disk* disk = dynamic_cast<Disk*>(vector[NewCoordinates.index]);
+            if (disk->portal) {
+                ++exitMolecules;
+                return;
+            }
             generator.GeneratorMonteCarlo_GVector(NewCoordinates);
-            vectorOfPoints.push_back(NewCoordinates);
         }
     } else if (vector[k]->name == "Cylinder" &&
                vector[k] != vector[(generator.FindCylinderIndex(rand.height)).index]){
         NewCoordinates = FlightMoleculeCylinder(NewCoordinates, k);
         if (NewCoordinates.flag == FOUND) {
             generator.GeneratorMonteCarlo_GVector(NewCoordinates);
-            vectorOfPoints.push_back(NewCoordinates);
         }
     }
 }
@@ -280,26 +285,28 @@ void Generator::IterationForCylinder(int iteration) {
                 ++count;
             }
         }
+        if (isMoleculeExit(vectorOfPoints)) {
+            exitMolecules++;
+            break;
+        } else {
+            j++;
+        }
     }
 }
 
-void Generator::IterationForDisk(int iteration){
+void Generator::IterationForDisk(int iteration) {
     RandomValues rand = generator.GeneratorMonteCarlo_Disk();
     Coordinates NewCoordinates = {};
-    std::vector<Coordinates> vectorOfPoints(iteration);
     int j = 0;
-    int count = 1;
-    while (j < iteration) {
-        while (NewCoordinates.flag != FOUND) {
-            Disk* disk = dynamic_cast<Disk*>(vector[generator.GeneratorMonteCarlo_Disk().index]);
-            if (disk->location==true) {
-                for (int k = generator.GeneratorMonteCarlo_Disk().index; k >= 0; k--){
-                    generator.IntersectionSearch(NewCoordinates, vectorOfPoints, rand, k-1);
-                }
-            } else {
-                for (int k = generator.GeneratorMonteCarlo_Disk().index; k < vector.size(); k++) {
-                    generator.IntersectionSearch(NewCoordinates, vectorOfPoints, rand, k+1);
-                }
+    while (NewCoordinates.flag != FOUND) {
+        Disk* disk = dynamic_cast<Disk*>(vector[generator.GeneratorMonteCarlo_Disk().index]);
+        if (disk->location == true) {
+            for (int k = generator.GeneratorMonteCarlo_Disk().index; k >= 0; k--){
+                generator.IntersectionSearch(NewCoordinates, rand, k-1);
+            }
+        } else {
+            for (int k = generator.GeneratorMonteCarlo_Disk().index; k < vector.size(); k++) {
+                generator.IntersectionSearch(NewCoordinates, rand, k+1);
             }
         }
     }
@@ -483,7 +490,7 @@ Coordinates Generator::FlightMoleculeDisk(Coordinates coordinates, int i) {
     return coordinates;
 }
 
-Coordinates Generator::FlightMoleculeCylinder(Coordinates coordinates, int i) { // ИСПРАВИТЬ СРОЧНО!!!!!!!
+Coordinates Generator::FlightMoleculeCylinder(Coordinates coordinates, int i) { // ИСПРАВИТЬ СРОЧНО!!!!!!! НЕТ ПРОВЕРКИ НА ГРАНИЧНЫЕ УСЛОВИЯ
     findingCylinder coord = FindCylinderIndex(coordinates.z);
     pointOfIntersection pointBegin;
     pointOfIntersection pointEnd;

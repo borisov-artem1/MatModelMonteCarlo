@@ -147,7 +147,8 @@ class Generator {
     findingCylinder FindCylinderIndex(double height);
 
 
-    void IntersectionSearch(Coordinates& NewCoordinates, std::vector<Coordinates>& vectorOfPoints, const RandomValues& rand, int k);
+    void IntersectionSearch(Coordinates& NewCoordinates,
+                            int& exitMolecules, const RandomValues& rand, int k);
 
     bool FlightMolecule_Cylinder(pointOfIntersection& point1, pointOfIntersection& point2);
     bool FlightMolecule_Disk();
