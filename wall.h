@@ -165,6 +165,8 @@ class Generator {
     void CreatingPortal();
     void DownOrUp(int count);
 
+
+    bool CheckForBoundCondition(Coordinates coordinates, Сylinder* cylinder);
     void Iteration(Coordinates& NewCoordinates, int iteration);
 
 };

@@ -269,10 +269,6 @@ bool Interface::isBuildingCorrectly(double val1, double val2, const QString sele
     }
 }
 
-void Interface::contactingTheUser() {
-
-}
-
 
 void Generator::CreatingPortal()
 {
