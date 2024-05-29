@@ -127,7 +127,7 @@ public:
 
 class Generator {
   public:
-    void CreatingVectorOfIndexes();
+    bool IsDiskInVector();
     double GeneratorMonteCarlo_Height();
     double GeneratorMonteCarlo_Fi();
     double GeneratorMonteCarlo_Teta();

@@ -48,14 +48,14 @@ Disk::~Disk() {
 
 Сylinder::~Сylinder() {}
 
-void Generator::CreatingVectorOfIndexes()
-{
-    for (int i = 0; i < vector.size(); i++) {
-        if (vector[i]->name=="Disk") {
-            indexVector.push_back(i);
-        }
-    }
-}
+//void Generator::CreatingVectorOfIndexes()
+//{
+//    for (int i = 0; i < vector.size(); i++) {
+//        if (vector[i]->name=="Disk") {
+//            indexVector.push_back(i);
+//        }
+//    }
+//}
 //берет значения от нуля до высоты нашей модели и находит случайную
 //точку по координате z , и именно сечение по этой координате мы будем исследовать
 double Generator::GeneratorMonteCarlo_Height()
@@ -127,9 +127,18 @@ void Generator::LookDiskIndexes()
         }
 }
 
+bool Generator::IsDiskInVector()
+{
+    for (int i = 0; i < vector.size(); i++){
+        if (vector[i]->name=="Disk"){
+            return true;
+        }
+    } return false;
+}
+
 int Generator::GeneratorMonteCarlo_index()
 {    // Проверка на пустоту вектора
-    if (indexVector.empty()) {
+    if (indexVector.empty() &&(!generator.IsDiskInVector())) {
         throw std::runtime_error("Vector is empty");
     }
     LookDiskIndexes();
@@ -173,7 +182,7 @@ double Generator::CylindersArea()
     double area = 0;
     for (Wall* wall : vector) {
             Сylinder* cylinder = dynamic_cast<Сylinder*>(wall); // Попытка приведения типа
-            if (cylinder && cylinder->name == "Сylinder") {
+            if (cylinder && cylinder->name == "Cylinder") {
                 double height = cylinder->Height;
                 double radius = cylinder->radiusOutsideCylinder;
                 area += height * 2 * PI * radius;
@@ -187,7 +196,7 @@ double Generator::DiskArea()
     double area = 0;
     for (Wall* wall : vector) {
             Disk* disk = dynamic_cast<Disk*>(wall); // Попытка приведения типа
-            if (disk && disk->name == "Disk") {
+            if (disk && disk->name == "Disk" && disk->portal!=true) {//мы не должны учитывать площадь дисков которые являются поверхностями вылета
                 double radiusInside = disk->radiusInsideDisk;
                 double radiusOutside = disk->radiusOutsideDisk;
                 area += 2 * PI * (pow(radiusOutside, 2) - pow(radiusInside, 2));
@@ -338,9 +347,7 @@ int Generator::Core(int countMoleculs, int iteration)
     RandomValues rand;
     Coeficients coeficionts = {};
     Coordinates NewCoordinates = {};
-    coeficionts = generator.Distribution();
-    coeficionts.DiskCoef = generator.Distribution().DiskCoef;
-    coeficionts.CylinderCoef = generator.Distribution().CylinderCoef;
+    coeficionts = generator.Distribution();//убрал лишние вызовы
 
     for (int i = 0; i < countMoleculs * coeficionts.CylinderCoef; ++i) {
         rand = generator.GeneratorMonteCarlo_Cylinder();

@@ -122,8 +122,9 @@ void Interface::preCalculate() {
 
 
     window->show();
+
     connect(b_back, &QPushButton::clicked, window, &QPushButton::close);
-    connect(b_next, &QPushButton::clicked, this, &Interface::CalculateOfPrecentageMolecules);
+    connect(b_next, &QPushButton::clicked, this, &Interface::CalculateOfPrecentageMolecules);    
 }
 // окно которое вылезает после нажатия кнопки Next
 void Interface::createFinalWindow(double exitMolecules, double amount_mol) {
