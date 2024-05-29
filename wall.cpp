@@ -48,6 +48,14 @@ Disk::~Disk() {
 
 Сylinder::~Сylinder() {}
 
+void Generator::CreatingVectorOfIndexes()
+{
+    for (int i = 0; i < vector.size(); i++) {
+        if (vector[i]->name=="Disk") {
+            indexVector.push_back(i);
+        }
+    }
+}
 //берет значения от нуля до высоты нашей модели и находит случайную
 //точку по координате z , и именно сечение по этой координате мы будем исследовать
 double Generator::GeneratorMonteCarlo_Height()
@@ -252,8 +260,7 @@ void Generator::IntersectionSearch(Coordinates& NewCoordinates, int k)
             Disk* disk = dynamic_cast<Disk*>(vector[NewCoordinates.index]);
             if (disk->portal) {
                 ++exitMolecules;
-                return;
-            }
+            } return;
             generator.GeneratorMonteCarlo_GVector(NewCoordinates);
             // я думаю тут сделать чтоб оно возвращало структуру , и если флаг FOUND то выходим из ф-и и возращаем структуру
             //или сделать все по ссылке как ты и хотел,
