@@ -339,38 +339,26 @@ int Generator::Core(int countMoleculs, int iteration)
         rand = generator.GeneratorMonteCarlo_Cylinder();
         NewCoordinates = rand;
         IterationForCylinder(NewCoordinates);
-        int j = 0;
-        while (j < iteration - 1) {}
-    }
+        generator.Iteration(NewCoordinates, iteration);
+}
     for (int i = 0; i < countMoleculs * coeficionts.DiskCoef; ++i) {
         rand = generator.GeneratorMonteCarlo_Disk();
         NewCoordinates = rand;
         IterationForDisk(NewCoordinates);
-        int j = 0;
-        while (j < iteration - 1)
-        {
-          if (vector[NewCoordinates.index]->name == "Disk") {
-               IterationForDisk(NewCoordinates);
-               if (NewCoordinates.flag == EXIT) {break;}
-               j++;
-          } else {
-               IterationForCylinder(NewCoordinates);
-               if (NewCoordinates.flag == EXIT) {break;}
-               j++;
-           }
-    }
+        generator.Iteration(NewCoordinates, iteration);
     }
     return exitMolecules;
 }
 
 
-Coordinates Generator::FlightMoleculeDisk(Coordinates coordinates, int i) {
+Coordinates Generator::FlightMoleculeDisk(Coordinates coordinates, int i)
+{
     Disk* disk = dynamic_cast<Disk*>(vector[i]);
     double t = (disk->coordinateZ - coordinates.z) / coordinates.p3;
     double x_0 = coordinates.x + coordinates.p1*t;
     double y_0 = coordinates.y + coordinates.p1*t;
-    if (sqrt(pow(x_0, 2) + pow(y_0, 2)) > disk->radiusInsideDisk &&
-        sqrt(pow(x_0, 2) + pow(y_0, 2)) < disk->radiusOutsideDisk) {
+    if ((sqrt(pow(x_0, 2) + pow(y_0, 2)) > disk->radiusInsideDisk &&
+        sqrt(pow(x_0, 2) + pow(y_0, 2)) < disk->radiusOutsideDisk)) {
         coordinates.x = x_0;
         coordinates.y = y_0;
         coordinates.z = disk->coordinateZ;
@@ -380,7 +368,8 @@ Coordinates Generator::FlightMoleculeDisk(Coordinates coordinates, int i) {
     return coordinates;
 }
 
-Coordinates Generator::FlightMoleculeCylinder(Coordinates coordinates, int i) { // ИСПРАВИТЬ СРОЧНО!!!!!!! НЕТ ПРОВЕРКИ НА ГРАНИЧНЫЕ УСЛОВИЯ
+Coordinates Generator::FlightMoleculeCylinder(Coordinates coordinates, int i)
+{
     findingCylinder coord = FindCylinderIndex(coordinates.z);
     pointOfIntersection pointBegin;
     pointOfIntersection pointEnd;

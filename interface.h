@@ -25,7 +25,6 @@ private:
     QLabel*    m_figure;
     QLabel*    m_first_label;
     QLabel*    m_second_label;
-    //Button*    m_create;
     QLabel* l_amount_of_iteration;
     QLabel* l_amount_of_molecules;
     QLabel* l_percentage_of_ejected_molecules;
