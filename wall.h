@@ -127,6 +127,7 @@ public:
 
 class Generator {
   public:
+    bool IsDiskInVector();
     double GeneratorMonteCarlo_Height();
     double GeneratorMonteCarlo_Fi();
     double GeneratorMonteCarlo_Teta();
