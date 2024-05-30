@@ -16,5 +16,5 @@ void test()
     rand.gamma = 15;
     rand.teta = 15;
     NewCoordinates = rand;
-    generator.FlightMoleculeCylinder(NewCoordinates);
+    generator.FlightMoleculeCylinder(NewCoordinates, 1);
 }
