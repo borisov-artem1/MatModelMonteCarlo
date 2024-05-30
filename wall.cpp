@@ -6,12 +6,7 @@
 #include <iostream>
 #include <cmath>
 #define PI 3.14
-enum {
-    EXIT = -1,
-    NOT_FOUND = 0,
-    FOUND = 1,
 
-};
 
 static int exitMolecules;
 
@@ -101,12 +96,21 @@ RandomValues Generator::GeneratorMonteCarlo_Cylinder()
     return cylinderValues;
 }
 
-Coordinates Generator::GeneratorMonteCarlo_GVector(Coordinates& coordinates) {
+/*Coordinates Generator::GeneratorMonteCarlo_GVector(Coordinates& coordinates) {
     double teta = GeneratorMonteCarlo_Teta();
     double gamma = GeneratorMonteCarlo_Gamma();
     coordinates.p1 = sin((teta * PI) / 180) * cos((gamma * PI) / 180);
     coordinates.p2 = sin((teta * PI) / 180) * sin((gamma * PI) / 180);
     coordinates.p3 = cos((teta * PI) / 180);
+    return coordinates;
+}*/
+
+Coordinates Generator::GeneratorMonteCarlo_GVector(Coordinates& coordinates) {
+    double teta = GeneratorMonteCarlo_Teta();
+    double gamma = GeneratorMonteCarlo_Gamma();
+    coordinates.p1 = sin(teta) * cos(gamma);
+    coordinates.p2 = sin(teta) * sin(gamma);
+    coordinates.p3 = cos(teta);
     return coordinates;
 }
 
@@ -226,7 +230,7 @@ findingCylinder Generator::FindCylinderIndex(double height) {
     return coord;
 }
 
-Coordinates& Coordinates::operator=(const RandomValues& other)
+/*Coordinates& Coordinates::operator=(const RandomValues& other)
 {
     const double pi = PI;
     double p1 = sin((other.teta * pi) / 180) * cos((other.gamma * pi) / 180);
@@ -248,6 +252,34 @@ Coordinates& Coordinates::operator=(const RandomValues& other)
     } else {
         this->x = other.point * cos((other.fi * pi) / 180);
         this->y = other.point * sin((other.fi * pi) / 180);
+        this->z = vector[other.index - 1]->coordinateZ;
+        this->index = other.index;
+    }
+    return *this;
+}*/
+
+Coordinates& Coordinates::operator=(const RandomValues& other)
+{
+    //const double pi = PI;
+    double p1 = sin(other.teta) * cos(other.gamma);
+    double p2 = sin(other.teta) * sin(other.gamma);
+    double p3 = cos(other.teta);
+    this->p1 = p1;
+    this->p2 = p2;
+    this->p3 = p3;
+    if (other.height != 0.) {
+        findingCylinder coord = generator.FindCylinderIndex(other.height);
+        Сylinder* cylinder = dynamic_cast<Сylinder*>(vector[coord.index]);
+        double x0 = cylinder->radiusOutsideCylinder * cos(other.fi);
+        double y0 = cylinder->radiusOutsideCylinder * sin(other.fi);
+        double z0 = other.height;
+        this->x = x0;
+        this->y = y0;
+        this->z = z0;
+        this->index = coord.index;
+    } else {
+        this->x = other.point * cos(other.fi);
+        this->y = other.point * sin(other.fi);
         this->z = vector[other.index - 1]->coordinateZ;
         this->index = other.index;
     }
@@ -285,7 +317,7 @@ void Generator::IterationForCylinder(Coordinates& NewCoordinates)
 
     int count = 1;
     while (NewCoordinates.flag != FOUND) {
-        for (int k = NewCoordinates.index; k < k + count; ++k) {
+        for (int k = NewCoordinates.index; k < k + count; ++k) {// Нашел ошибку здесь
             generator.IntersectionSearch(NewCoordinates, k);
             if (NewCoordinates.flag == FOUND) {
                 break;
@@ -367,7 +399,7 @@ int Generator::Core(int countMoleculs, int iteration)
 }
 
 
-Coordinates Generator::FlightMoleculeDisk(Coordinates coordinates, int i)
+Coordinates Generator::FlightMoleculeDisk(Coordinates& coordinates, int i)
 {
     Disk* disk = dynamic_cast<Disk*>(vector[i]);
     double t = (disk->coordinateZ - coordinates.z) / coordinates.p3;
@@ -390,7 +422,7 @@ bool Generator::CheckForBoundCondition(Coordinates coordinates, Сylinder *cylin
     return (coordinates.z < cylinder->coordinateZ - cylinder->Height) || (coordinates.z > cylinder->coordinateZ);
 }
 
-Coordinates Generator::FlightMoleculeCylinder(Coordinates coordinates, int i) { // ИСПРАВИТЬ СРОЧНО!!!!!!! НЕТ ПРОВЕРКИ НА ГРАНИЧНЫЕ УСЛОВИЯ
+Coordinates Generator::FlightMoleculeCylinder(Coordinates& coordinates, int i) { // ИСПРАВИТЬ СРОЧНО!!!!!!! НЕТ ПРОВЕРКИ НА ГРАНИЧНЫЕ УСЛОВИЯ
     //findingCylinder coord = FindCylinderIndex(coordinates.z);
     Coordinates pointBegin;
     Coordinates pointEnd;
@@ -422,8 +454,14 @@ Coordinates Generator::FlightMoleculeCylinder(Coordinates coordinates, int i) { 
         }
 
         if (pointBegin.flag == FOUND && pointEnd.flag == NOT_FOUND) {
+            pointBegin.p1 = coordinates.p1;
+            pointBegin.p2 = coordinates.p2;
+            pointBegin.p3 = coordinates.p3;
             return pointBegin;
         } else if (pointBegin.flag == NOT_FOUND && pointEnd.flag == FOUND) {
+            pointEnd.p1 = coordinates.p1;
+            pointEnd.p2 = coordinates.p2;
+            pointEnd.p3 = coordinates.p3;
             return pointEnd;
         } else if (pointBegin.flag == FOUND && pointEnd.flag == FOUND) {
             if (pointBegin.x != coordinates.x && pointBegin.y != coordinates.y && pointBegin.z != coordinates.z) {

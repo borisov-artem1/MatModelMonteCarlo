@@ -7,6 +7,13 @@
 #include <QObject>
 #include <QComboBox>
 
+enum {
+    EXIT = -1,
+    NOT_FOUND = 0,
+    FOUND = 1,
+
+};
+
 class Generator;
 
 struct guidingVector {
@@ -155,8 +162,8 @@ class Generator {
     bool FlightMolecule_Disk();
 
     Coordinates FlightMolecule(Coordinates& coordinates);
-    Coordinates FlightMoleculeCylinder(Coordinates coordinates, int i);
-    Coordinates FlightMoleculeDisk(Coordinates coordinates, int i);
+    Coordinates FlightMoleculeCylinder(Coordinates& coordinates, int i);
+    Coordinates FlightMoleculeDisk(Coordinates& coordinates, int i);
 
     void IterationForCylinder(Coordinates& coordinates);
     void IterationForDisk(Coordinates& coordinates);
