@@ -235,25 +235,26 @@ findingCylinder Generator::FindCylinderIndex(double height) {
 
 Coordinates& Coordinates::operator=(const RandomValues& other)
 {
-    double p1 = sin((other.teta * PI) / 180) * cos((other.gamma * PI) / 180);
-    double p2 = sin((other.teta * PI) / 180) * sin((other.gamma * PI) / 180);
-    double p3 = cos((other.teta * PI) / 180);
+    const double pi = PI;
+    double p1 = sin((other.teta * pi) / 180) * cos((other.gamma * pi) / 180);
+    double p2 = sin((other.teta * pi) / 180) * sin((other.gamma * pi) / 180);
+    double p3 = cos((other.teta * pi) / 180);
     this->p1 = p1;
     this->p2 = p2;
     this->p3 = p3;
     if (other.height != 0.) {
         findingCylinder coord = generator.FindCylinderIndex(other.height);
         Сylinder* cylinder = dynamic_cast<Сylinder*>(vector[coord.index]);
-        double x0 = cylinder->radiusOutsideCylinder * cos((other.fi * PI) / 180);
-        double y0 = cylinder->radiusOutsideCylinder * sin((other.fi * PI) / 180);
+        double x0 = cylinder->radiusOutsideCylinder * cos((other.fi * pi) / 180);
+        double y0 = cylinder->radiusOutsideCylinder * sin((other.fi * pi) / 180);
         double z0 = other.height;
         this->x = x0;
         this->y = y0;
         this->z = z0;
         this->index = coord.index;
     } else {
-        this->x = other.point * cos(other.fi);
-        this->y = other.point * sin(other.fi);
+        this->x = other.point * cos((other.fi * pi) / 180);
+        this->y = other.point * sin((other.fi * pi) / 180);
         this->z = vector[other.index - 1]->coordinateZ;
         this->index = other.index;
     }
