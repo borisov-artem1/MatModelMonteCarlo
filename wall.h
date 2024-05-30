@@ -170,6 +170,7 @@ class Generator {
     bool CheckForBoundCondition(Coordinates coordinates, Сylinder* cylinder);
     void Iteration(Coordinates& NewCoordinates, int iteration);
 
+    void test(){};
 };
 
 #endif // WALL_H

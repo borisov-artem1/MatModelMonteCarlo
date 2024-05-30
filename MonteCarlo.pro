@@ -13,6 +13,7 @@ SOURCES += \
     button.cpp \
     interface.cpp \
     main.cpp \
+    test.cpp \
     wall.cpp
 
 HEADERS += \

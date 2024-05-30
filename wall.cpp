@@ -48,14 +48,7 @@ Disk::~Disk() {
 
 Сylinder::~Сylinder() {}
 
-//void Generator::CreatingVectorOfIndexes()
-//{
-//    for (int i = 0; i < vector.size(); i++) {
-//        if (vector[i]->name=="Disk") {
-//            indexVector.push_back(i);
-//        }
-//    }
-//}
+
 //берет значения от нуля до высоты нашей модели и находит случайную
 //точку по координате z , и именно сечение по этой координате мы будем исследовать
 double Generator::GeneratorMonteCarlo_Height()
@@ -292,14 +285,14 @@ void Generator::IterationForCylinder(Coordinates& NewCoordinates)
 
     int count = 1;
     while (NewCoordinates.flag != FOUND) {
-        for (int k = NewCoordinates.index + count; k < k + 1; ++k) {
+        for (int k = NewCoordinates.index; k < k + count; ++k) {
             generator.IntersectionSearch(NewCoordinates, k);
             if (NewCoordinates.flag == FOUND) {
                 break;
             }
         }
         if (NewCoordinates.flag != FOUND) {
-            for (int k = NewCoordinates.index - count; k > k + 1; --k) {
+            for (int k = NewCoordinates.index; k > k - count; --k) {
                 generator.IntersectionSearch(NewCoordinates, k);
                 if (NewCoordinates.flag == FOUND) {
                     break;
