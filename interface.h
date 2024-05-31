@@ -9,6 +9,11 @@
 #include <QDialog>
 #include "button.h"
 
+struct PortalIndex {
+    bool bottom;
+    bool vertex;
+};
+
 class Interface: public QWidget {
 
     Q_OBJECT
