@@ -316,18 +316,18 @@ void Generator::IterationForCylinder(Coordinates& NewCoordinates)
 {
 
     int count = 1;
-    while (NewCoordinates.flag != FOUND) {
+    while (NewCoordinates.flag == NOT_FOUND) {
         for (int k = NewCoordinates.index; k < k + count; ++k) {// Нашел ошибку здесь
             generator.IntersectionSearch(NewCoordinates, k);
             if (NewCoordinates.flag == FOUND) {
-                break;
+                return;
             }
         }
-        if (NewCoordinates.flag != FOUND) {
+        if (NewCoordinates.flag == NOT_FOUND) {
             for (int k = NewCoordinates.index; k > k - count; --k) {
                 generator.IntersectionSearch(NewCoordinates, k);
                 if (NewCoordinates.flag == FOUND) {
-                    break;
+                    return;
                 }
             }
             ++count;
@@ -419,6 +419,7 @@ Coordinates Generator::FlightMoleculeDisk(Coordinates& coordinates, int i)
 
 
 bool Generator::CheckForBoundCondition(Coordinates coordinates, Сylinder *cylinder) {
+    //std::cout << "coordinate z: " << cylinder->coordinateZ << std::endl;
     return (coordinates.z < cylinder->coordinateZ - cylinder->Height) || (coordinates.z > cylinder->coordinateZ);
 }
 
@@ -442,15 +443,15 @@ Coordinates Generator::FlightMoleculeCylinder(Coordinates& coordinates, int i) {
         pointEnd.z = coordinates.z + coordinates.p3 * t2;
 
         if (CheckForBoundCondition(pointBegin, cylinder)) {
-            pointBegin.flag = FOUND;
-        } else {
             pointBegin.flag = NOT_FOUND;
+        } else {
+            pointBegin.flag = FOUND;
         }
 
         if (CheckForBoundCondition(pointEnd, cylinder)) {
-            pointEnd.flag = FOUND;
-        } else {
             pointEnd.flag = NOT_FOUND;
+        } else {
+            pointEnd.flag = FOUND;
         }
 
         if (pointBegin.flag == FOUND && pointEnd.flag == NOT_FOUND) {
@@ -468,10 +469,12 @@ Coordinates Generator::FlightMoleculeCylinder(Coordinates& coordinates, int i) {
                 coordinates.x = pointBegin.x;
                 coordinates.y = pointBegin.y;
                 coordinates.z = pointBegin.z;
+                coordinates.flag = FOUND;
             } else if (pointEnd.x != coordinates.x && pointEnd.y != coordinates.y && pointEnd.z != coordinates.z) {
                 coordinates.x = pointEnd.x;
                 coordinates.y = pointEnd.y;
                 coordinates.z = pointEnd.z;
+                coordinates.flag = FOUND;
             }
         }
 
