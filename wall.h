@@ -81,7 +81,7 @@ public:
     ~Disk(); // объявляем деструктор
     //const QString name = "Disk";
     int index;
-    bool portal;// true если да, false если нет
+    bool portal = false;// true если да, false если нет
     bool location; // true если сверху, false если снизу, мои изменения
 };
 
@@ -171,7 +171,7 @@ class Generator {
 
     int Core(int countMoleculs, int iteration);
 
-    void CreatingPortal(int val = 0, bool flag = false);
+    void CreatingPortal(int val2 = 0, bool flag = false);
     void DownOrUp(int count);
 
 

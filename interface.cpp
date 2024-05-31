@@ -279,17 +279,20 @@ bool Interface::isBuildingCorrectly(double val1, double val2, const QString sele
 void Generator::CreatingPortal(int val2, bool flag)
 {   if (flag == true) {
         Disk* disk = new Disk(val2, 0);
+        disk->portal = true;
         vector.push_back(disk);
     } else {
         if (vector.back()->name=="Cylinder") {
             Сylinder* cylinder = dynamic_cast<Сylinder*>(vector.back());
             int radius = cylinder->radiusOutsideCylinder;
             Disk* disk = new Disk(radius, 0);
+            disk->portal = true;
             vector.push_back(disk);
         } else {
             Disk* disk = dynamic_cast<Disk*>(vector.back());
             int radius = disk->radiusInsideDisk;
             Disk* diskPortal = new Disk(radius, 0);
+            disk->portal = true;
             vector.push_back(diskPortal);
         }
     }
