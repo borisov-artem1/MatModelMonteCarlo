@@ -9,6 +9,8 @@
 std::stack<Wall*> stack;
 QVector<Wall*> vector;
 static Generator generator;
+class Test;
+
 
 
 Interface::Interface() {
@@ -62,6 +64,7 @@ Interface::Interface() {
         }
     });
     connect(create, &QPushButton::clicked, this, &Interface::readingValues);
+    //connect(create, &QPushButton::clicked, this, &Interface::test);
     m_figure->setText("Choose your figure:");
     m_first_label->setText("Hight:");
     m_second_label->setText("Radius:");

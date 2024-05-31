@@ -40,6 +40,7 @@ private slots:
     void readingValues();
     void CalculateOfPrecentageMolecules();
     void preCalculate();
+    void test();
 };
 
 class CenteredWindow: public QWidget {
