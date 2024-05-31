@@ -10,7 +10,7 @@ std::stack<Wall*> stack;
 QVector<Wall*> vector;
 static Generator generator;
 class Test;
-
+Wall wall;
 
 
 Interface::Interface() {
@@ -203,6 +203,7 @@ void Interface::readingValues() {
 в начало и конец модели там где это необходимо*/
     if (isBuildingCorrectly(val1, val2, selected_text, windowError)) {
         if (selected_text == "Cylinder") {
+            if (wall.indexNumber == 0){generator.CreatingPortal(val2, true);}
             Сylinder* cylinder = new Сylinder(val2, val1);
             stack.push(cylinder);
             vector.push_back(cylinder);
@@ -210,6 +211,7 @@ void Interface::readingValues() {
             count++;
             qDebug() << "Cylinder" << Qt::endl;
         } else if (selected_text == "Disk") {
+            if ((wall.indexNumber == 0)&&(val2>0)){generator.CreatingPortal(val2, true);}
             Disk* disk = new Disk(val1, val2);
             // здесь мои изменения
             if (vector.size() == 0) {
@@ -274,24 +276,25 @@ bool Interface::isBuildingCorrectly(double val1, double val2, const QString sele
     }
 }
 
-void Generator::CreatingPortal()
-{
-    if (vector[0]->name == "Cylinder") {
-        Сylinder* cylinder = dynamic_cast<Сylinder*>(vector[0]);
-        Disk* disk = new Disk(cylinder->radiusOutsideCylinder, 0);
-        disk->portal = true;
-        vector.push_front(disk);
-    }
-    if (vector.back()->name == "Cylinder") {
-        Сylinder* cylinder = dynamic_cast<Сylinder*>(vector.back());
-        Disk* disk = new Disk(cylinder->radiusOutsideCylinder, 0);
+void Generator::CreatingPortal(int val2, bool flag)
+{   if (flag == true) {
+        Disk* disk = new Disk(val2, 0);
         disk->portal = true;
         vector.push_back(disk);
-    } else if (vector.back()->name == "Disk") {
-        Disk* disk = dynamic_cast<Disk*>(vector.back());
-        Disk* new_disk = new Disk(disk->radiusInsideDisk, 0);
-        new_disk->portal = true;
-        vector.push_back(new_disk);
+    } else {
+        if (vector.back()->name=="Cylinder") {
+            Сylinder* cylinder = dynamic_cast<Сylinder*>(vector.back());
+            int radius = cylinder->radiusOutsideCylinder;
+            Disk* disk = new Disk(radius, 0);
+            disk->portal = true;
+            vector.push_back(disk);
+        } else {
+            Disk* disk = dynamic_cast<Disk*>(vector.back());
+            int radius = disk->radiusInsideDisk;
+            Disk* diskPortal = new Disk(radius, 0);
+            disk->portal = true;
+            vector.push_back(diskPortal);
+        }
     }
 }
 

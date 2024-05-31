@@ -6,6 +6,7 @@
 #include <iostream>
 #include <QObject>
 #include <QComboBox>
+#include "interface.h"
 
 enum {
     EXIT = -1,
@@ -80,7 +81,7 @@ public:
     ~Disk(); // объявляем деструктор
     //const QString name = "Disk";
     int index;
-    bool portal;// true если да, false если нет
+    bool portal = false;// true если да, false если нет
     bool location; // true если сверху, false если снизу, мои изменения
 };
 
@@ -170,7 +171,7 @@ class Generator {
 
     int Core(int countMoleculs, int iteration);
 
-    void CreatingPortal();
+    void CreatingPortal(int val2 = 0, bool flag = false);
     void DownOrUp(int count);
 
 

@@ -13,7 +13,7 @@ static int exitMolecules;
 extern QVector<Wall*> vector;
 QVector<int> indexVector;
 double Wall::coordinateZ = 0;
-int Wall::indexNumber = 0;
+int Wall::indexNumber = -1;
 static Generator generator;
 
 Wall::Wall() {
