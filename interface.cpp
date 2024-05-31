@@ -273,6 +273,7 @@ bool Interface::isBuildingCorrectly(double val1, double val2, const QString sele
 
 void Generator::CreatingPortal()
 {
+    int count = 0;
     if (vector[0]->name == "Cylinder") {
         Сylinder* cylinder = dynamic_cast<Сylinder*>(vector[0]);
         Disk* disk = new Disk(cylinder->radiusOutsideCylinder, 0);
