@@ -454,7 +454,24 @@ Coordinates Generator::FlightMoleculeCylinder(Coordinates& coordinates, int i) {
             pointEnd.flag = FOUND;
         }
 
-        if (pointBegin.flag == FOUND && pointEnd.flag == NOT_FOUND) {
+        if (pointBegin.flag == FOUND) {
+            if (!(t1 == 0. || (t1 > -1e-14 && t1 < 1e-14))) {
+                return pointBegin;
+            }
+        }
+
+        if (pointEnd.flag == FOUND) {
+            if (!(t2 == 0. || (t2 > -1e-14 && t2 < 1e-14))) {
+                return pointEnd;
+            }
+        }
+
+        if (pointBegin.flag == NOT_FOUND || pointEnd.flag == NOT_FOUND) {
+            coordinates.flag = NOT_FOUND;
+            return coordinates;
+        }
+
+        /*if (pointBegin.flag == FOUND && pointEnd.flag == NOT_FOUND) {
             pointBegin.p1 = coordinates.p1;
             pointBegin.p2 = coordinates.p2;
             pointBegin.p3 = coordinates.p3;
@@ -478,7 +495,7 @@ Coordinates Generator::FlightMoleculeCylinder(Coordinates& coordinates, int i) {
             }
         }
 
-        return coordinates;
+        return coordinates;*/
 
     } else {
         throw std::exception();
