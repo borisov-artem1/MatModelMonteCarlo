@@ -257,19 +257,22 @@ void Generator::IntersectionSearch(Coordinates& NewCoordinates, int k)
         if (NewCoordinates.flag == FOUND) {
             Disk* disk = dynamic_cast<Disk*>(vector[NewCoordinates.index]);
             if (disk->portal) {
+                NewCoordinates.flag = EXIT;
                 ++exitMolecules;
-            } return;
+                return;
+            }
             generator.GeneratorMonteCarlo_GVector(NewCoordinates);
             return;
             // я думаю тут сделать чтоб оно возвращало структуру , и если флаг FOUND то выходим из ф-и и возращаем структуру
             //или сделать все по ссылке как ты и хотел,
         }
-    } else if (vector[k]->name == "Cylinder"){
+    } else if (vector[k]->name == "Cylinder") {
         NewCoordinates = FlightMoleculeCylinder(NewCoordinates, k);
         if (NewCoordinates.flag == FOUND) {
             generator.GeneratorMonteCarlo_GVector(NewCoordinates);
             return;
         }
+        return;
     }
 }
 
@@ -282,14 +285,14 @@ void Generator::IterationForCylinder(Coordinates& NewCoordinates)
     while (NewCoordinates.flag == NOT_FOUND) {
         for (int k = NewCoordinates.index; k < k + count; ++k) {// Нашел ошибку здесь
             generator.IntersectionSearch(NewCoordinates, k);
-            if (NewCoordinates.flag == FOUND) {
+            if (NewCoordinates.flag == EXIT || NewCoordinates.flag == FOUND) {
                 return;
             }
         }
         if (NewCoordinates.flag == NOT_FOUND) {
             for (int k = NewCoordinates.index; k > k - count; --k) {
                 generator.IntersectionSearch(NewCoordinates, k);
-                if (NewCoordinates.flag == FOUND) {
+                if (NewCoordinates.flag == EXIT || NewCoordinates.flag == FOUND) {
                     return;
                 }
             }
@@ -301,6 +304,24 @@ void Generator::IterationForCylinder(Coordinates& NewCoordinates)
 
 void Generator::IterationForDisk(Coordinates& NewCoordinates)
 {
+    Disk* disk = dynamic_cast<Disk*>(vector[NewCoordinates.index]);
+    if (disk->location) {
+        for (int i = NewCoordinates.index; i < vector.size(); ++i) {
+            generator.IntersectionSearch(NewCoordinates, i + 1);
+            if (NewCoordinates.flag == EXIT || NewCoordinates.flag == FOUND) {
+                return;
+            }
+        }
+    } else {
+        for (int i = NewCoordinates.index; i > 0; --i) {
+            generator.IntersectionSearch(NewCoordinates, i + 1);
+            if (NewCoordinates.flag == EXIT || NewCoordinates.flag == FOUND) {
+                return;
+            }
+        }
+    }
+    //ПРОШЛАЯ ВЕРСИЯ
+    /*
     Disk* disk = dynamic_cast<Disk*>(vector[NewCoordinates.index]);
     if (disk->location == true) {
         for (int k = NewCoordinates.index; k >= 0; k--) {
@@ -315,6 +336,7 @@ void Generator::IterationForDisk(Coordinates& NewCoordinates)
             }
         }
     }
+    */
 }
 
 
@@ -324,12 +346,12 @@ void Generator::Iteration(Coordinates& NewCoordinates, int iteration) {
     while (j < iteration - 1) {
         if (vector[NewCoordinates.index]->name == "Disk") {
              IterationForDisk(NewCoordinates);
-             if (NewCoordinates.flag == EXIT) {break;}
+             if (NewCoordinates.flag == EXIT) {return;}
              j++;
              NewCoordinates.flag = NOT_FOUND;
         } else {
              IterationForCylinder(NewCoordinates);
-             if (NewCoordinates.flag == EXIT) {break;}
+             if (NewCoordinates.flag == EXIT) {return;}
              j++;
              NewCoordinates.flag = NOT_FOUND;
         }
@@ -350,7 +372,12 @@ int Generator::Core(int countMoleculs, int iteration)
         rand = generator.GeneratorMonteCarlo_Cylinder();
         NewCoordinates = rand;
         IterationForCylinder(NewCoordinates);
-        NewCoordinates.flag = NOT_FOUND;
+        if (NewCoordinates.flag == EXIT) {
+            NewCoordinates.flag = NOT_FOUND;
+            continue;
+        } else if (NewCoordinates.flag == FOUND) {
+            NewCoordinates.flag = NOT_FOUND;
+        }
         generator.Iteration(NewCoordinates, iteration);
     }
 
@@ -359,7 +386,12 @@ int Generator::Core(int countMoleculs, int iteration)
         rand = generator.GeneratorMonteCarlo_Disk();
         NewCoordinates = rand;
         IterationForDisk(NewCoordinates);
-        NewCoordinates.flag = NOT_FOUND;
+        if (NewCoordinates.flag == EXIT) {
+            NewCoordinates.flag = NOT_FOUND;
+            continue;
+        } else if (NewCoordinates.flag == FOUND) {
+            NewCoordinates.flag = NOT_FOUND;
+        }
         generator.Iteration(NewCoordinates, iteration);
     }
     return exitMolecules;
