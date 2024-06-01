@@ -51,8 +51,8 @@ double Generator::GeneratorMonteCarlo_Height()
     std::mt19937 generator; // Инициализация генератора
     int z_finish = Wall::coordinateZ;
     generator.seed(std::random_device()()); // Использование случайного устройства для засевания генератора
-    std::uniform_int_distribution<int> distribution(0, z_finish); // Равномерное распределение от 1 до 100
-    int randomValue = distribution(generator); // Генерация случайного числа
+    std::uniform_real_distribution<double> distribution(0, z_finish); // Равномерное распределение от 1 до 100
+    double randomValue = distribution(generator); // Генерация случайного числа
     return randomValue;
 }
 
@@ -61,8 +61,8 @@ double Generator::GeneratorMonteCarlo_Fi()
 {
     std::mt19937 generator;
     generator.seed(std::random_device()()); // Использование случайного устройства для засевания генератора
-    std::uniform_int_distribution<int> distribution(0, 360);
-    int randomValue = distribution(generator);
+    std::uniform_real_distribution<double> distribution(0, 360);
+    double randomValue = distribution(generator);
     return randomValue;
 }
 
@@ -71,9 +71,9 @@ double Generator::GeneratorMonteCarlo_Teta()
 {
     std::mt19937 generator;
     generator.seed(std::random_device()());
-    std::uniform_int_distribution<int> distribution(0, 180); // Равномерное распределение от 1 до 180
-    int fi = distribution(generator);
-    return fi;
+    std::uniform_real_distribution<double> distribution(0, 180); // Равномерное распределение от 1 до 180
+    double teta = distribution(generator);
+    return teta;
 }
 
 //это 2 угол, который будет необходим для построения луча, по которому молекула будет вылетать
@@ -81,9 +81,9 @@ double Generator::GeneratorMonteCarlo_Gamma()
 {
     std::mt19937 generator;
     generator.seed(std::random_device()());
-    std::uniform_int_distribution<int> distribution(0, 180); // Равномерное распределение от 1 до 180
-    int fi = distribution(generator);
-    return fi;
+    std::uniform_real_distribution<double> distribution(0, 180); // Равномерное распределение от 1 до 180
+    double gamma = distribution(generator);
+    return gamma;
 }
 
 RandomValues Generator::GeneratorMonteCarlo_Cylinder()
@@ -95,15 +95,6 @@ RandomValues Generator::GeneratorMonteCarlo_Cylinder()
     cylinderValues.gamma = GeneratorMonteCarlo_Gamma();
     return cylinderValues;
 }
-
-/*Coordinates Generator::GeneratorMonteCarlo_GVector(Coordinates& coordinates) {
-    double teta = GeneratorMonteCarlo_Teta();
-    double gamma = GeneratorMonteCarlo_Gamma();
-    coordinates.p1 = sin((teta * PI) / 180) * cos((gamma * PI) / 180);
-    coordinates.p2 = sin((teta * PI) / 180) * sin((gamma * PI) / 180);
-    coordinates.p3 = cos((teta * PI) / 180);
-    return coordinates;
-}*/
 
 Coordinates Generator::GeneratorMonteCarlo_GVector(Coordinates& coordinates) {
     double teta = GeneratorMonteCarlo_Teta();
@@ -230,34 +221,6 @@ findingCylinder Generator::FindCylinderIndex(double height) {
     return coord;
 }
 
-/*Coordinates& Coordinates::operator=(const RandomValues& other)
-{
-    const double pi = PI;
-    double p1 = sin((other.teta * pi) / 180) * cos((other.gamma * pi) / 180);
-    double p2 = sin((other.teta * pi) / 180) * sin((other.gamma * pi) / 180);
-    double p3 = cos((other.teta * pi) / 180);
-    this->p1 = p1;
-    this->p2 = p2;
-    this->p3 = p3;
-    if (other.height != 0.) {
-        findingCylinder coord = generator.FindCylinderIndex(other.height);
-        Сylinder* cylinder = dynamic_cast<Сylinder*>(vector[coord.index]);
-        double x0 = cylinder->radiusOutsideCylinder * cos((other.fi * pi) / 180);
-        double y0 = cylinder->radiusOutsideCylinder * sin((other.fi * pi) / 180);
-        double z0 = other.height;
-        this->x = x0;
-        this->y = y0;
-        this->z = z0;
-        this->index = coord.index;
-    } else {
-        this->x = other.point * cos((other.fi * pi) / 180);
-        this->y = other.point * sin((other.fi * pi) / 180);
-        this->z = vector[other.index - 1]->coordinateZ;
-        this->index = other.index;
-    }
-    return *this;
-}*/
-
 Coordinates& Coordinates::operator=(const RandomValues& other)
 {
     //const double pi = PI;
@@ -363,10 +326,12 @@ void Generator::Iteration(Coordinates& NewCoordinates, int iteration) {
              IterationForDisk(NewCoordinates);
              if (NewCoordinates.flag == EXIT) {break;}
              j++;
+             NewCoordinates.flag = NOT_FOUND;
         } else {
              IterationForCylinder(NewCoordinates);
              if (NewCoordinates.flag == EXIT) {break;}
              j++;
+             NewCoordinates.flag = NOT_FOUND;
         }
     }
 
@@ -385,6 +350,7 @@ int Generator::Core(int countMoleculs, int iteration)
         rand = generator.GeneratorMonteCarlo_Cylinder();
         NewCoordinates = rand;
         IterationForCylinder(NewCoordinates);
+        NewCoordinates.flag = NOT_FOUND;
         generator.Iteration(NewCoordinates, iteration);
     }
 
@@ -393,6 +359,7 @@ int Generator::Core(int countMoleculs, int iteration)
         rand = generator.GeneratorMonteCarlo_Disk();
         NewCoordinates = rand;
         IterationForDisk(NewCoordinates);
+        NewCoordinates.flag = NOT_FOUND;
         generator.Iteration(NewCoordinates, iteration);
     }
     return exitMolecules;
