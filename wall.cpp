@@ -411,6 +411,7 @@ Coordinates Generator::FlightMoleculeDisk(Coordinates& coordinates, int i)
         coordinates.y = y_0;
         coordinates.z = disk->coordinateZ;
         coordinates.flag = FOUND;
+        coordinates.index = i;
     } else {
         coordinates.flag = NOT_FOUND;
     }
