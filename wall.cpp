@@ -475,34 +475,9 @@ Coordinates Generator::FlightMoleculeCylinder(Coordinates& coordinates, int i) {
             coordinates.flag = NOT_FOUND;
             return coordinates;
         }
-
-        /*if (pointBegin.flag == FOUND && pointEnd.flag == NOT_FOUND) {
-            pointBegin.p1 = coordinates.p1;
-            pointBegin.p2 = coordinates.p2;
-            pointBegin.p3 = coordinates.p3;
-            return pointBegin;
-        } else if (pointBegin.flag == NOT_FOUND && pointEnd.flag == FOUND) {
-            pointEnd.p1 = coordinates.p1;
-            pointEnd.p2 = coordinates.p2;
-            pointEnd.p3 = coordinates.p3;
-            return pointEnd;
-        } else if (pointBegin.flag == FOUND && pointEnd.flag == FOUND) {
-            if (pointBegin.x != coordinates.x && pointBegin.y != coordinates.y && pointBegin.z != coordinates.z) {
-                coordinates.x = pointBegin.x;
-                coordinates.y = pointBegin.y;
-                coordinates.z = pointBegin.z;
-                coordinates.flag = FOUND;
-            } else if (pointEnd.x != coordinates.x && pointEnd.y != coordinates.y && pointEnd.z != coordinates.z) {
-                coordinates.x = pointEnd.x;
-                coordinates.y = pointEnd.y;
-                coordinates.z = pointEnd.z;
-                coordinates.flag = FOUND;
-            }
-        }
-
-        return coordinates;*/
-
     } else {
-        throw std::exception();
+        coordinates.flag = NOT_FOUND;
+        return coordinates;
     }
+
 }
