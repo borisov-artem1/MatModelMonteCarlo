@@ -203,7 +203,7 @@ void Interface::readingValues() {
 в начало и конец модели там где это необходимо*/
     if (isBuildingCorrectly(val1, val2, selected_text, windowError)) {
         if (selected_text == "Cylinder") {
-            if (wall.indexNumber == 0){generator.CreatingPortal(val2, true);}
+            if (wall.indexNumber == -1){generator.CreatingPortal(val2, true);}
             Сylinder* cylinder = new Сylinder(val2, val1);
             stack.push(cylinder);
             vector.push_back(cylinder);
@@ -211,7 +211,7 @@ void Interface::readingValues() {
             count++;
             qDebug() << "Cylinder" << Qt::endl;
         } else if (selected_text == "Disk") {
-            if ((wall.indexNumber == 0)&&(val2>0)){generator.CreatingPortal(val2, true);}
+            if ((wall.indexNumber == -1)&&(val2>0)){generator.CreatingPortal(val2, true);}
             Disk* disk = new Disk(val1, val2);
             // здесь мои изменения
             if (vector.size() == 0) {
