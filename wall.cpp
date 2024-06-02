@@ -96,7 +96,7 @@ RandomValues Generator::GeneratorMonteCarlo_Cylinder()
     return cylinderValues;
 }
 
-Coordinates Generator::GeneratorMonteCarlo_GVector(Coordinates& coordinates) {
+Coordinates Generator::GeneratorMonteCarlo_GVector(Coordinates& coordinates) {// возможно ошибка
     double teta = GeneratorMonteCarlo_Teta();
     double gamma = GeneratorMonteCarlo_Gamma();
     coordinates.p1 = sin(teta) * cos(gamma);
@@ -267,9 +267,10 @@ void Generator::IntersectionSearch(Coordinates& NewCoordinates, int k)
             //или сделать все по ссылке как ты и хотел,
         }
     } else if (vector[k]->name == "Cylinder") {
+        // Необходимо перезаписать индекс именно найденной фигуры
         NewCoordinates = FlightMoleculeCylinder(NewCoordinates, k);
         if (NewCoordinates.flag == FOUND) {
-            generator.GeneratorMonteCarlo_GVector(NewCoordinates);
+            generator.GeneratorMonteCarlo_GVector(NewCoordinates);// Надо понять перезаписывается ли направляющий вектор
             return;
         }
         return;
@@ -283,14 +284,14 @@ void Generator::IterationForCylinder(Coordinates& NewCoordinates)
 
     int count = 1;
     while (NewCoordinates.flag == NOT_FOUND) {
-        for (int k = NewCoordinates.index; k < k + count; ++k) {// Нашел ошибку здесь
+        for (int k = NewCoordinates.index; (k < NewCoordinates.index + count) && (k < vector.size()); ++k) {// Нашел ошибку здесь
             generator.IntersectionSearch(NewCoordinates, k);
             if (NewCoordinates.flag == EXIT || NewCoordinates.flag == FOUND) {
                 return;
             }
         }
         if (NewCoordinates.flag == NOT_FOUND) {
-            for (int k = NewCoordinates.index; k > k - count; --k) {
+            for (int k = NewCoordinates.index; (k > NewCoordinates.index - count) && (k > -1); --k) {
                 generator.IntersectionSearch(NewCoordinates, k);
                 if (NewCoordinates.flag == EXIT || NewCoordinates.flag == FOUND) {
                     return;
@@ -344,12 +345,12 @@ void Generator::Iteration(Coordinates& NewCoordinates, int iteration) {
 
     int j = 0;
     while (j < iteration - 1) {
-        if (vector[NewCoordinates.index]->name == "Disk") {
+        if (vector[NewCoordinates.index]->name == "Disk") {// Здесь может быть SIGABRT, проверено, надо исправить
              IterationForDisk(NewCoordinates);
              if (NewCoordinates.flag == EXIT) {return;}
              j++;
              NewCoordinates.flag = NOT_FOUND;
-        } else {
+        } else if (vector[NewCoordinates.index]->name == "Cylinder") {
              IterationForCylinder(NewCoordinates);
              if (NewCoordinates.flag == EXIT) {return;}
              j++;
@@ -454,13 +455,17 @@ Coordinates Generator::FlightMoleculeCylinder(Coordinates& coordinates, int i) {
         }
 
         if (pointBegin.flag == FOUND) {
-            if (!(t1 == 0. || (t1 > -1e-14 && t1 < 1e-14))) {
+            if (!(t1 == 0. || (t1 > -1e-12 && t1 < 1e-12))) {
+                findingCylinder coord = generator.FindCylinderIndex(pointBegin.z);
+                pointBegin.index = coord.index;
                 return pointBegin;
             }
         }
 
         if (pointEnd.flag == FOUND) {
-            if (!(t2 == 0. || (t2 > -1e-14 && t2 < 1e-14))) {
+            if (!(t2 == 0. || (t2 > -1e-12 && t2 < 1e-12))) {
+                findingCylinder coord = generator.FindCylinderIndex(pointEnd.z);
+                pointEnd.index = coord.index;
                 return pointEnd;
             }
         }
