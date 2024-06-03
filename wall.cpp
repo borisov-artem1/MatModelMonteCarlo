@@ -281,23 +281,29 @@ void Generator::IntersectionSearch(Coordinates& NewCoordinates, int k)
 
 void Generator::IterationForCylinder(Coordinates& NewCoordinates)
 {
-
+    bool breakCondition = false;
     int count = 1;
     while (NewCoordinates.flag == NOT_FOUND) {
-        for (int k = NewCoordinates.index; (k < NewCoordinates.index + count) && (k < vector.size()); ++k) {// Нашел ошибку здесь
+        if (breakCondition) {
+            break;
+        }
+        for (int k = NewCoordinates.index; (k < NewCoordinates.index + count + 1) && (k < vector.size()); ++k) {// Нашел ошибку здесь
             generator.IntersectionSearch(NewCoordinates, k);
             if (NewCoordinates.flag == EXIT || NewCoordinates.flag == FOUND) {
                 return;
             }
         }
         if (NewCoordinates.flag == NOT_FOUND) {
-            for (int k = NewCoordinates.index; (k > NewCoordinates.index - count) && (k > -1); --k) {
+            for (int k = NewCoordinates.index; (k > NewCoordinates.index - count - 1) && (k > -1); --k) {
                 generator.IntersectionSearch(NewCoordinates, k);
                 if (NewCoordinates.flag == EXIT || NewCoordinates.flag == FOUND) {
                     return;
                 }
             }
             ++count;
+        }
+        if (count == vector.size()) {
+            breakCondition = true;
         }
     }
 }
@@ -387,7 +393,7 @@ Coordinates Generator::FlightMoleculeDisk(Coordinates& coordinates, int i)
     Disk* disk = dynamic_cast<Disk*>(vector[i]);
     double t = (disk->coordinateZ - coordinates.z) / coordinates.p3;
     double x_0 = coordinates.x + coordinates.p1 * t;
-    double y_0 = coordinates.y + coordinates.p1 * t;
+    double y_0 = coordinates.y + coordinates.p2 * t;
     if (sqrt(pow(x_0, 2) + pow(y_0, 2)) > disk->radiusInsideDisk &&
         sqrt(pow(x_0, 2) + pow(y_0, 2)) < disk->radiusOutsideDisk) {
         coordinates.x = x_0;
