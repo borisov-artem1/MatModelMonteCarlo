@@ -315,15 +315,15 @@ void Generator::IterationForDisk(Coordinates& NewCoordinates)
 {
     Disk* disk = dynamic_cast<Disk*>(vector[NewCoordinates.index]);
     if (disk->location) {
-        for (int i = NewCoordinates.index; i < vector.size(); ++i) {
-            generator.IntersectionSearch(NewCoordinates, i + 1);
+        for (int i = NewCoordinates.index + 1; i < vector.size(); ++i) {
+            generator.IntersectionSearch(NewCoordinates, i);
             if (NewCoordinates.flag == EXIT || NewCoordinates.flag == FOUND) {
                 return;
             }
         }
     } else {
-        for (int i = NewCoordinates.index; i > 0; --i) {
-            generator.IntersectionSearch(NewCoordinates, i + 1);
+        for (int i = NewCoordinates.index - 1; i > 0; --i) {
+            generator.IntersectionSearch(NewCoordinates, i);
             if (NewCoordinates.flag == EXIT || NewCoordinates.flag == FOUND) {
                 return;
             }
