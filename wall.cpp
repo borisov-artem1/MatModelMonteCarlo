@@ -290,6 +290,7 @@ void Generator::IterationForCylinder(Coordinates& NewCoordinates)
             if (NewCoordinates.flag == EXIT || NewCoordinates.flag == FOUND) {
                 return;
             }
+            ++count;
 }
         if (NewCoordinates.flag == NOT_FOUND) {
             if (NewCoordinates.index - count > -1){
@@ -299,8 +300,8 @@ void Generator::IterationForCylinder(Coordinates& NewCoordinates)
                     return;
                 }
             }
-            ++count;
         }
+
     }
 }
 
@@ -389,7 +390,7 @@ Coordinates Generator::FlightMoleculeDisk(Coordinates& coordinates, int i)
     Disk* disk = dynamic_cast<Disk*>(vector[i]);
     double t = (disk->coordinateZ - coordinates.z) / coordinates.p3;
     double x_0 = coordinates.x + coordinates.p1 * t;
-    double y_0 = coordinates.y + coordinates.p1 * t;
+    double y_0 = coordinates.y + coordinates.p2 * t;
     if (sqrt(pow(x_0, 2) + pow(y_0, 2)) > disk->radiusInsideDisk &&
         sqrt(pow(x_0, 2) + pow(y_0, 2)) < disk->radiusOutsideDisk) {
         coordinates.x = x_0;
