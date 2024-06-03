@@ -292,7 +292,7 @@ void Generator::CreatingPortal(int val2, bool flag)
             Disk* disk = dynamic_cast<Disk*>(vector.back());
             int radius = disk->radiusInsideDisk;
             Disk* diskPortal = new Disk(radius, 0);
-            disk->portal = true;
+            diskPortal->portal = true;
             vector.push_back(diskPortal);
         }
     }

@@ -294,7 +294,6 @@ void Generator::IterationForCylinder(Coordinates& NewCoordinates)
                 return;
             }
         }
-
         if (NewCoordinates.flag == NOT_FOUND) {
             for (int k = NewCoordinates.index; (k > NewCoordinates.index - count - 1) && (k > -1); --k) {
                 generator.IntersectionSearch(NewCoordinates, k);
@@ -302,7 +301,6 @@ void Generator::IterationForCylinder(Coordinates& NewCoordinates)
                     return;
                 }
             }
-            ++count;
         }
         if (count == vector.size()) {
             breakCondition = true;
