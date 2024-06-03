@@ -10,5 +10,6 @@ int main(int argc, char *argv[])
      w.move(400, 400);
      w.show();
      //   w.testForLocation();
+
      return a.exec();
 }

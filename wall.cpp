@@ -281,6 +281,7 @@ void Generator::IntersectionSearch(Coordinates& NewCoordinates, int k)
 
 void Generator::IterationForCylinder(Coordinates& NewCoordinates)
 {
+
     bool breakCondition = false;
     int count = 1;
     while (NewCoordinates.flag == NOT_FOUND) {
@@ -293,6 +294,7 @@ void Generator::IterationForCylinder(Coordinates& NewCoordinates)
                 return;
             }
         }
+
         if (NewCoordinates.flag == NOT_FOUND) {
             for (int k = NewCoordinates.index; (k > NewCoordinates.index - count - 1) && (k > -1); --k) {
                 generator.IntersectionSearch(NewCoordinates, k);
