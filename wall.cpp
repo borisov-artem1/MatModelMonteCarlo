@@ -282,16 +282,18 @@ void Generator::IntersectionSearch(Coordinates& NewCoordinates, int k)
 void Generator::IterationForCylinder(Coordinates& NewCoordinates)
 {
 
-    int count = 1;
+    int count = 0;
     while (NewCoordinates.flag == NOT_FOUND) {
-        for (int k = NewCoordinates.index; (k < NewCoordinates.index + count) && (k < vector.size()); ++k) {// Нашел ошибку здесь
+        if (NewCoordinates.index + count < vector.size()){
+            int k = NewCoordinates.index + count; // Нашел ошибку здесь
             generator.IntersectionSearch(NewCoordinates, k);
             if (NewCoordinates.flag == EXIT || NewCoordinates.flag == FOUND) {
                 return;
             }
-        }
+}
         if (NewCoordinates.flag == NOT_FOUND) {
-            for (int k = NewCoordinates.index; (k > NewCoordinates.index - count) && (k > -1); --k) {
+            if (NewCoordinates.index - count > -1){
+                int k = NewCoordinates.index - count;
                 generator.IntersectionSearch(NewCoordinates, k);
                 if (NewCoordinates.flag == EXIT || NewCoordinates.flag == FOUND) {
                     return;
