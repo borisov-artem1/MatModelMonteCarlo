@@ -321,23 +321,6 @@ void Generator::IterationForDisk(Coordinates& NewCoordinates)
             }
         }
     }
-    //ПРОШЛАЯ ВЕРСИЯ
-    /*
-    Disk* disk = dynamic_cast<Disk*>(vector[NewCoordinates.index]);
-    if (disk->location == true) {
-        for (int k = NewCoordinates.index; k >= 0; k--) {
-            generator.IntersectionSearch(NewCoordinates, k - 1);
-            if (NewCoordinates.flag == EXIT || NewCoordinates.flag == FOUND) {
-                return;
-            } else {
-        for (int k = NewCoordinates.index; k < vector.size(); k++) {
-            generator.IntersectionSearch(NewCoordinates, k + 1);
-            if (NewCoordinates.flag == EXIT || NewCoordinates.flag == FOUND) {return;}
-                }
-            }
-        }
-    }
-    */
 }
 
 

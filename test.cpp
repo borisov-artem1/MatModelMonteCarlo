@@ -34,9 +34,24 @@ void Interface::test() {
     }
 }
 
-void testForLocation()
+void Interface::testForLocation()
 {
-
+    Disk* disk = new Disk(15,0);
+    disk->portal=true;
+    vector.push_back(disk);
+    Сylinder* cylinder = new Сylinder(60,15);
+    vector.push_back(cylinder);
+    Disk* disk1 = new Disk(15,0);
+    disk1 ->portal=true;
+    vector.push_back(disk1);
+    Coordinates NewC;
+    NewC.p1=-0.432;
+    NewC.p2=0.4;
+    NewC.p3=0.8;
+    NewC.x=0.11;
+    NewC.y=14.9;
+    NewC.z=5.89;
+    generator.FlightMoleculeDisk(NewC, 0);
 }
 
 void test2()
