@@ -9,5 +9,7 @@ int main(int argc, char *argv[])
      Interface w;
      w.move(400, 400);
      w.show();
+     //   w.testForLocation();
+
      return a.exec();
 }
