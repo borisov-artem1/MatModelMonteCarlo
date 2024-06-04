@@ -40,6 +40,7 @@ Disk::~Disk() {
     index = indexNumber;
     name = "Cylinder";
     coordinateZ += Height;
+    coordinateCylinder = coordinateZ;
 }
 
 Сylinder::~Сylinder() {}
@@ -369,20 +370,6 @@ int Generator::Core(int countMoleculs, int iteration)
     Coordinates NewCoordinates = {};
     coeficionts = generator.Distribution();//убрал лишние вызовы
 
-//    for (int i = 0; i < countMoleculs * coeficionts.CylinderCoef; ++i) {
-//        rand = generator.GeneratorMonteCarlo_Cylinder();
-//        NewCoordinates = rand;
-//        IterationForCylinder(NewCoordinates);
-//        if (NewCoordinates.flag == EXIT) {
-//            NewCoordinates.flag = NOT_FOUND;
-//            continue;
-//        } else if (NewCoordinates.flag == FOUND) {
-//            NewCoordinates.flag = NOT_FOUND;
-//        }
-//        generator.Iteration(NewCoordinates, iteration);
-//    }
-
-
     for (int i = 0; i < countMoleculs * coeficionts.DiskCoef; ++i) {
         rand = generator.GeneratorMonteCarlo_Disk();
         NewCoordinates = rand;
@@ -402,7 +389,8 @@ double Generator::FindDiskCoordZ(int index) {
     if (index == 0) {
         return 0;
     }
-    return vector[index - 1]->coordinateZ;
+    Сylinder* cylinder = dynamic_cast<Сylinder*>(vector[index-1]);
+    return cylinder->coordinateCylinder;
 }
 
 Coordinates Generator::FlightMoleculeDisk(Coordinates& coordinates, int i)
