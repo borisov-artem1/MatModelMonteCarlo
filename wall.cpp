@@ -389,11 +389,17 @@ int Generator::Core(int countMoleculs, int iteration)
     return exitMolecules;
 }
 
+double Generator::FindDiskCoordZ(int index) {
+    if (index == 0) {
+        return 0;
+    }
+    return vector[index - 1]->coordinateZ;
+}
 
 Coordinates Generator::FlightMoleculeDisk(Coordinates& coordinates, int i)
 {
     Disk* disk = dynamic_cast<Disk*>(vector[i]);
-    double t = (disk->coordinateZ - coordinates.z) / coordinates.p3;
+    double t = (generator.FindDiskCoordZ(i) - coordinates.z) / coordinates.p3;
     double x_0 = coordinates.x + coordinates.p1 * t;
     double y_0 = coordinates.y + coordinates.p2 * t;
     if (sqrt(pow(x_0, 2) + pow(y_0, 2)) > disk->radiusInsideDisk &&
@@ -421,7 +427,7 @@ Coordinates Generator::FlightMoleculeCylinder(Coordinates& coordinates, int i) {
     Coordinates pointEnd;
     Сylinder* cylinder = dynamic_cast<Сylinder*>(vector[i]);
     double A = pow(coordinates.p1, 2) + pow(coordinates.p2, 2);
-    double B = coordinates.x * coordinates.p1 + coordinates.y * coordinates.p2;
+    double B = 2 * (coordinates.x * coordinates.p1 + coordinates.y * coordinates.p2);
     double C = pow(coordinates.x, 2) + pow(coordinates.y, 2) - pow(cylinder->radiusOutsideCylinder, 2);
     double Dis = pow(B, 2) - 4 * A * C;
     if (Dis > 0) {
@@ -467,7 +473,7 @@ Coordinates Generator::FlightMoleculeCylinder(Coordinates& coordinates, int i) {
             return coordinates;
         }
     } else if (Dis < 0) {
-        throw std::exception();
+        throw std::exception(); // вылетает на этой строке
         //coordinates.flag = NOT_FOUND;
         //return coordinates;
     } else {

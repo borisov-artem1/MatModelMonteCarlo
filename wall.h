@@ -175,6 +175,7 @@ class Generator {
     void DownOrUp(int count);
 
 
+    double FindDiskCoordZ(int index);
     bool CheckForBoundCondition(Coordinates coordinates, Сylinder* cylinder);
     void Iteration(Coordinates& NewCoordinates, int iteration);
 
