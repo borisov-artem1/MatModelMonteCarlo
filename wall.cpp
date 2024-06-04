@@ -421,7 +421,7 @@ Coordinates Generator::FlightMoleculeCylinder(Coordinates& coordinates, int i) {
     Coordinates pointEnd;
     Сylinder* cylinder = dynamic_cast<Сylinder*>(vector[i]);
     double A = pow(coordinates.p1, 2) + pow(coordinates.p2, 2);
-    double B = coordinates.x * coordinates.p1 + coordinates.y * coordinates.p2;
+    double B = 2*(coordinates.x * coordinates.p1 + coordinates.y * coordinates.p2);
     double C = pow(coordinates.x, 2) + pow(coordinates.y, 2) - pow(cylinder->radiusOutsideCylinder, 2);
     double Dis = pow(B, 2) - 4 * A * C;
     if (Dis > 0) {
