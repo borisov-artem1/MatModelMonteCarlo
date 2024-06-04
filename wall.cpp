@@ -15,6 +15,7 @@ QVector<int> indexVector;
 double Wall::coordinateZ = 0;
 int Wall::indexNumber = -2;
 static Generator generator;
+static bool flag = true;
 
 Wall::Wall() {
     indexNumber++;
@@ -115,6 +116,7 @@ void Generator::LookDiskIndexes()
                 indexVector.push_back(disk->index);
             }
     }
+    flag = false;
 }
 
 bool Generator::IsDiskInVector()
@@ -131,8 +133,9 @@ int Generator::GeneratorMonteCarlo_index()
     if (indexVector.empty() && (!generator.IsDiskInVector())) {
         throw std::runtime_error("Vector is empty");
     }
+    if (flag == true) {
     LookDiskIndexes();
-
+    }
     // Статические объекты для генерации случайных чисел
     static std::mt19937 gen(time(nullptr)); // генератор случайных чисел, инициализированный системными часами
     Disk* first_disk = dynamic_cast<Disk*>(vector[0]);
