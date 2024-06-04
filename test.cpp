@@ -1,5 +1,6 @@
 #include "wall.h"
 #include "interface.h"
+#include <QDebug>
 
 extern QVector<Wall*> vector;
 static Generator generator;
@@ -74,7 +75,6 @@ void test2()
 void Interface::testCriostat()
 {
     Disk* disk = new Disk(34,0);
-    disk->portal=true;
     vector.push_back(disk);
     Сylinder* cylinder = new Сylinder(305,34);
     vector.push_back(cylinder);
@@ -84,5 +84,8 @@ void Interface::testCriostat()
     vector.push_back(cylinder1);
     Disk* disk3 = new Disk(305, 51);
     vector.push_back(disk3);
-    generator.Core(1,100);
+    Disk* disk4 = new Disk(51,0);
+    disk4->portal=true;
+    vector.push_back(disk4);
+    qDebug()<<generator.Core(100,1);
 }
