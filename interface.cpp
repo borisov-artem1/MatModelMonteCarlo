@@ -13,6 +13,7 @@ class Test;
 Wall wall;
 
 
+
 Interface::Interface() {
 
     m_first_display_up   = new QLineEdit;
@@ -186,6 +187,9 @@ void Interface::CalculateOfPrecentageMolecules() {
 //в зависимости от того какой "сurrent index" выбирает куда записывать эти данные
 //и экземпляр какого класса добавлять
 void Interface::readingValues() {
+    //Disk* disk = new Disk(34, 0);
+    //stack.push(disk);
+    //vector.push_back(disk);
     QWidget windowError;
     windowError.move(300, 300);
     int index = dropdown->currentIndex();
@@ -235,6 +239,7 @@ void Interface::readingValues() {
 }
 
 bool Interface::isBuildingCorrectly(double val1, double val2, const QString selected_text, QWidget &windowError) {
+
     if (val1 < 0 || val2 < 0) {
         QMessageBox::critical(&windowError, "Error", "Input value is negative");
         return false;
@@ -264,7 +269,7 @@ bool Interface::isBuildingCorrectly(double val1, double val2, const QString sele
         }
     } else if (name == "Disk") {
         Disk* disk = dynamic_cast<Disk*>(topWall);
-        if (selected_text == "Cylinder" && (val1 == disk->radiusInsideDisk || val1 == disk->radiusOutsideDisk)) {
+        if (selected_text == "Cylinder" && (val2 == disk->radiusInsideDisk || val2 == disk->radiusOutsideDisk)) {
             return true;
         } else {
             QMessageBox::critical(&windowError, "Error", "Invalid figure or parametr");

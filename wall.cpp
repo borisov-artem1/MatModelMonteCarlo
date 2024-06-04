@@ -128,17 +128,23 @@ bool Generator::IsDiskInVector()
 
 int Generator::GeneratorMonteCarlo_index()
 {    // Проверка на пустоту вектора
-    if (indexVector.empty() &&(!generator.IsDiskInVector())) {
+    if (indexVector.empty() && (!generator.IsDiskInVector())) {
         throw std::runtime_error("Vector is empty");
     }
     LookDiskIndexes();
 
     // Статические объекты для генерации случайных чисел
     static std::mt19937 gen(time(nullptr)); // генератор случайных чисел, инициализированный системными часами
-    std::uniform_int_distribution<size_t> dist(0, indexVector.size() - 1); // распределение для индексов
+    Disk* first_disk = dynamic_cast<Disk*>(vector[0]);
+    Disk* second_disk = dynamic_cast<Disk*>(vector[vector.size() - 1]);
+    if (!first_disk || !second_disk) {
+        throw std::exception();
+    }
+    int ternar1 = first_disk->portal == true ? 1 : 0;
+    int ternar2 = second_disk->portal == true ? indexVector.size() - 2 : indexVector.size() - 1;
+    std::uniform_int_distribution<size_t> dist(ternar1, ternar2);// распределение для индексов
 
-    // Выбор случайного индекса и возвращение элемента
-    return indexVector[dist(gen)];
+    return indexVector[dist(gen)];// Выбор случайного индекса и возвращение элемента
 }
 
 double Generator::GeneratorMonteCarlo_Point(int index)
