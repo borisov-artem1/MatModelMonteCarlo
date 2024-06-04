@@ -111,7 +111,7 @@ void Generator::LookDiskIndexes()
 {
     for (Wall* wall : vector) {
             Disk* disk = dynamic_cast<Disk*>(wall); // Попытка приведения типа
-            if (disk && disk->name == "Disk") {
+            if (disk && disk->name == "Disk" ) {
                 indexVector.push_back(disk->index);
             }
     }

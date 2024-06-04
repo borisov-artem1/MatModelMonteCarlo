@@ -71,3 +71,18 @@ void test2()
                                                        // автоматически созданные диски с portal == true
 }
 
+void Interface::testCriostat()
+{
+    Disk* disk = new Disk(34,0);
+    disk->portal=true;
+    vector.push_back(disk);
+    Сylinder* cylinder = new Сylinder(305,34);
+    vector.push_back(cylinder);
+    Disk* disk1 = new Disk(305, 34);
+    vector.push_back(disk1);
+    Сylinder* cylinder1 = new Сylinder(210, 305);
+    vector.push_back(cylinder1);
+    Disk* disk3 = new Disk(305, 51);
+    vector.push_back(disk3);
+    generator.Core(1,100);
+}

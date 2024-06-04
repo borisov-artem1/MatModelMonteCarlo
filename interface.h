@@ -18,6 +18,7 @@ public:
     bool isBuildingCorrectly(double val1, double val2, QString selected_text, QWidget& windowError);
     void createFinalWindow(double exitMolecules, double amount_mol);
     void testForLocation();
+    void testCriostat();
 
 private:
 
