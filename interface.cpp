@@ -287,7 +287,7 @@ void Generator::CreatingPortal(int val2, bool flag)
         disk->portal = true;
         vector.push_back(disk);
     } else {
-        if (vector.back()->name=="Cylinder") {
+        if (vector.back()->name == "Cylinder") {
             Сylinder* cylinder = dynamic_cast<Сylinder*>(vector.back());
             int radius = cylinder->radiusOutsideCylinder;
             Disk* disk = new Disk(radius, 0);
@@ -296,6 +296,9 @@ void Generator::CreatingPortal(int val2, bool flag)
         } else {
             Disk* disk = dynamic_cast<Disk*>(vector.back());
             int radius = disk->radiusInsideDisk;
+            if (!radius) {
+                return;
+            }
             Disk* diskPortal = new Disk(radius, 0);
             diskPortal->portal = true;
             vector.push_back(diskPortal);

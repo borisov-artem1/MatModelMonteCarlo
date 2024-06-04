@@ -76,16 +76,16 @@ void Interface::testCriostat()
 {
     Disk* disk = new Disk(34,0);
     vector.push_back(disk);
-    Сylinder* cylinder = new Сylinder(305,34);
+    Сylinder* cylinder = new Сylinder(34,305);
     vector.push_back(cylinder);
     Disk* disk1 = new Disk(305, 34);
     vector.push_back(disk1);
-    Сylinder* cylinder1 = new Сylinder(210, 305);
+    Сylinder* cylinder1 = new Сylinder(305, 210);
     vector.push_back(cylinder1);
     Disk* disk3 = new Disk(305, 51);
     vector.push_back(disk3);
-    Disk* disk4 = new Disk(51,0);
-    disk4->portal=true;
-    vector.push_back(disk4);
+    //Disk* disk4 = new Disk(51,0);
+    //disk4->portal=true;
+    //vector.push_back(disk4);
     qDebug()<<generator.Core(100,1);
 }

@@ -404,21 +404,24 @@ double Generator::FindDiskCoordZ(int index) {
 
 Coordinates Generator::FlightMoleculeDisk(Coordinates& coordinates, int i)
 {
+    Coordinates point;
     Disk* disk = dynamic_cast<Disk*>(vector[i]);
     double t = (generator.FindDiskCoordZ(i) - coordinates.z) / coordinates.p3;
     double x_0 = coordinates.x + coordinates.p1 * t;
     double y_0 = coordinates.y + coordinates.p2 * t;
     if (sqrt(pow(x_0, 2) + pow(y_0, 2)) > disk->radiusInsideDisk &&
         sqrt(pow(x_0, 2) + pow(y_0, 2)) < disk->radiusOutsideDisk) {
-        coordinates.x = x_0;
-        coordinates.y = y_0;
-        coordinates.z = disk->coordinateZ;
-        coordinates.flag = FOUND;
-        coordinates.index = i;
+        point.x = x_0;
+        point.y = y_0;
+        point.z = disk->coordinateZ;
+        point.flag = FOUND;
+        point.index = i;
+        return point;
     } else {
         coordinates.flag = NOT_FOUND;
+        return coordinates;
     }
-    return coordinates;
+
 }
 
 
