@@ -75,14 +75,17 @@ void test2()
 void Interface::testCriostat()
 {
     Disk* disk = new Disk(34,0);
+    disk->location=true;
     vector.push_back(disk);
     Сylinder* cylinder = new Сylinder(34,305);
     vector.push_back(cylinder);
     Disk* disk1 = new Disk(305, 34);
+    disk1->location=true;
     vector.push_back(disk1);
     Сylinder* cylinder1 = new Сylinder(305, 210);
     vector.push_back(cylinder1);
     Disk* disk3 = new Disk(305, 51);
+    disk3->location=false;
     vector.push_back(disk3);
     //Disk* disk4 = new Disk(51,0);
     //disk4->portal=true;
