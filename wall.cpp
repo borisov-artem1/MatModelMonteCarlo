@@ -99,6 +99,8 @@ RandomValues Generator::GeneratorMonteCarlo_Cylinder()
 Coordinates Generator::GeneratorMonteCarlo_GVector(Coordinates& coordinates) {// возможно ошибка
     double teta = GeneratorMonteCarlo_Teta();
     double gamma = GeneratorMonteCarlo_Gamma();
+    teta = (teta * PI) / 180;
+    gamma = (gamma * PI) / 180;
     coordinates.p1 = sin(teta) * cos(gamma);
     coordinates.p2 = sin(teta) * sin(gamma);
     coordinates.p3 = cos(teta);
@@ -223,26 +225,26 @@ findingCylinder Generator::FindCylinderIndex(double height) {
 
 Coordinates& Coordinates::operator=(const RandomValues& other)
 {
-    //const double pi = PI;
-    double p1 = sin(other.teta) * cos(other.gamma);
-    double p2 = sin(other.teta) * sin(other.gamma);
-    double p3 = cos(other.teta);
+    const double pi = PI;
+    double p1 = sin((other.teta * pi) / 180) * cos((other.gamma * pi) / 180);
+    double p2 = sin((other.teta * pi) / 180) * sin((other.gamma * pi) / 180);
+    double p3 = cos((other.teta * pi) / 180);
     this->p1 = p1;
     this->p2 = p2;
     this->p3 = p3;
     if (other.height != 0.) {
         findingCylinder coord = generator.FindCylinderIndex(other.height);
         Сylinder* cylinder = dynamic_cast<Сylinder*>(vector[coord.index]);
-        double x0 = cylinder->radiusOutsideCylinder * cos(other.fi);
-        double y0 = cylinder->radiusOutsideCylinder * sin(other.fi);
+        double x0 = cylinder->radiusOutsideCylinder * cos((other.fi * pi) / 180);
+        double y0 = cylinder->radiusOutsideCylinder * sin((other.fi * pi) / 180);
         double z0 = other.height;
         this->x = x0;
         this->y = y0;
         this->z = z0;
         this->index = coord.index;
     } else {
-        this->x = other.point * cos(other.fi);
-        this->y = other.point * sin(other.fi);
+        this->x = other.point * cos((other.fi * pi) / 180);
+        this->y = other.point * sin((other.fi * pi) / 180);
         this->z = vector[other.index - 1]->coordinateZ;
         this->index = other.index;
     }
@@ -313,15 +315,15 @@ void Generator::IterationForDisk(Coordinates& NewCoordinates)
 {
     Disk* disk = dynamic_cast<Disk*>(vector[NewCoordinates.index]);
     if (disk->location) {
-        for (int i = NewCoordinates.index; i < vector.size(); ++i) {
-            generator.IntersectionSearch(NewCoordinates, i + 1);
+        for (int i = NewCoordinates.index + 1; i < vector.size(); ++i) {
+            generator.IntersectionSearch(NewCoordinates, i);
             if (NewCoordinates.flag == EXIT || NewCoordinates.flag == FOUND) {
                 return;
             }
         }
     } else {
-        for (int i = NewCoordinates.index; i > 0; --i) {
-            generator.IntersectionSearch(NewCoordinates, i + 1);
+        for (int i = NewCoordinates.index - 1; i > 0; --i) {
+            generator.IntersectionSearch(NewCoordinates, i);
             if (NewCoordinates.flag == EXIT || NewCoordinates.flag == FOUND) {
                 return;
             }
@@ -464,6 +466,10 @@ Coordinates Generator::FlightMoleculeCylinder(Coordinates& coordinates, int i) {
             coordinates.flag = NOT_FOUND;
             return coordinates;
         }
+    } else if (Dis < 0) {
+        throw std::exception();
+        //coordinates.flag = NOT_FOUND;
+        //return coordinates;
     } else {
         coordinates.flag = NOT_FOUND;
         return coordinates;
