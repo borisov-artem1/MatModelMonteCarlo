@@ -19,6 +19,7 @@ public:
     void createFinalWindow(double exitMolecules, double amount_mol);
     void testForLocation();
     void testCriostat();
+    void testIndexes();
 
 private:
 

@@ -97,6 +97,7 @@ public:
     ~Сylinder();
     //const QString name = "Cylinder";
     int index;
+    //double coordinateCylinder;
 };
 
 template <typename T>

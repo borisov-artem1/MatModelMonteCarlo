@@ -44,6 +44,7 @@ Disk::~Disk() {
     name = "Cylinder";
     coordinateZ += Height;
     coordinateZMap[vector.size()] = coordinateZ;
+
 }
 
 Сylinder::~Сylinder() {}
@@ -375,20 +376,6 @@ int Generator::Core(int countMoleculs, int iteration)
     Coordinates NewCoordinates = {};
     coeficionts = generator.Distribution();//убрал лишние вызовы
 
-//    for (int i = 0; i < countMoleculs * coeficionts.CylinderCoef; ++i) {
-//        rand = generator.GeneratorMonteCarlo_Cylinder();
-//        NewCoordinates = rand;
-//        IterationForCylinder(NewCoordinates);
-//        if (NewCoordinates.flag == EXIT) {
-//            NewCoordinates.flag = NOT_FOUND;
-//            continue;
-//        } else if (NewCoordinates.flag == FOUND) {
-//            NewCoordinates.flag = NOT_FOUND;
-//        }
-//        generator.Iteration(NewCoordinates, iteration);
-//    }
-
-
     for (int i = 0; i < countMoleculs * coeficionts.DiskCoef; ++i) {
         rand = generator.GeneratorMonteCarlo_Disk();
         NewCoordinates = rand;
@@ -409,8 +396,13 @@ double Generator::FindDiskCoordZ(int index) {
     if (index == 0) {
         return 0;
     }
+<<<<<<< HEAD
     //std::cout << vector[index - 1]->coordinateZ << std::endl;
     return vector[index - 1]->coordinateZ;
+=======
+    Сylinder* cylinder = dynamic_cast<Сylinder*>(vector[index-1]);
+    return cylinder->coordinateCylinder;
+>>>>>>> d0bdcae9d7181f98fb59c03ffd847c889c46ffe1
 }
 */
 
