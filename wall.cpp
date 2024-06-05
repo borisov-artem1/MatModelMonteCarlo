@@ -391,21 +391,6 @@ int Generator::Core(int countMoleculs, int iteration)
     return exitMolecules;
 }
 
-/*
-double Generator::FindDiskCoordZ(int index) {
-    if (index == 0) {
-        return 0;
-    }
-<<<<<<< HEAD
-    //std::cout << vector[index - 1]->coordinateZ << std::endl;
-    return vector[index - 1]->coordinateZ;
-=======
-    Сylinder* cylinder = dynamic_cast<Сylinder*>(vector[index-1]);
-    return cylinder->coordinateCylinder;
->>>>>>> d0bdcae9d7181f98fb59c03ffd847c889c46ffe1
-}
-*/
-
 Coordinates Generator::FlightMoleculeDisk(Coordinates& coordinates, int i)
 {
     Coordinates point;

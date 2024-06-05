@@ -7,8 +7,8 @@ int main(int argc, char *argv[])
 {
      QApplication a(argc, argv);
      Interface w;
-//     w.move(400, 400);
-//     w.show();
+     w.move(400, 400);
+     w.show();
      //w.testIndexes();
      return a.exec();
 }
