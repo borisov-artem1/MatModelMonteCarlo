@@ -5,6 +5,7 @@
 #include <random>
 #include <iostream>
 #include <cmath>
+#include <map>
 #define PI 3.14
 
 
@@ -16,6 +17,7 @@ double Wall::coordinateZ = 0;
 int Wall::indexNumber = -2;
 static Generator generator;
 static bool flag = true;
+static std::map<std::size_t, double> coordinateZMap;
 
 Wall::Wall() {
     indexNumber++;
@@ -29,6 +31,7 @@ Wall::~Wall() {
 Disk::Disk(double radiusOutside, double radiusInside): radiusInsideDisk(radiusInside), radiusOutsideDisk(radiusOutside) {
     index = indexNumber;
     name = "Disk";
+    coordinateZMap[vector.size()] = coordinateZ;
 }
 
 Disk::~Disk() {
@@ -40,6 +43,7 @@ Disk::~Disk() {
     index = indexNumber;
     name = "Cylinder";
     coordinateZ += Height;
+    coordinateZMap[vector.size()] = coordinateZ;
 }
 
 Сylinder::~Сylinder() {}
@@ -252,9 +256,11 @@ Coordinates& Coordinates::operator=(const RandomValues& other)
         this->z = z0;
         this->index = coord.index;
     } else {
+        Сylinder* cylinder = dynamic_cast<Сylinder*>(vector[other.index - 1]);
+        double coordZ = cylinder->coordinateZ;
         this->x = other.point * cos((other.fi * pi) / 180);
         this->y = other.point * sin((other.fi * pi) / 180);
-        this->z = vector[other.index - 1]->coordinateZ;
+        this->z = other.index != 0 ? coordZ : 0;
         this->index = other.index;
     }
     return *this;
@@ -398,25 +404,30 @@ int Generator::Core(int countMoleculs, int iteration)
     return exitMolecules;
 }
 
+/*
 double Generator::FindDiskCoordZ(int index) {
     if (index == 0) {
         return 0;
     }
+    //std::cout << vector[index - 1]->coordinateZ << std::endl;
     return vector[index - 1]->coordinateZ;
 }
+*/
 
 Coordinates Generator::FlightMoleculeDisk(Coordinates& coordinates, int i)
 {
     Coordinates point;
     Disk* disk = dynamic_cast<Disk*>(vector[i]);
-    double t = (generator.FindDiskCoordZ(i) - coordinates.z) / coordinates.p3;
+    double coordZ = disk->coordinateZ;
+    double C = !i ? 0 : vector[i - 1]->coordinateZ;
+    double t = (C - coordinates.z) / coordinates.p3;
     double x_0 = coordinates.x + coordinates.p1 * t;
     double y_0 = coordinates.y + coordinates.p2 * t;
     if (sqrt(pow(x_0, 2) + pow(y_0, 2)) > disk->radiusInsideDisk &&
         sqrt(pow(x_0, 2) + pow(y_0, 2)) < disk->radiusOutsideDisk) {
         point.x = x_0;
         point.y = y_0;
-        point.z = disk->coordinateZ;
+        point.z = coordZ;
         point.flag = FOUND;
         point.index = i;
         return point;
