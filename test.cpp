@@ -90,7 +90,7 @@ void Interface::testCriostat()
     //Disk* disk4 = new Disk(51,0);
     //disk4->portal=true;
     //vector.push_back(disk4);
-    qDebug()<<generator.Core(100,1);
+    qDebug()<< (generator.Core(10000,1) / 10000.) * 100.;
 }
 
 /*void Interface::testIndexes()

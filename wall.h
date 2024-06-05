@@ -79,7 +79,6 @@ public:
     double radiusOutsideDisk;
     Disk(double radiusOutside, double radiusInside); // объявляем конструктор
     ~Disk(); // объявляем деструктор
-    //const QString name = "Disk";
     int index;
     bool portal = false;// true если да, false если нет
     bool location; // true если сверху, false если снизу, мои изменения
@@ -95,9 +94,7 @@ public:
     double Height;
     Сylinder(double radiusOutside, double height);
     ~Сylinder();
-    //const QString name = "Cylinder";
     int index;
-    //double coordinateCylinder;
 };
 
 template <typename T>

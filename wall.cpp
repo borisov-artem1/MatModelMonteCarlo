@@ -224,11 +224,11 @@ findingCylinder Generator::FindCylinderIndex(double height) {
     findingCylinder coord;
     coord.diff = 0.;
     coord.index = 0;
-    for (Wall* wall: vector) {
-        Сylinder* cylinder = dynamic_cast<Сylinder*>(wall);
+    for (int i = 0; i < vector.size(); ++i) {
+        Сylinder* cylinder = dynamic_cast<Сylinder*>(vector[i]);
         if (cylinder != nullptr && cylinder->name == "Cylinder") {
-            if (height < cylinder->coordinateZ) {
-                coord.diff = cylinder->Height - (cylinder->coordinateZ - height);
+            if (height < coordinateZMap[i]) {
+                coord.diff = cylinder->Height - (coordinateZMap[i] - height);
                 break;
             }
         }
@@ -257,11 +257,12 @@ Coordinates& Coordinates::operator=(const RandomValues& other)
         this->z = z0;
         this->index = coord.index;
     } else {
-        Сylinder* cylinder = dynamic_cast<Сylinder*>(vector[other.index - 1]);
-        double coordZ = cylinder->coordinateZ;
+        //Сylinder* cylinder = dynamic_cast<Сylinder*>(vector[other.index - 1]);
+        //double coordZ = cylinder->coordinateZ;
         this->x = other.point * cos((other.fi * pi) / 180);
         this->y = other.point * sin((other.fi * pi) / 180);
-        this->z = other.index != 0 ? coordZ : 0;
+        //this->z = other.index != 0 ? coordZ : 0;
+        this->z = coordinateZMap[other.index];
         this->index = other.index;
     }
     return *this;
@@ -376,6 +377,19 @@ int Generator::Core(int countMoleculs, int iteration)
     Coordinates NewCoordinates = {};
     coeficionts = generator.Distribution();//убрал лишние вызовы
 
+    for (int i = 0; i < countMoleculs* coeficionts.CylinderCoef; ++i) {
+        rand = generator.GeneratorMonteCarlo_Cylinder();
+        NewCoordinates = rand;
+        IterationForCylinder(NewCoordinates);
+        if (NewCoordinates.flag == EXIT) {
+            NewCoordinates.flag = NOT_FOUND;
+            continue;
+        } else if (NewCoordinates.flag == FOUND) {
+            NewCoordinates.flag = NOT_FOUND;
+        }
+        generator.Iteration(NewCoordinates, iteration);
+    }
+
     for (int i = 0; i < countMoleculs * coeficionts.DiskCoef; ++i) {
         rand = generator.GeneratorMonteCarlo_Disk();
         NewCoordinates = rand;
@@ -410,16 +424,16 @@ Coordinates Generator::FlightMoleculeDisk(Coordinates& coordinates, int i)
 {
     Coordinates point;
     Disk* disk = dynamic_cast<Disk*>(vector[i]);
-    double coordZ = disk->coordinateZ;
-    double C = !i ? 0 : vector[i - 1]->coordinateZ;
-    double t = (C - coordinates.z) / coordinates.p3;
+    //double coordZ = disk->coordinateZ;
+    //double C = !i ? 0 : vector[i - 1]->coordinateZ;
+    double t = (coordinateZMap[i] - coordinates.z) / coordinates.p3;
     double x_0 = coordinates.x + coordinates.p1 * t;
     double y_0 = coordinates.y + coordinates.p2 * t;
     if (sqrt(pow(x_0, 2) + pow(y_0, 2)) > disk->radiusInsideDisk &&
         sqrt(pow(x_0, 2) + pow(y_0, 2)) < disk->radiusOutsideDisk) {
         point.x = x_0;
         point.y = y_0;
-        point.z = coordZ;
+        point.z = coordinateZMap[i];
         point.flag = FOUND;
         point.index = i;
         return point;
@@ -433,7 +447,7 @@ Coordinates Generator::FlightMoleculeDisk(Coordinates& coordinates, int i)
 
 bool Generator::CheckForBoundCondition(Coordinates coordinates, Сylinder *cylinder) {
     //std::cout << "coordinate z: " << cylinder->coordinateZ << std::endl;
-    return (coordinates.z < cylinder->coordinateZ - cylinder->Height) || (coordinates.z > cylinder->coordinateZ);
+    return (coordinates.z < coordinateZMap[coordinates.index] - cylinder->Height) || (coordinates.z > coordinateZMap[coordinates.index]);
 }
 
 Coordinates Generator::FlightMoleculeCylinder(Coordinates& coordinates, int i) { // ИСПРАВИТЬ СРОЧНО!!!!!!! НЕТ ПРОВЕРКИ НА ГРАНИЧНЫЕ УСЛОВИЯ
@@ -488,7 +502,7 @@ Coordinates Generator::FlightMoleculeCylinder(Coordinates& coordinates, int i) {
             return coordinates;
         }
     } else if (Dis < 0) {
-        throw std::exception(); // вылетает на этой строке
+        //throw std::exception(); // вылетает на этой строке
         //coordinates.flag = NOT_FOUND;
         //return coordinates;
     } else {
