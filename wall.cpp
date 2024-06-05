@@ -447,7 +447,7 @@ Coordinates Generator::FlightMoleculeDisk(Coordinates& coordinates, int i)
 
 bool Generator::CheckForBoundCondition(Coordinates coordinates, Сylinder *cylinder) {
     //std::cout << "coordinate z: " << cylinder->coordinateZ << std::endl;
-    return (coordinates.z < coordinateZMap[coordinates.index] - cylinder->Height) || (coordinates.z > coordinateZMap[coordinates.index]);
+    return (coordinates.z < coordinateZMap[cylinder->index] - cylinder->Height) || (coordinates.z > coordinateZMap[cylinder->index]);
 }
 
 Coordinates Generator::FlightMoleculeCylinder(Coordinates& coordinates, int i) { // ИСПРАВИТЬ СРОЧНО!!!!!!! НЕТ ПРОВЕРКИ НА ГРАНИЧНЫЕ УСЛОВИЯ
