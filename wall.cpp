@@ -9,7 +9,7 @@
 #define PI 3.14
 
 
-static int exitMolecules;
+static int exitMolecules = 0;
 
 extern QVector<Wall*> vector;
 QVector<int> indexVector;
@@ -337,6 +337,7 @@ void Generator::IterationForDisk(Coordinates& NewCoordinates)
             if (NewCoordinates.flag == EXIT || NewCoordinates.flag == FOUND) {
                 return;
             }
+            //std::cout << "ЫЫЫЫ" << std::endl;
         }
     } else {
         for (int i = NewCoordinates.index - 1; i > 0; --i) {
@@ -344,6 +345,7 @@ void Generator::IterationForDisk(Coordinates& NewCoordinates)
             if (NewCoordinates.flag == EXIT || NewCoordinates.flag == FOUND) {
                 return;
             }
+            //std::cout << "АААА" << std::endl;
         }
     }
 }
@@ -424,8 +426,10 @@ Coordinates Generator::FlightMoleculeDisk(Coordinates& coordinates, int i)
 {
     Coordinates point;
     Disk* disk = dynamic_cast<Disk*>(vector[i]);
-    //double coordZ = disk->coordinateZ;
-    //double C = !i ? 0 : vector[i - 1]->coordinateZ;
+    Сylinder* cylinder = dynamic_cast<Сylinder*>(vector[coordinates.index]);
+    if (abs(coordinates.index - i) == 1 && cylinder && cylinder->radiusOutsideCylinder == disk->radiusInsideDisk) {
+        return coordinates;
+    }
     double t = (coordinateZMap[i] - coordinates.z) / coordinates.p3;
     double x_0 = coordinates.x + coordinates.p1 * t;
     double y_0 = coordinates.y + coordinates.p2 * t;
@@ -452,9 +456,14 @@ bool Generator::CheckForBoundCondition(Coordinates coordinates, Сylinder *cylin
 
 Coordinates Generator::FlightMoleculeCylinder(Coordinates& coordinates, int i) { // ИСПРАВИТЬ СРОЧНО!!!!!!! НЕТ ПРОВЕРКИ НА ГРАНИЧНЫЕ УСЛОВИЯ
     //findingCylinder coord = FindCylinderIndex(coordinates.z);
+
     Coordinates pointBegin;
     Coordinates pointEnd;
     Сylinder* cylinder = dynamic_cast<Сylinder*>(vector[i]);
+    Disk* disk = dynamic_cast<Disk*>(vector[coordinates.index]);
+    if (abs(coordinates.index - i) == 1 && disk && disk->radiusInsideDisk == cylinder->radiusOutsideCylinder) {
+        return coordinates;
+    }
     double A = pow(coordinates.p1, 2) + pow(coordinates.p2, 2);
     double B = 2 * (coordinates.x * coordinates.p1 + coordinates.y * coordinates.p2);
     double C = pow(coordinates.x, 2) + pow(coordinates.y, 2) - pow(cylinder->radiusOutsideCylinder, 2);
@@ -483,16 +492,16 @@ Coordinates Generator::FlightMoleculeCylinder(Coordinates& coordinates, int i) {
 
         if (pointBegin.flag == FOUND) {
             if (!(t1 == 0. || (t1 > -1e-12 && t1 < 1e-12))) {
-                findingCylinder coord = generator.FindCylinderIndex(pointBegin.z);
-                pointBegin.index = coord.index;
+                //findingCylinder coord = generator.FindCylinderIndex(pointBegin.z);
+                pointBegin.index = i;
                 return pointBegin;
             }
         }
 
         if (pointEnd.flag == FOUND) {
             if (!(t2 == 0. || (t2 > -1e-12 && t2 < 1e-12))) {
-                findingCylinder coord = generator.FindCylinderIndex(pointEnd.z);
-                pointEnd.index = coord.index;
+                //findingCylinder coord = generator.FindCylinderIndex(pointEnd.z);
+                pointEnd.index = i;
                 return pointEnd;
             }
         }
@@ -502,7 +511,7 @@ Coordinates Generator::FlightMoleculeCylinder(Coordinates& coordinates, int i) {
             return coordinates;
         }
     } else if (Dis < 0) {
-        //throw std::exception(); // вылетает на этой строке
+        throw std::exception(); // вылетает на этой строке
         //coordinates.flag = NOT_FOUND;
         //return coordinates;
     } else {
