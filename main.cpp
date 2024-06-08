@@ -2,6 +2,9 @@
 #include "interface.h"
 #include "wall.h"
 #include <QApplication>
+#include <pthread.h>
+
+
 
 int main(int argc, char *argv[])
 {

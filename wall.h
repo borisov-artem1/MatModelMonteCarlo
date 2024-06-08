@@ -11,8 +11,7 @@
 enum {
     EXIT = -1,
     NOT_FOUND = 0,
-    FOUND = 1,
-
+    FOUND = 1
 };
 
 class Generator;
@@ -32,20 +31,15 @@ struct RandomValues {
     double point = 0.;
 };
 
-struct pointOfIntersection {
-    double x;
-    double y;
-    double z;
-};
 
 struct findingCylinder {
-    int index;
+    int index = 0;
     double diff;
 };
 
 struct Coeficients {
-    int CylinderCoef;
-    int DiskCoef;
+    double CylinderCoef = 0;
+    double DiskCoef = 0;
 };
 
 struct Coordinates {
@@ -157,7 +151,7 @@ class Generator {
     void IntersectionSearch(Coordinates& NewCoordinates, int k);
 
 
-    bool FlightMolecule_Cylinder(pointOfIntersection& point1, pointOfIntersection& point2);
+    //bool FlightMolecule_Cylinder(pointOfIntersection& point1, pointOfIntersection& point2);
     bool FlightMolecule_Disk();
 
     Coordinates FlightMolecule(Coordinates& coordinates);

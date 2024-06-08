@@ -16,6 +16,8 @@ void Interface::test() {
     rand.gamma = 15;
     rand.teta = 15;
     NewCoordinates = rand;
+
+
     generator.FlightMoleculeCylinder(NewCoordinates,1);//передаем параметры такие как я указал на карте Miro , просмотри
                                                        // заведомо известно что цилиндр обладает индексом 1, т.к. индексом 0 и 2 обладают
                                                        // автоматически созданные диски с portal == true

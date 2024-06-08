@@ -1,15 +1,16 @@
 #include "wall.h"
+
 #include <string>
 #include <memory>
-#include "interface.h"
 #include <random>
 #include <iostream>
 #include <cmath>
 #include <map>
+
+#include "interface.h"
 #define PI 3.14
 
-
-static int exitMolecules = 0;
+int exitMolecules = 0;
 
 extern QVector<Wall*> vector;
 QVector<int> indexVector;
@@ -18,6 +19,12 @@ int Wall::indexNumber = -2;
 static Generator generator;
 static bool flag = true;
 static std::map<std::size_t, double> coordinateZMap;
+//Сylinder* cylinder = new Сylinder(0, 0);
+//Disk* disk = new Disk(0, 0);
+//void* cylinder = new void*;
+//void* disk = new void*;
+
+//static int count1 = 0;
 
 Wall::Wall() {
     indexNumber++;
@@ -214,7 +221,7 @@ Coeficients Generator::Distribution()
     Coeficients coeficitions;
     double areaCylinders = generator.CylindersArea();
     double areaDisk = generator.DiskArea();
-    coeficitions.CylinderCoef = areaCylinders/(areaCylinders + areaDisk);
+    coeficitions.CylinderCoef = areaCylinders / (areaCylinders + areaDisk);
     coeficitions.DiskCoef = 1 - coeficitions.CylinderCoef;
     return coeficitions;
 }
@@ -310,17 +317,22 @@ void Generator::IterationForCylinder(Coordinates& NewCoordinates)
         for (int k = NewCoordinates.index; (k < NewCoordinates.index + count + 1) && (k < vector.size()); ++k) {// Нашел ошибку здесь
             generator.IntersectionSearch(NewCoordinates, k);
             if (NewCoordinates.flag == EXIT || NewCoordinates.flag == FOUND) {
+                //++count1;
                 return;
             }
+            //++count1;
         }
         if (NewCoordinates.flag == NOT_FOUND) {
             for (int k = NewCoordinates.index; (k > NewCoordinates.index - count - 1) && (k > -1); --k) {
                 generator.IntersectionSearch(NewCoordinates, k);
                 if (NewCoordinates.flag == EXIT || NewCoordinates.flag == FOUND) {
+                    //++count1;
                     return;
                 }
+                //++count1;
             }
         }
+        ++count;
         if (count == vector.size()) {
             breakCondition = true;
         }
@@ -335,16 +347,20 @@ void Generator::IterationForDisk(Coordinates& NewCoordinates)
         for (int i = NewCoordinates.index + 1; i < vector.size(); ++i) {
             generator.IntersectionSearch(NewCoordinates, i);
             if (NewCoordinates.flag == EXIT || NewCoordinates.flag == FOUND) {
+                //++count1;
                 return;
             }
+            //++count1;
             //std::cout << "ЫЫЫЫ" << std::endl;
         }
     } else {
-        for (int i = NewCoordinates.index - 1; i > 0; --i) {
+        for (int i = NewCoordinates.index - 1; i > -1; --i) {
             generator.IntersectionSearch(NewCoordinates, i);
             if (NewCoordinates.flag == EXIT || NewCoordinates.flag == FOUND) {
+                //++count1;
                 return;
             }
+            //++count1;
             //std::cout << "АААА" << std::endl;
         }
     }
@@ -379,10 +395,11 @@ int Generator::Core(int countMoleculs, int iteration)
     Coordinates NewCoordinates = {};
     coeficionts = generator.Distribution();//убрал лишние вызовы
 
-    for (int i = 0; i < countMoleculs* coeficionts.CylinderCoef; ++i) {
+    for (int i = 0; i < countMoleculs * coeficionts.CylinderCoef; ++i) {
         rand = generator.GeneratorMonteCarlo_Cylinder();
         NewCoordinates = rand;
         IterationForCylinder(NewCoordinates);
+        //std::cout << i << std::endl;
         if (NewCoordinates.flag == EXIT) {
             NewCoordinates.flag = NOT_FOUND;
             continue;
@@ -402,25 +419,13 @@ int Generator::Core(int countMoleculs, int iteration)
         } else if (NewCoordinates.flag == FOUND) {
             NewCoordinates.flag = NOT_FOUND;
         }
+
         generator.Iteration(NewCoordinates, iteration);
     }
+
     return exitMolecules;
 }
 
-/*
-double Generator::FindDiskCoordZ(int index) {
-    if (index == 0) {
-        return 0;
-    }
-<<<<<<< HEAD
-    //std::cout << vector[index - 1]->coordinateZ << std::endl;
-    return vector[index - 1]->coordinateZ;
-=======
-    Сylinder* cylinder = dynamic_cast<Сylinder*>(vector[index-1]);
-    return cylinder->coordinateCylinder;
->>>>>>> d0bdcae9d7181f98fb59c03ffd847c889c46ffe1
-}
-*/
 
 Coordinates Generator::FlightMoleculeDisk(Coordinates& coordinates, int i)
 {
@@ -455,7 +460,6 @@ bool Generator::CheckForBoundCondition(Coordinates coordinates, Сylinder *cylin
 }
 
 Coordinates Generator::FlightMoleculeCylinder(Coordinates& coordinates, int i) { // ИСПРАВИТЬ СРОЧНО!!!!!!! НЕТ ПРОВЕРКИ НА ГРАНИЧНЫЕ УСЛОВИЯ
-    //findingCylinder coord = FindCylinderIndex(coordinates.z);
 
     Coordinates pointBegin;
     Coordinates pointEnd;
@@ -491,7 +495,7 @@ Coordinates Generator::FlightMoleculeCylinder(Coordinates& coordinates, int i) {
         }
 
         if (pointBegin.flag == FOUND) {
-            if (!(t1 == 0. || (t1 > -1e-12 && t1 < 1e-12))) {
+            if (!(t1 == 0. || (t1 > -1e-10 && t1 < 1e-10))) {
                 //findingCylinder coord = generator.FindCylinderIndex(pointBegin.z);
                 pointBegin.index = i;
                 return pointBegin;
@@ -499,7 +503,7 @@ Coordinates Generator::FlightMoleculeCylinder(Coordinates& coordinates, int i) {
         }
 
         if (pointEnd.flag == FOUND) {
-            if (!(t2 == 0. || (t2 > -1e-12 && t2 < 1e-12))) {
+            if (!(t2 == 0. || (t2 > -1e-10 && t2 < 1e-10))) {
                 //findingCylinder coord = generator.FindCylinderIndex(pointEnd.z);
                 pointEnd.index = i;
                 return pointEnd;
