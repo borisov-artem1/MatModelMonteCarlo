@@ -12,6 +12,7 @@ int main(int argc, char *argv[])
      Interface w;
      //w.move(400, 400);
      //w.show();
-     w.testCriostat();
+     w.MatModeling();
+     //w.testCriostat();
      return a.exec();
 }

@@ -389,6 +389,7 @@ void Generator::Iteration(Coordinates& NewCoordinates, int iteration) {
 
 int Generator::Core(int countMoleculs, int iteration)
 {
+    exitMolecules = 0;
     generator.CreatingPortal();
     RandomValues rand;
     Coeficients coeficionts = {};
