@@ -2,6 +2,9 @@
 #include "interface.h"
 #include "wall.h"
 #include <QApplication>
+#include <pthread.h>
+
+
 
 int main(int argc, char *argv[])
 {
@@ -9,6 +12,7 @@ int main(int argc, char *argv[])
      Interface w;
      w.move(400, 400);
      w.show();
-     //w.testIndexes();
+    // w.MatModeling();
+     //w.testCriostat();
      return a.exec();
 }

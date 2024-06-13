@@ -1,15 +1,16 @@
 #include "wall.h"
+
 #include <string>
 #include <memory>
-#include "interface.h"
 #include <random>
 #include <iostream>
 #include <cmath>
 #include <map>
+
+#include "interface.h"
 #define PI 3.14
 
-
-static int exitMolecules;
+int exitMolecules = 0;
 
 extern QVector<Wall*> vector;
 QVector<int> indexVector;
@@ -18,6 +19,12 @@ int Wall::indexNumber = -2;
 static Generator generator;
 static bool flag = true;
 static std::map<std::size_t, double> coordinateZMap;
+//Сylinder* cylinder = new Сylinder(0, 0);
+//Disk* disk = new Disk(0, 0);
+//void* cylinder = new void*;
+//void* disk = new void*;
+
+//static int count1 = 0;
 
 Wall::Wall() {
     indexNumber++;
@@ -214,7 +221,7 @@ Coeficients Generator::Distribution()
     Coeficients coeficitions;
     double areaCylinders = generator.CylindersArea();
     double areaDisk = generator.DiskArea();
-    coeficitions.CylinderCoef = areaCylinders/(areaCylinders + areaDisk);
+    coeficitions.CylinderCoef = areaCylinders / (areaCylinders + areaDisk);
     coeficitions.DiskCoef = 1 - coeficitions.CylinderCoef;
     return coeficitions;
 }
@@ -224,11 +231,11 @@ findingCylinder Generator::FindCylinderIndex(double height) {
     findingCylinder coord;
     coord.diff = 0.;
     coord.index = 0;
-    for (Wall* wall: vector) {
-        Сylinder* cylinder = dynamic_cast<Сylinder*>(wall);
+    for (int i = 0; i < vector.size(); ++i) {
+        Сylinder* cylinder = dynamic_cast<Сylinder*>(vector[i]);
         if (cylinder != nullptr && cylinder->name == "Cylinder") {
-            if (height < cylinder->coordinateZ) {
-                coord.diff = cylinder->Height - (cylinder->coordinateZ - height);
+            if (height < coordinateZMap[i]) {
+                coord.diff = cylinder->Height - (coordinateZMap[i] - height);
                 break;
             }
         }
@@ -257,11 +264,12 @@ Coordinates& Coordinates::operator=(const RandomValues& other)
         this->z = z0;
         this->index = coord.index;
     } else {
-        Сylinder* cylinder = dynamic_cast<Сylinder*>(vector[other.index - 1]);
-        double coordZ = cylinder->coordinateZ;
+        //Сylinder* cylinder = dynamic_cast<Сylinder*>(vector[other.index - 1]);
+        //double coordZ = cylinder->coordinateZ;
         this->x = other.point * cos((other.fi * pi) / 180);
         this->y = other.point * sin((other.fi * pi) / 180);
-        this->z = other.index != 0 ? coordZ : 0;
+        //this->z = other.index != 0 ? coordZ : 0;
+        this->z = coordinateZMap[other.index];
         this->index = other.index;
     }
     return *this;
@@ -309,17 +317,22 @@ void Generator::IterationForCylinder(Coordinates& NewCoordinates)
         for (int k = NewCoordinates.index; (k < NewCoordinates.index + count + 1) && (k < vector.size()); ++k) {// Нашел ошибку здесь
             generator.IntersectionSearch(NewCoordinates, k);
             if (NewCoordinates.flag == EXIT || NewCoordinates.flag == FOUND) {
+                //++count1;
                 return;
             }
+            //++count1;
         }
         if (NewCoordinates.flag == NOT_FOUND) {
             for (int k = NewCoordinates.index; (k > NewCoordinates.index - count - 1) && (k > -1); --k) {
                 generator.IntersectionSearch(NewCoordinates, k);
                 if (NewCoordinates.flag == EXIT || NewCoordinates.flag == FOUND) {
+                    //++count1;
                     return;
                 }
+                //++count1;
             }
         }
+        ++count;
         if (count == vector.size()) {
             breakCondition = true;
         }
@@ -334,15 +347,21 @@ void Generator::IterationForDisk(Coordinates& NewCoordinates)
         for (int i = NewCoordinates.index + 1; i < vector.size(); ++i) {
             generator.IntersectionSearch(NewCoordinates, i);
             if (NewCoordinates.flag == EXIT || NewCoordinates.flag == FOUND) {
+                //++count1;
                 return;
             }
+            //++count1;
+            //std::cout << "ЫЫЫЫ" << std::endl;
         }
     } else {
-        for (int i = NewCoordinates.index - 1; i > 0; --i) {
+        for (int i = NewCoordinates.index - 1; i > -1; --i) {
             generator.IntersectionSearch(NewCoordinates, i);
             if (NewCoordinates.flag == EXIT || NewCoordinates.flag == FOUND) {
+                //++count1;
                 return;
             }
+            //++count1;
+            //std::cout << "АААА" << std::endl;
         }
     }
 }
@@ -370,11 +389,26 @@ void Generator::Iteration(Coordinates& NewCoordinates, int iteration) {
 
 int Generator::Core(int countMoleculs, int iteration)
 {
+    exitMolecules = 0;
     generator.CreatingPortal();
     RandomValues rand;
     Coeficients coeficionts = {};
     Coordinates NewCoordinates = {};
     coeficionts = generator.Distribution();//убрал лишние вызовы
+
+    for (int i = 0; i < countMoleculs * coeficionts.CylinderCoef; ++i) {
+        rand = generator.GeneratorMonteCarlo_Cylinder();
+        NewCoordinates = rand;
+        IterationForCylinder(NewCoordinates);
+        //std::cout << i << std::endl;
+        if (NewCoordinates.flag == EXIT) {
+            NewCoordinates.flag = NOT_FOUND;
+            continue;
+        } else if (NewCoordinates.flag == FOUND) {
+            NewCoordinates.flag = NOT_FOUND;
+        }
+        generator.Iteration(NewCoordinates, iteration);
+    }
 
     for (int i = 0; i < countMoleculs * coeficionts.DiskCoef; ++i) {
         rand = generator.GeneratorMonteCarlo_Disk();
@@ -386,8 +420,10 @@ int Generator::Core(int countMoleculs, int iteration)
         } else if (NewCoordinates.flag == FOUND) {
             NewCoordinates.flag = NOT_FOUND;
         }
+
         generator.Iteration(NewCoordinates, iteration);
     }
+
     return exitMolecules;
 }
 
@@ -395,16 +431,18 @@ Coordinates Generator::FlightMoleculeDisk(Coordinates& coordinates, int i)
 {
     Coordinates point;
     Disk* disk = dynamic_cast<Disk*>(vector[i]);
-    double coordZ = disk->coordinateZ;
-    double C = !i ? 0 : vector[i - 1]->coordinateZ;
-    double t = (C - coordinates.z) / coordinates.p3;
+    Сylinder* cylinder = dynamic_cast<Сylinder*>(vector[coordinates.index]);
+    if (abs(coordinates.index - i) == 1 && cylinder && cylinder->radiusOutsideCylinder == disk->radiusInsideDisk) {
+        return coordinates;
+    }
+    double t = (coordinateZMap[i] - coordinates.z) / coordinates.p3;
     double x_0 = coordinates.x + coordinates.p1 * t;
     double y_0 = coordinates.y + coordinates.p2 * t;
     if (sqrt(pow(x_0, 2) + pow(y_0, 2)) > disk->radiusInsideDisk &&
         sqrt(pow(x_0, 2) + pow(y_0, 2)) < disk->radiusOutsideDisk) {
         point.x = x_0;
         point.y = y_0;
-        point.z = coordZ;
+        point.z = coordinateZMap[i];
         point.flag = FOUND;
         point.index = i;
         return point;
@@ -418,14 +456,18 @@ Coordinates Generator::FlightMoleculeDisk(Coordinates& coordinates, int i)
 
 bool Generator::CheckForBoundCondition(Coordinates coordinates, Сylinder *cylinder) {
     //std::cout << "coordinate z: " << cylinder->coordinateZ << std::endl;
-    return (coordinates.z < cylinder->coordinateZ - cylinder->Height) || (coordinates.z > cylinder->coordinateZ);
+    return (coordinates.z < coordinateZMap[cylinder->index] - cylinder->Height) || (coordinates.z > coordinateZMap[cylinder->index]);
 }
 
 Coordinates Generator::FlightMoleculeCylinder(Coordinates& coordinates, int i) { // ИСПРАВИТЬ СРОЧНО!!!!!!! НЕТ ПРОВЕРКИ НА ГРАНИЧНЫЕ УСЛОВИЯ
-    //findingCylinder coord = FindCylinderIndex(coordinates.z);
+
     Coordinates pointBegin;
     Coordinates pointEnd;
     Сylinder* cylinder = dynamic_cast<Сylinder*>(vector[i]);
+    Disk* disk = dynamic_cast<Disk*>(vector[coordinates.index]);
+    if (abs(coordinates.index - i) == 1 && disk && disk->radiusInsideDisk == cylinder->radiusOutsideCylinder) {
+        return coordinates;
+    }
     double A = pow(coordinates.p1, 2) + pow(coordinates.p2, 2);
     double B = 2 * (coordinates.x * coordinates.p1 + coordinates.y * coordinates.p2);
     double C = pow(coordinates.x, 2) + pow(coordinates.y, 2) - pow(cylinder->radiusOutsideCylinder, 2);
@@ -453,17 +495,17 @@ Coordinates Generator::FlightMoleculeCylinder(Coordinates& coordinates, int i) {
         }
 
         if (pointBegin.flag == FOUND) {
-            if (!(t1 == 0. || (t1 > -1e-12 && t1 < 1e-12))) {
-                findingCylinder coord = generator.FindCylinderIndex(pointBegin.z);
-                pointBegin.index = coord.index;
+            if (!(t1 == 0. || (t1 > -1e-10 && t1 < 1e-10))) {
+                //findingCylinder coord = generator.FindCylinderIndex(pointBegin.z);
+                pointBegin.index = i;
                 return pointBegin;
             }
         }
 
         if (pointEnd.flag == FOUND) {
-            if (!(t2 == 0. || (t2 > -1e-12 && t2 < 1e-12))) {
-                findingCylinder coord = generator.FindCylinderIndex(pointEnd.z);
-                pointEnd.index = coord.index;
+            if (!(t2 == 0. || (t2 > -1e-10 && t2 < 1e-10))) {
+                //findingCylinder coord = generator.FindCylinderIndex(pointEnd.z);
+                pointEnd.index = i;
                 return pointEnd;
             }
         }

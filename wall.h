@@ -11,8 +11,7 @@
 enum {
     EXIT = -1,
     NOT_FOUND = 0,
-    FOUND = 1,
-
+    FOUND = 1
 };
 
 class Generator;
@@ -32,20 +31,15 @@ struct RandomValues {
     double point = 0.;
 };
 
-struct pointOfIntersection {
-    double x;
-    double y;
-    double z;
-};
 
 struct findingCylinder {
-    int index;
+    int index = 0;
     double diff;
 };
 
 struct Coeficients {
-    int CylinderCoef;
-    int DiskCoef;
+    double CylinderCoef = 0;
+    double DiskCoef = 0;
 };
 
 struct Coordinates {
@@ -79,7 +73,6 @@ public:
     double radiusOutsideDisk;
     Disk(double radiusOutside, double radiusInside); // объявляем конструктор
     ~Disk(); // объявляем деструктор
-    //const QString name = "Disk";
     int index;
     bool portal = false;// true если да, false если нет
     bool location; // true если сверху, false если снизу, мои изменения
@@ -95,9 +88,7 @@ public:
     double Height;
     Сylinder(double radiusOutside, double height);
     ~Сylinder();
-    //const QString name = "Cylinder";
     int index;
-    //double coordinateCylinder;
 };
 
 template <typename T>
@@ -160,7 +151,7 @@ class Generator {
     void IntersectionSearch(Coordinates& NewCoordinates, int k);
 
 
-    bool FlightMolecule_Cylinder(pointOfIntersection& point1, pointOfIntersection& point2);
+    //bool FlightMolecule_Cylinder(pointOfIntersection& point1, pointOfIntersection& point2);
     bool FlightMolecule_Disk();
 
     Coordinates FlightMolecule(Coordinates& coordinates);
