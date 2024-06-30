@@ -1,12 +1,12 @@
 #include "wall.h"
-
+#include "generator.h"
+#include "calculate.h"
 #include <string>
 #include <memory>
 #include <random>
 #include <iostream>
 #include <cmath>
 #include <map>
-
 #include "interface.h"
 #define PI 3.14
 
@@ -19,12 +19,6 @@ int Wall::indexNumber = -2;
 static Generator generator;
 static bool flag = true;
 static std::map<std::size_t, double> coordinateZMap;
-//Сylinder* cylinder = new Сylinder(0, 0);
-//Disk* disk = new Disk(0, 0);
-//void* cylinder = new void*;
-//void* disk = new void*;
-
-//static int count1 = 0;
 
 Wall::Wall() {
     indexNumber++;

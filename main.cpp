@@ -3,16 +3,17 @@
 #include "wall.h"
 #include <QApplication>
 #include <pthread.h>
-
+#include "analytical.h"
 
 
 int main(int argc, char *argv[])
 {
      QApplication a(argc, argv);
      Interface w;
+     Analytics an;
      w.move(400, 400);
      w.show();
-    // w.MatModeling();
-     //w.testCriostat();
+    // an.MatModeling();
+    // w.testCriostat();
      return a.exec();
 }
