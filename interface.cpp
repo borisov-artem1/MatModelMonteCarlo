@@ -5,6 +5,7 @@
 #include <QDebug>
 #include <QMessageBox>
 #include "exception.h"
+#include "generator.h"
 
 std::stack<Wall*> stack;
 QVector<Wall*> vector;

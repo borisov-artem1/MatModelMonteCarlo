@@ -3,6 +3,8 @@
 #include <QDebug>
 #include <math.h>
 #include <iostream>
+#include "generator.h"
+
 extern QVector<Wall*> vector;
 static Generator generator;
 
