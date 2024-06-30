@@ -24,6 +24,7 @@ HEADERS += \
     exception.h \
     generator.h \
     interface.h \
+    test.h \
     wall.h
 
 FORMS +=

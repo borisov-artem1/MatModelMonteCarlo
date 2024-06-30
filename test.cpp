@@ -4,18 +4,19 @@
 #include <math.h>
 #include <iostream>
 #include "generator.h"
+#include "calculate.h"
+#include "test.h"
 
 extern QVector<Wall*> vector;
-static Generator generator;
+Calculate calculate_1;
+Test test;
 
 
 
-
-
-void Interface::test() {
+void Test::test() {
     Сylinder* cylinder = new Сylinder(30, 60);
     vector.push_back(cylinder);
-    generator.CreatingPortal();
+    calculate_1.CreatingPortal();
     Coordinates NewCoordinates;
     RandomValues rand = {};
     rand.height = 15;
@@ -25,10 +26,10 @@ void Interface::test() {
     NewCoordinates = rand;
 
 
-    generator.FlightMoleculeCylinder(NewCoordinates,1);//передаем параметры такие как я указал на карте Miro , просмотри
+    calculate_1.FlightMoleculeCylinder(NewCoordinates,1);//передаем параметры такие как я указал на карте Miro , просмотри
                                                        // заведомо известно что цилиндр обладает индексом 1, т.к. индексом 0 и 2 обладают
                                                        // автоматически созданные диски с portal == true
-    NewCoordinates = generator.FlightMoleculeCylinder(NewCoordinates, 1);
+    NewCoordinates = calculate_1.FlightMoleculeCylinder(NewCoordinates, 1);
     std::cout << "Направляющий вектор с координатами (p1; p2; p3) = " << "(" << NewCoordinates.p1 << ";" <<
                  NewCoordinates.p2 << ";" << NewCoordinates.p3 << ")" << std::endl;
     std::cout << "Координаты (x; y; z) найденной точки:" << "(" << NewCoordinates.x << ";" << NewCoordinates.y
@@ -44,7 +45,7 @@ void Interface::test() {
     }
 }
 
-void Interface::testForLocation()
+void Test::testForLocation()
 {
     Disk* disk = new Disk(12,0);
     disk->portal=true;
@@ -61,14 +62,14 @@ void Interface::testForLocation()
     NewC.x=1.98;
     NewC.y=-10.41;
     NewC.z=11.17;
-    generator.FlightMoleculeCylinder(NewC, 1);
+    calculate_1.FlightMoleculeCylinder(NewC, 1);
 }
 
 void test2()
 {
     Сylinder* cylinder = new Сylinder(30, 60);
     vector.push_back(cylinder);
-    generator.CreatingPortal();
+    calculate_1.CreatingPortal();
     Coordinates NewCoordinates;
     RandomValues rand;
     rand.height = 15;
@@ -76,12 +77,12 @@ void test2()
     rand.gamma = 15;
     rand.teta = 15;
     NewCoordinates = rand;
-    generator.FlightMoleculeCylinder(NewCoordinates,1);//передаем параметры такие как я указал на карте Miro , просмотри
+    calculate_1.FlightMoleculeCylinder(NewCoordinates,1);//передаем параметры такие как я указал на карте Miro , просмотри
                                                        // заведомо известно что цилиндр обладает индексом 1, т.к. индексом 0 и 2 обладают
                                                        // автоматически созданные диски с portal == true
 }
 
-double Interface::testCriostat()
+double Test::testCriostat()
 {
     Disk* disk = new Disk(34,0);
     disk->location=true;
@@ -96,7 +97,7 @@ double Interface::testCriostat()
     Disk* disk3 = new Disk(305, 51);
     disk3->location=false;
     vector.push_back(disk3);
-    return (generator.Core(10000, 1) / 10000.) * 100.;
+    return (calculate_1.Core(10000, 1) / 10000.) * 100.;
 }
 
 /*void Interface::testIndexes()

@@ -17,9 +17,6 @@ public:
     QComboBox* dropdown = new QComboBox();
     bool isBuildingCorrectly(double val1, double val2, QString selected_text, QWidget& windowError);
     void createFinalWindow(double exitMolecules, double amount_mol);
-    void testForLocation();
-    double testCriostat();
-    void testIndexes();
 
 private:
 
@@ -43,7 +40,6 @@ private slots:
     void readingValues();
     void CalculateOfPrecentageMolecules();
     void preCalculate();
-    void test();
 };
 
 class CenteredWindow: public QWidget {

@@ -6,10 +6,11 @@
 #include <QMessageBox>
 #include "exception.h"
 #include "generator.h"
+#include "calculate.h"
 
 std::stack<Wall*> stack;
 QVector<Wall*> vector;
-static Generator generator;
+Calculate calculate_1;
 class Test;
 Wall wall;
 
@@ -178,7 +179,7 @@ void Interface::CalculateOfPrecentageMolecules() {
         return;
     }
     // процент молекул должен быть double поэтому приводим к double
-    exitMolecules = static_cast<double>(generator.Core(amount_mol, amount_iter));
+    exitMolecules = static_cast<double>(calculate_1.Core(amount_mol, amount_iter));
     d_amount_mol = static_cast<double>(amount_mol);
     // вызываем окно, в котором выводится процент вылетевших молекул
     createFinalWindow(exitMolecules, d_amount_mol);
@@ -208,7 +209,7 @@ void Interface::readingValues() {
 в начало и конец модели там где это необходимо*/
     if (isBuildingCorrectly(val1, val2, selected_text, windowError)) {
         if (selected_text == "Cylinder") {
-            if (wall.indexNumber == -1){generator.CreatingPortal(val2, true);}
+            if (wall.indexNumber == -1){calculate_1.CreatingPortal(val2, true);}
             Сylinder* cylinder = new Сylinder(val2, val1);
             stack.push(cylinder);
             vector.push_back(cylinder);
@@ -216,7 +217,7 @@ void Interface::readingValues() {
             count++;
             qDebug() << "Cylinder" << Qt::endl;
         } else if (selected_text == "Disk") {
-            if ((wall.indexNumber == -1)&&(val2>0)){generator.CreatingPortal(val2, true);}
+            if ((wall.indexNumber == -1)&&(val2>0)){calculate_1.CreatingPortal(val2, true);}
             Disk* disk = new Disk(val1, val2);
             // здесь мои изменения
             if (vector.size() == 0) {
@@ -282,7 +283,7 @@ bool Interface::isBuildingCorrectly(double val1, double val2, const QString sele
     }
 }
 
-void Generator::CreatingPortal(int val2, bool flag)
+void Calculate::CreatingPortal(int val2, bool flag)
 {   if (flag == true) {
         Disk* disk = new Disk(val2, 0);
         disk->portal = true;
