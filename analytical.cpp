@@ -7,7 +7,7 @@
 #include "calculate.h"
 
 extern QVector<Wall*> vector;
-static Calculate calculate_1;
+static Calculate calcul;
 
 void Analytics::adequacyOfTheModel(int alphaSig, const QVector<double>& polinomialCoef,
                                    const double& ReproducibilityDisp, const QVector<double>& avgVec) {
@@ -118,7 +118,7 @@ double Analytics::DispCalc(QVector<double>& XiVec, QVector<double>& DispVec, int
     double Disp = 0.;
     double avg = 0.;
     for (int i = 0; i < 5; ++i) {
-        double Xi = calculate_1.Core(molecules, iteration) * part * 100.;
+        double Xi = calcul.Core(molecules, iteration) * part * 100.;
         XiVec.push_back(Xi);
         sum += Xi;
     }

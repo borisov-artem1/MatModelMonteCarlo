@@ -18,7 +18,7 @@ QVector<int> indexVector;
 double Wall::coordinateZ = 0;
 int Wall::indexNumber = -2;
 static Generator generator;
-Calculate calculate_1;
+extern Calculate calcul;
 static bool flag = true;
 static std::map<std::size_t, double> coordinateZMap;
 
@@ -311,7 +311,7 @@ void Calculate::IterationForCylinder(Coordinates& NewCoordinates)
             break;
         }
         for (int k = NewCoordinates.index; (k < NewCoordinates.index + count + 1) && (k < vector.size()); ++k) {// Нашел ошибку здесь
-            calculate_1.IntersectionSearch(NewCoordinates, k);
+            calcul.IntersectionSearch(NewCoordinates, k);
             if (NewCoordinates.flag == EXIT || NewCoordinates.flag == FOUND) {
                 //++count1;
                 return;
@@ -320,7 +320,7 @@ void Calculate::IterationForCylinder(Coordinates& NewCoordinates)
         }
         if (NewCoordinates.flag == NOT_FOUND) {
             for (int k = NewCoordinates.index; (k > NewCoordinates.index - count - 1) && (k > -1); --k) {
-                calculate_1.IntersectionSearch(NewCoordinates, k);
+                calcul.IntersectionSearch(NewCoordinates, k);
                 if (NewCoordinates.flag == EXIT || NewCoordinates.flag == FOUND) {
                     //++count1;
                     return;
@@ -341,7 +341,7 @@ void Calculate::IterationForDisk(Coordinates& NewCoordinates)
     Disk* disk = dynamic_cast<Disk*>(vector[NewCoordinates.index]);
     if (disk->location) {
         for (int i = NewCoordinates.index + 1; i < vector.size(); ++i) {
-            calculate_1.IntersectionSearch(NewCoordinates, i);
+            calcul.IntersectionSearch(NewCoordinates, i);
             if (NewCoordinates.flag == EXIT || NewCoordinates.flag == FOUND) {
                 //++count1;
                 return;
@@ -351,7 +351,7 @@ void Calculate::IterationForDisk(Coordinates& NewCoordinates)
         }
     } else {
         for (int i = NewCoordinates.index - 1; i > -1; --i) {
-            calculate_1.IntersectionSearch(NewCoordinates, i);
+            calcul.IntersectionSearch(NewCoordinates, i);
             if (NewCoordinates.flag == EXIT || NewCoordinates.flag == FOUND) {
                 //++count1;
                 return;
@@ -386,7 +386,7 @@ void Calculate::Iteration(Coordinates& NewCoordinates, int iteration) {
 int Calculate::Core(int countMoleculs, int iteration)
 {
     exitMolecules = 0;
-    calculate_1.CreatingPortal();
+    calcul.CreatingPortal();
     RandomValues rand;
     Coeficients coeficionts = {};
     Coordinates NewCoordinates = {};
@@ -403,7 +403,7 @@ int Calculate::Core(int countMoleculs, int iteration)
         } else if (NewCoordinates.flag == FOUND) {
             NewCoordinates.flag = NOT_FOUND;
         }
-        calculate_1.Iteration(NewCoordinates, iteration);
+        calcul.Iteration(NewCoordinates, iteration);
     }
 
     for (int i = 0; i < countMoleculs * coeficionts.DiskCoef; ++i) {
@@ -417,7 +417,7 @@ int Calculate::Core(int countMoleculs, int iteration)
             NewCoordinates.flag = NOT_FOUND;
         }
 
-        calculate_1.Iteration(NewCoordinates, iteration);
+        calcul.Iteration(NewCoordinates, iteration);
     }
 
     return exitMolecules;

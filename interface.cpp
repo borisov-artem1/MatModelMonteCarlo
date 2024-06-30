@@ -10,7 +10,7 @@
 
 std::stack<Wall*> stack;
 QVector<Wall*> vector;
-Calculate calculate_1;
+extern Calculate calcul;
 class Test;
 Wall wall;
 
@@ -179,7 +179,7 @@ void Interface::CalculateOfPrecentageMolecules() {
         return;
     }
     // процент молекул должен быть double поэтому приводим к double
-    exitMolecules = static_cast<double>(calculate_1.Core(amount_mol, amount_iter));
+    exitMolecules = static_cast<double>(calcul.Core(amount_mol, amount_iter));
     d_amount_mol = static_cast<double>(amount_mol);
     // вызываем окно, в котором выводится процент вылетевших молекул
     createFinalWindow(exitMolecules, d_amount_mol);
@@ -209,7 +209,7 @@ void Interface::readingValues() {
 в начало и конец модели там где это необходимо*/
     if (isBuildingCorrectly(val1, val2, selected_text, windowError)) {
         if (selected_text == "Cylinder") {
-            if (wall.indexNumber == -1){calculate_1.CreatingPortal(val2, true);}
+            if (wall.indexNumber == -1){calcul.CreatingPortal(val2, true);}
             Сylinder* cylinder = new Сylinder(val2, val1);
             stack.push(cylinder);
             vector.push_back(cylinder);
@@ -217,7 +217,7 @@ void Interface::readingValues() {
             count++;
             qDebug() << "Cylinder" << Qt::endl;
         } else if (selected_text == "Disk") {
-            if ((wall.indexNumber == -1)&&(val2>0)){calculate_1.CreatingPortal(val2, true);}
+            if ((wall.indexNumber == -1)&&(val2>0)){calcul.CreatingPortal(val2, true);}
             Disk* disk = new Disk(val1, val2);
             // здесь мои изменения
             if (vector.size() == 0) {
