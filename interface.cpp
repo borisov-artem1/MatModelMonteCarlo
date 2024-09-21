@@ -5,10 +5,12 @@
 #include <QDebug>
 #include <QMessageBox>
 #include "exception.h"
+#include "generator.h"
+#include "calculate.h"
 
 std::stack<Wall*> stack;
 QVector<Wall*> vector;
-static Generator generator;
+extern Calculate calcul;
 class Test;
 Wall wall;
 
@@ -93,6 +95,7 @@ void Interface::preCalculate() {
 
     b_back = new Button("Cancel", this);
     b_next = new Button("Next", this);
+    b_analytics = new Button("Analytics", this);
 
     e_amount_of_iteration->setMaxLength(15);
     e_amount_of_molecules->setMaxLength(15);
@@ -111,7 +114,9 @@ void Interface::preCalculate() {
     new_window_layout->addWidget(e_amount_of_iteration, 0, 1, Qt::AlignRight | Qt::AlignBottom);
     new_window_layout->addWidget(e_amount_of_molecules, 1, 1, Qt::AlignRight | Qt::AlignBottom);
     new_window_layout->addWidget(b_back,                5, 0, 1, 1);
-    new_window_layout->addWidget(b_next,                5, 1, Qt::AlignRight | Qt::AlignBottom);
+    new_window_layout->addWidget(b_analytics,           5, 1, Qt::AlignCenter | Qt::AlignBottom);
+    new_window_layout->addWidget(b_next,                5, 2, Qt::AlignRight | Qt::AlignBottom);
+
 
 
     l_amount_of_iteration->setFixedSize(200, 30);
@@ -177,7 +182,7 @@ void Interface::CalculateOfPrecentageMolecules() {
         return;
     }
     // процент молекул должен быть double поэтому приводим к double
-    exitMolecules = static_cast<double>(generator.Core(amount_mol, amount_iter));
+    exitMolecules = static_cast<double>(calcul.Core(amount_mol, amount_iter));
     d_amount_mol = static_cast<double>(amount_mol);
     // вызываем окно, в котором выводится процент вылетевших молекул
     createFinalWindow(exitMolecules, d_amount_mol);
@@ -207,7 +212,7 @@ void Interface::readingValues() {
 в начало и конец модели там где это необходимо*/
     if (isBuildingCorrectly(val1, val2, selected_text, windowError)) {
         if (selected_text == "Cylinder") {
-            if (wall.indexNumber == -1){generator.CreatingPortal(val2, true);}
+            if (wall.indexNumber == -1){calcul.CreatingPortal(val2, true);}
             Сylinder* cylinder = new Сylinder(val2, val1);
             stack.push(cylinder);
             vector.push_back(cylinder);
@@ -215,7 +220,7 @@ void Interface::readingValues() {
             count++;
             qDebug() << "Cylinder" << Qt::endl;
         } else if (selected_text == "Disk") {
-            if ((wall.indexNumber == -1)&&(val2>0)){generator.CreatingPortal(val2, true);}
+            if ((wall.indexNumber == -1)&&(val2>0)){calcul.CreatingPortal(val2, true);}
             Disk* disk = new Disk(val1, val2);
             // здесь мои изменения
             if (vector.size() == 0) {
@@ -281,7 +286,7 @@ bool Interface::isBuildingCorrectly(double val1, double val2, const QString sele
     }
 }
 
-void Generator::CreatingPortal(int val2, bool flag)
+void Calculate::CreatingPortal(int val2, bool flag)
 {   if (flag == true) {
         Disk* disk = new Disk(val2, 0);
         disk->portal = true;
